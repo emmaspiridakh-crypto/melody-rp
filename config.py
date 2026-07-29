@@ -17,31 +17,27 @@ load_dotenv()
 # =========================================================
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-GUILD_ID = 1519656885534457960   # PLACEHOLDER: το ID του server σου
+GUILD_ID = 1489977148725788722   # PLACEHOLDER: το ID του server σου
 PREFIX = "!"
 
 # =========================================================
 # ROLES
 # =========================================================
-OWNERSHIP_ROLE_ID        = 1528884902211096707 # PLACEHOLDER
-MANAGER_ROLE_ID          = 1528885515317678130 # PLACEHOLDER
-STAFF_ROLE_ID            = 1519675512484659210# PLACEHOLDER
-DEVELOPER_ROLE_ID        = 1519675067280265218 # PLACEHOLDER
-CIVILIAN_MANAGER_ROLE_ID = 1528885954184478981  # PLACEHOLDER
-CRIMINAL_MANAGER_ROLE_ID = 1519676071333855252  # PLACEHOLDER
-DONATE_MANAGER_ROLE_ID   = 1519675834426724383  # PLACEHOLDER
-FOUNDER_ROLE_ID          = 1519674927454621706  # PLACEHOLDER
-ON_DUTY_ROLE_ID          = 1528886510902837328 
-ANTICHEAT_MANAGER_ID = 1528886718277615707# PLACEHOLDER
+OWNERSHIP_ROLE_ID        = 1532024309202026496 # PLACEHOLDER
+MANAGER_ROLE_ID          = 1531987866228363315 # PLACEHOLDER
+STAFF_ROLE_ID            = 1531262921278099569# PLACEHOLDER
+DEVELOPER_ROLE_ID        = 1531987093461667921 # PLACEHOLDER
+CIVILIAN_MANAGER_ROLE_ID = 1530985516499992776  # PLACEHOLDER
+CRIMINAL_MANAGER_ROLE_ID = 1530985516499992776  # PLACEHOLDER
+DONATE_MANAGER_ROLE_ID   = 1532035699375608039  # PLACEHOLDER
+FOUNDER_ROLE_ID          = 1530985002148433930  # PLACEHOLDER
+ON_DUTY_ROLE_ID          = 1532038134278389991
+ANTICHEAT_MANAGER_ID = 1532038774215676075# PLACEHOLDER
 APPLICATION_ACCEPTED_ROLES = {
-    "elas": 1519827823920025660   ,  # PLACEHOLDER
-    "ekab": 1519679319545479400  ,  # PLACEHOLDER  # PLACEHOLDER
-    "fbi": 1528887030988280029, 
-    "limeniko": 1521149080854593669 ,  # PLACEHOLDER
-    "staff": 1528887734092038245  ,  # PLACEHOLDER - Waiting for Interview Staff
-    "manager":1528887734092038245 ,  # PLACEHOLDER - Waiting for Interview Manager
+    "staff": 1532038506887643267  , 
+    "manager": 1532038506887643267 ,  
 }
-AUTOROLE_ID = 1519675204702568448 # PLACEHOLDER (μπαίνει σε accepted applicants)
+AUTOROLE_ID = 1530986809914425514 # PLACEHOLDER (μπαίνει σε accepted applicants)
 
 # Ρόλοι που θεωρούνται "staff team" γενικά (χρησιμοποιείται σε αρκετά permission checks)
 STAFF_TEAM_ROLE_IDS = [STAFF_ROLE_ID, MANAGER_ROLE_ID, OWNERSHIP_ROLE_ID]
@@ -49,112 +45,111 @@ STAFF_TEAM_ROLE_IDS = [STAFF_ROLE_ID, MANAGER_ROLE_ID, OWNERSHIP_ROLE_ID]
 # =========================================================
 # TICKET SYSTEM #1 - SUPPORT (dropdown, 4 κατηγορίες, ξεχωριστό category η κάθε μία)
 # =========================================================
-TICKET_SUPPORT_CHANNEL_ID = 1519698625222017225  # PLACEHOLDER: πού θα σταλεί το panel (slash command target)
-TICKET_SUPPORT_BANNER_URL = "https://i.imgur.com/5O2AMGE.jpeg"
-TICKET_SUPPORT_THUMBNAIL_URL = "https://i.imgur.com/jCZC2Y6.gif"
+TICKET_SUPPORT_CHANNEL_ID = 1530982949942595683  # PLACEHOLDER: πού θα σταλεί το panel (slash command target)
+TICKET_SUPPORT_BANNER_URL = "https://i.imgur.com/1J0C67l.png"
+TICKET_SUPPORT_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
-CAT_TICKET_OWNERSHIP_ID = 1528889138302947488  # PLACEHOLDER category
-CAT_TICKET_REPORT_ID    = 1528889946423689429  # PLACEHOLDER category
-CAT_TICKET_SUPPORT_ID   = 1528889800130691092  # PLACEHOLDER category
-CAT_TICKET_BUG_ID        = 1528890051042214050
-CAT_TICKET_ANTICHEAT_ID = 1528889454570242240
-CAT_TICKET_REWARD_ID    = 1528889800130691092  # PLACEHOLDER category (Claim Your Reward ticket)
+CAT_TICKET_OWNERSHIP_ID = 1531299362620047621 
+CAT_TICKET_BANAPEAL_ID  = 1531299110219419678  
+CAT_TICKET_SUPPORT_ID   = 1532020980380209173 
+CAT_TICKET_STREAMER_ID  = 1531298299204599818
+CAT_TICKET_ANTICHEAT_ID = 1532056211917377607
+CAT_TICKET_REWARD_ID    = 1532052105005760533
 
 # =========================================================
 # TICKET SYSTEM #2 - JOBS (button, civilian + criminal, ΙΔΙΟ category και τα δύο)
 # =========================================================
-CAT_JOBS_ID = 1528890330345242654 # PLACEHOLDER (ΚΟΙΝΟ category civilian + criminal)
+CAT_JOBS_ID = 1532054279328763965  # PLACEHOLDER (ΚΟΙΝΟ category civilian + criminal)
 
-TICKET_JOBS_BANNER_URL = "https://i.imgur.com/5O2AMGE.jpeg"
-TICKET_JOBS_THUMBNAIL_URL = "https://i.imgur.com/jCZC2Y6.gif"
+TICKET_JOBS_BANNER_URL = "https://i.imgur.com/1J0C67l.png"
+TICKET_JOBS_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
 # =========================================================
 # TICKET SYSTEM #3 - DONATE (button, δικό του category)
 # =========================================================
-CAT_DONATE_ID = 1528890179459354736 # PLACEHOLDER category
+CAT_DONATE_ID = 1532021724680425654 # PLACEHOLDER category
 
-TICKET_DONATE_BANNER_URL = "https://i.imgur.com/5O2AMGE.jpeg"
-TICKET_DONATE_THUMBNAIL_URL = "https://i.imgur.com/jCZC2Y6.gif"
+TICKET_DONATE_BANNER_URL = "https://i.imgur.com/1J0C67l.png"
+TICKET_DONATE_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
 # Channel όπου γίνεται ping το staff team όταν ανοίγει ΟΠΟΙΟΔΗΠΟΤΕ ticket (support/jobs/donate) ή temp voice
-STAFF_PING_CHANNEL_ID = 1528890923575152743  # PLACEHOLDER
+STAFF_PING_CHANNEL_ID = 1532059202636349630  # PLACEHOLDER
 
 # Ticket logs (open + close) - ΞΕΧΩΡΙΣΤΟ από το STAFF_PING_CHANNEL_ID
-LOG_TICKETS_CHANNEL_ID = 1528882078249386205    # PLACEHOLDER
+LOG_TICKETS_CHANNEL_ID = 1531009060285976796    # PLACEHOLDER
 
 # =========================================================
 # SUGGESTIONS
 # =========================================================
-SUGGESTIONS_CHANNEL_ID = 1519668182237974629   # PLACEHOLDER (εδώ ο χρήστης γράφει -> γίνεται auto suggestion)
+SUGGESTIONS_CHANNEL_ID = 1531099169790365778    # PLACEHOLDER (εδώ ο χρήστης γράφει -> γίνεται auto suggestion)
 
 # =========================================================
 # TEMP VOICE
 # =========================================================
-TEMP_VOICE_JOIN_CHANNEL_ID =  1519692924474884178   # PLACEHOLDER ("Join to Create" channel)
-TEMP_VOICE_CATEGORY_ID     =  1529169124524036106  # PLACEHOLDER (εκεί δημιουργούνται τα temp channels)
+TEMP_VOICE_JOIN_CHANNEL_ID = 1531290031086370838    # PLACEHOLDER ("Join to Create" channel)
+TEMP_VOICE_CATEGORY_ID     = 1532060398017052773   # PLACEHOLDER (εκεί δημιουργούνται τα temp channels)
 
 # =========================================================
 # STAFF ACTIVITY
 # =========================================================
-STAFF_ACTIVITY_VOICE_CHANNEL_ID = 1519662330504413225 # PLACEHOLDER (το channel που μετράμε χρόνο)
-STAFF_ACTIVITY_PANEL_CHANNEL_ID = 1528891407543177367 # PLACEHOLDER (πού στέλνεται/μένει το leaderboard panel)
-STAFF_ACTIVITY_LOG_CHANNEL_ID   = 1528882023886880889 # PLACEHOLDER
-STAFF_ACTIVITY_BANNER_URL = "https://i.imgur.com/5O2AMGE.jpeg"
+STAFF_ACTIVITY_VOICE_CHANNEL_ID_1 = 1492565367057551430
+STAFF_ACTIVITY_VOICE_CHANNEL_ID_2 = 1492565369905221672 # PLACEHOLDER (το channel που μετράμε χρόνο)
+STAFF_ACTIVITY_PANEL_CHANNEL_ID_3 = 1532001359111520428 # PLACEHOLDER (πού στέλνεται/μένει το leaderboard panel)
+STAFF_ACTIVITY_LOG_CHANNEL_ID   = 1532061200991653888 # PLACEHOLDER
+STAFF_ACTIVITY_BANNER_URL = "https://i.imgur.com/1J0C67l.png"
 
 # =========================================================
 # LOGS (Requirement 8)
 # =========================================================
-LOG_JOIN_LEAVE_CHANNEL_ID = 1528881175454548151 # PLACEHOLDER (join + leave μαζί)
-LOG_ROLES_CHANNEL_ID      = 1528881626203820194  # PLACEHOLDER
-LOG_CHANNELS_CHANNEL_ID   = 1528881391675244735 # PLACEHOLDER (create/delete/edit channels)
-LOG_MESSAGES_CHANNEL_ID   = 1528881469869522974 # PLACEHOLDER (edit/delete messages)
-LOG_VOICE_CHANNEL_ID      = 1528881261966528722  # PLACEHOLDER
-LOG_APPLICATIONS_CHANNEL_ID = 1528881706860282057     # PLACEHOLDER (fallback + shared staff/manager channel)
+LOG_JOIN_LEAVE_CHANNEL_ID = 1531004433314611302 # PLACEHOLDER (join + leave μαζί)
+LOG_ROLES_CHANNEL_ID      = 1531005010479943720  # PLACEHOLDER
+LOG_CHANNELS_CHANNEL_ID   = 1531005065639235765 # PLACEHOLDER (create/delete/edit channels)
+LOG_MESSAGES_CHANNEL_ID   = 1531004775976669336 # PLACEHOLDER (edit/delete messages)
+LOG_VOICE_CHANNEL_ID      = 1531004826207391844 # PLACEHOLDER
+LOG_APPLICATIONS_CHANNEL_ID = 1532032702931533864     # PLACEHOLDER (fallback + shared staff/manager channel)
 
 # Ξεχωριστό channel ανά τύπο αίτησης όταν στέλνεται (Send) — ΕΚΤΟΣ από staff/manager
 # που πάνε μαζί στο ΙΔΙΟ channel (LOG_APPLICATIONS_CHANNEL_ID).
 # Βάλε το δικό σου channel ID για κάθε τύπο.
 LOG_APPLICATIONS_CHANNEL_IDS = {
-    "elas":     1529810150058098718,  # PLACEHOLDER: βάλε το channel ΕΛ.ΑΣ
-    "ekab":     1529810379796910222,  # PLACEHOLDER: βάλε το channel ΕΚΑΒ
-    "fbi":      1529840678627049492,  # PLACEHOLDER: βάλε το channel FBI
-    "limeniko": 1529840791613083658,  # PLACEHOLDER: βάλε το channel Λιμενικό
-    "staff":    1528881706860282057,   # staff + manager πάνε ΜΑΖΙ εδώ
-    "manager":  1528881706860282057,   # staff + manager πάνε ΜΑΖΙ εδώ
+    "elas":  1532032751962947875   ,  # PLACEHOLDER: βάλε το channel ΕΛ.ΑΣ
+    "ekab":  1532032818186813683   ,  # PLACEHOLDER: βάλε το channel ΕΚΑΒ
+    "staff": 1532032702931533864   ,   # staff + manager πάνε ΜΑΖΙ εδώ
+    "manager": 1532032702931533864 ,   # staff + manager πάνε ΜΑΖΙ εδώ
 }
 
 # Invite logs: ποιος προσκάλεσε ποιον, πόσα invites/μέλη μέσα/έχουν φύγει ανά inviter
-INVITE_LOG_CHANNEL_ID = 1528881334708342824   # PLACEHOLDER
+INVITE_LOG_CHANNEL_ID = 1532067024573042910   # PLACEHOLDER
 
 # Command logs (Requirement 5) - ξεχωριστό log ανά εντολή, εκτός say/say2/dmall (κοινό)
-LOG_BAN_CHANNEL_ID          = 1528881816994578502 # PLACEHOLDER
-LOG_UNBAN_CHANNEL_ID        = 1528881816994578502# PLACEHOLDER
-LOG_KICK_CHANNEL_ID         = 1528881975060992030  # PLACEHOLDER
-LOG_TIMEOUT_CHANNEL_ID      = 1528881334708342824  # PLACEHOLDER
-LOG_UNTIMEOUT_CHANNEL_ID    = 1528881334708342824# PLACEHOLDER
-LOG_CLEARMESSAGES_CHANNEL_ID = 1528881763785637898 # PLACEHOLDER
-LOG_SAY_DMALL_CHANNEL_ID    = 1528881763785637898 # PLACEHOLDER (say, say2, dmall μαζί)
+LOG_BAN_CHANNEL_ID          = 1532021145606291609 # PLACEHOLDER
+LOG_UNBAN_CHANNEL_ID        = 1532021145606291609# PLACEHOLDER
+LOG_KICK_CHANNEL_ID         = 1532021231434334219  # PLACEHOLDER
+LOG_TIMEOUT_CHANNEL_ID      = 1532021202518802552  # PLACEHOLDER
+LOG_UNTIMEOUT_CHANNEL_ID    = 1532021202518802552# PLACEHOLDER
+LOG_CLEARMESSAGES_CHANNEL_ID = 1531004387068219614 # PLACEHOLDER
+LOG_SAY_DMALL_CHANNEL_ID    = 1531004387068219614 # PLACEHOLDER (say, say2, dmall μαζί)
 
 # =========================================================
 # APPLICATIONS (Requirement 9)
 # =========================================================
-APPLICATIONS_PANEL_CHANNEL_ID = 1528892710742790174   # PLACEHOLDER (πού στέλνεται το panel)
-APPLICATIONS_CATEGORY_ID      = 1528890443243458571 # PLACEHOLDER (εκεί ανοίγουν τα application channels)
-APPLICATIONS_BANNER_URL = "https://i.imgur.com/5O2AMGE.jpeg"
+APPLICATIONS_PANEL_CHANNEL_ID =  1531096531740921877  # PLACEHOLDER (πού στέλνεται το panel)
+APPLICATIONS_CATEGORY_ID      = 1532021430085222480 # PLACEHOLDER (εκεί ανοίγουν τα application channels)
+APPLICATIONS_BANNER_URL = "https://i.imgur.com/1J0C67l.png"
 
-LOG_GIVEAWAY_CHANNEL_ID = 1529399403746689074  # PLACEHOLDER
-GIVEAWAY_BANNER_URL = "https://i.imgur.com/5O2AMGE.jpeg"  # PLACEHOLDER (banner στο giveaway panel)
+LOG_GIVEAWAY_CHANNEL_ID = 1532021275017347142   # PLACEHOLDER
+GIVEAWAY_BANNER_URL = "https://i.imgur.com/1J0C67l.png"  # PLACEHOLDER (banner στο giveaway panel)
 
 # =========================================================
 # WARNING SYSTEM
 # =========================================================
-LOG_WARN_CHANNEL_ID = 1529630197530366062
-WARN_ANNOUNCE_CHANNEL_ID = 1529691268387442758 # PLACEHOLDER (logs για /warn και /remove-warning)
+LOG_WARN_CHANNEL_ID = 1532021307426865182
+WARN_ANNOUNCE_CHANNEL_ID = 1530999884487069836 # PLACEHOLDER (logs για /warn και /remove-warning)
 
 # Ρόλος που παίρνει ο χρήστης ανάλογα με το επίπεδο του warning
-WARN_ROLE_1_ID = 1529630282804629594  # PLACEHOLDER
-WARN_ROLE_2_ID = 1529630472005619722  # PLACEHOLDER
-WARN_ROLE_3_ID = 1529630570542268436  # PLACEHOLDER
+WARN_ROLE_1_ID = 1530990052069474395  # PLACEHOLDER
+WARN_ROLE_2_ID = 1532067601692233818  # PLACEHOLDER
+WARN_ROLE_3_ID = 1532067803950092449 # PLACEHOLDER
 
 # Τύποι αιτήσεων -> ερωτήσεις. Βάλε τις ερωτήσεις σου εδώ (μία λίστα string ανά τύπο).
 APPLICATION_TYPES = {
@@ -163,16 +158,24 @@ APPLICATION_TYPES = {
         "questions": [
             "Πόσο χρονών είστε;",
             "Ποιο είναι το Roblox Name σας;",
-            "Πόσες ώρες την ημέρα μπορείτε να αφιερώνετε πάνω στο κομμάτι της ΕΛ.ΑΣ;",
-            "Γιατί θέλεις να μπεις στην ΕΛ.ΑΣ",
-            "Έχεις εμπειρία από άλλους RP servers; Αν ναι, ποια",
-            "Τι σε κάνει κατάλληλο άτομο για αστυνομικό",
-            "Πώς θα αντιδρούσες σε έναν παίκτη που δεν υπακούει στις εντολές σου",
-            "Πώς θα χειριζόσουν μια ληστεία",
-            "Τι θεωρείς failRP σε μια αστυνομική σκηνή",
-            "Πώς θα αντιμετώπιζες παίκτη που σε βρίζει ή σε προκαλεί",
-            "Τι θα έκανες αν δεις συνάδελφο να παραβιάζει κανόνες",
-            "Ποιος είναι ο ρόλος της ΕΛ.ΑΣ μέσα στο RP"
+            "Έχετε εμπειρία σαν Αστυνομικός σε άλλη πόλη ? (Αν ναι. Σε ποια πόλη και μέχρι τι θέση)?.",
+            "Το ονοματεπώνυμο σας (RP)?.",
+            "Πόσες ώρες θα μπορείτε να διαθέτετε καθημερινά σαν Αστυνομικός?.",
+            "Γιατί θέλετε να ενταχθείτε στο σώμα της Ελληνικής Αστυνομίας?.",
+            "Γιατί θέλετε να ενταχθείτε στο σώμα της Ελληνικής Αστυνομίας?.",
+            "Έχετε ποινικό μητρώο στην ΕΛ.ΑΣ? (in game).",
+            "Πείτε μας μερικά από τα αρνητικά χαρακτηριστικά σας.",
+            "Εάν έχετε έναν αντιδραστικό πολίτη στα κελιά πως θα τον ηρεμήσετε?.",
+            "Καθώς είσαι σε περιπολία, βλέπεις δυο πολίτες να παλεύουν στο πεζοδρόμιο. Αφού τους περάσεις χειροπέδες, σου δίνουν και οι δύο την ίδια κατάθεση: πως ήταν σε άμυνα, και πως ο άλλος το άρχισε. Πώς χειρίζεσαι την κατάσταση?.",
+            "Ανάμεσα σε 2 ζωές την δικιά σας και ενός πολίτη, ποία ζωή θα έπρεπε να διασφαλιστεί πρώτη και γιατί?.",
+            "Ποιος πιστεύετε πως είναι ο ρόλος του διαπραγματευτή?.",
+            "Είστε σε σκηνικό ομηρίας ενός πολίτη και ένας ανώτερος σας σας λέει να ανοίξετε πυρ ενώ εσείς ξέρετε πως είναι λάθος και μπορεί να είναι μοιραίο. Πως θα πράξετε στην προκειμένη περίπτωση?.",
+            "Ένα βαν με φιμέ τζάμια είναι παρκαρισμένο έξω από ένα σπίτι στο οποίο επιβαίνουν 4 άτομα. Παρατηρείς ένα άτομο με full face να βγαίνει από το αμάξι και να κρατάει ένα Uzi. Σύντομα, ο ύποπτος επιστρέφει στο βαν και φεύγει με μεγάλη ταχύτητα. Πώς χειρίζεσαι την κατάσταση?.",
+            "Ποιο είναι το πρώτο όπλο ενός αστυνομικού?",
+            "Κάνεις ένα μαύρο όχημα traffic stop πες μου τις κινήσεις σου και τα λόγια σου?.",
+            "Είσαι σε ληστεία και κάνεις την διαπραγμάτευση και ο ανώτερος σου λέει να πυροβολήσεις εκείνη την στιγμή τι θα έκανες?.",
+            "Τι λέει το άρθρο 361",
+            "Έχετε να προσθέσετε κάτι άλλο"
         ],
     },
     "ekab": {
@@ -180,6 +183,7 @@ APPLICATION_TYPES = {
         "questions": [
             "Πόσο χρονών είστε;",
             "Ποιο είναι το Roblox Name σας;",
+            "Ποιο είναι το πραγματικό όνομα σας;",
             "Γιατί θέλεις να μπεις στο ΕΚΑΒ",
             "Έχεις εμπειρία από ιατρικούς ρόλους σε άλλους RP servers",
             "Τι σε κάνει κατάλληλο άτομο για διασώστη",
@@ -189,7 +193,7 @@ APPLICATION_TYPES = {
             "Τι θεωρείς ως σωστό ιατρικό RP",
             "Πώς θα χειριζόσουν παίκτη που σε βρίζει ενώ προσπαθείς να τον βοηθήσεις",
             "Τι θα έκανες αν δεις συνάδελφο να κάνει λάθος ή να παραβιάζει κανόνες",
-            "Ποιος είναι ο ρόλος του ΕΚΑΒ μέσα στο RP"
+            "Ποιος είναι ο ρόλος του ΕΚΑΒ μέσα στο RP",
         ],
     },
     "staff": {
@@ -200,15 +204,11 @@ APPLICATION_TYPES = {
             {"type": "yesno", "text": "Ξέρεις ότι θα πρέπει να γράψεις την αίτηση σου στα ελληνικά και όχι greeklish αλλιώς θα απορριφθεί;"},
             {"type": "yesno", "text": "Ξέρεις ότι άμα στείλεις κάποιο προσωπικό μήνυμα σε κάποιον ανώτερο θα απορριφθεί κατευθείαν η αίτηση σου"},
             "Πόσες ώρες θα μπορείς να είσαι on duty;",
-            "Έχεις προηγούμενη εμπειρία σε staff; Και αν ναι που;",
-            "Γιατί θες αυτή τη θέση;",
-            "Δύο staff μαλώνουν δημόσια — τι κάνεις πρώτα;",
-            "RDM/VDM/Combat Log — εξήγησέ τα με δικά σου λόγια",
-            "Πώς αντιδράς όταν ένας παίκτης σε προσβάλλει προσωπικά ενώ κάνεις τη δουλειά σου;",
-            "Τι κάνεις όταν διαφωνείς με απόφαση ανώτερου staff μπροστά σε παίκτη;",
-            "Πώς τεκμηριώνεις ένα ban — τι στοιχεία κρατάς πάντα;",
-            "Ένας παίκτης το παρακάνει με meta-gaming μέσω Discord voice channels μέσο RP. Πώς το εντοπίζεις/αποδεικνύεις;",
-            "Δύο reports έρχονται ταυτόχρονα με ίδια σοβαρότητα. Ποιο κριτήριο χρησιμοποιείς για να διαλέξεις ποιο πρώτα;"
+            "Είστε διατεθειμένος/η να μειώσετε ώρες από το rp σας για της ανάγκες του staff™;",
+            "Έχετε τυχών γνώσεις στα staff commands;",
+            "Έχετε ξανά δουλέψει σαν staff; Και αν ναι σε ποιους servers;",
+            "Τι σημαίνει ιεραρχία;",
+            "Αν κάποιος κάνει livestream και κάνει report ποιος θα πάει;"
         ],
     },
     "manager": {
@@ -231,55 +231,23 @@ APPLICATION_TYPES = {
             "Πόσες ώρες θα μπορείς να είσαι on;"
         ],
     },
-    "limeniko": {
-        "label": "Λιμενικό",
-        "questions": [
-            "Πόσο χρονών είσαι;",
-            "Πως σε λένε στο roblox;",
-            "Γιατί θέλεις να υπηρετήσεις στο λιμενικό;",
-            "Ποια θεωρείς ότι είναι τα σημαντικότερα χαρακτηριστικά ενός καλού άτομου στο λιμενικό;",
-            "Πώς αντιμετωπίζεις καταστάσεις πίεσης ή άγχους;",
-            "Έχεις συμμετάσχει ποτέ σε δραστηριότητες που απαιτούσαν ομαδική συνεργασία; Δώσε ένα παράδειγμα.",
-            "Πώς θα αντιδρούσες αν λάμβανες μια δύσκολη διαταγή με την οποία δεν συμφωνούσες προσωπικά;",
-            "Ποια είναι τα δυνατά σου σημεία και ποια θεωρείς ότι χρειάζονται βελτίωση;",
-            "Πώς διατηρείς τη φυσική σου κατάσταση και πόσο σημαντική πιστεύεις ότι είναι η σωματική άσκηση για ένα άτομο στο λιμενικό;",
-            "Πώς θα διαχειριζόσουν μια κατάσταση όπου θα έπρεπε να πάρεις γρήγορα μια κρίσιμη απόφαση;",
-            "Τι γνωρίζεις για τις υποχρεώσεις και τις απαιτήσεις της λιμενικής ζωής;"
-        ],
-    },
-    "fbi": {
-        "label": "FBI",
-        "questions": [
-            "Πόσο χρονών είσαι;",
-            "Πως σε λένε στο roblox;",
-            "Γιατί θέλεις να μπεις στο FBI και όχι σε άλλη υπηρεσία;",
-            "Τι σημαίνει για εσένα federal level professionalism;",
-            "Πώς θα αντιδρούσες αν ένας πολίτης σε προκαλέσει ή σε βρίζει;",
-            "Aν δεις έναν συνάδελφο να κάνει abuse, τι κάνεις;",
-            "Τι είναι για εσένα probable cause;",
-            "Πώς χειρίζεσαι έναν ύποπτο που δεν συνεργάζεται;",
-            "Τι θα κάνεις αν ένας πολίτης σου ζητήσει πληροφορίες για μυστική έρευνα;",
-            "Πόσο χρόνο μπορείς να είσαι ενεργός στο FBI κάθε εβδομάδα;",
-            "Έχεις εμπειρία σε έρευνες, undercover ή πληροφοριοδότες;"
-        ],
-    },
 }
 # =========================================================
 # SERVER STATUS (Requirement 10) - voice channels που λειτουργούν ως "οθόνες"
 # =========================================================
-STATUS_MEMBERS_CHANNEL_ID = 1525307046784667799  # PLACEHOLDER (π.χ. "👥 Members: 120")
-STATUS_ONLINE_CHANNEL_ID  = 1525307050543022130  # PLACEHOLDER
-STATUS_BOOSTS_CHANNEL_ID  = 1525307057773744258  # PLACEHOLDER
-STATUS_BOTS_CHANNEL_ID    = 1525307053722304544  # PLACEHOLDER
+STATUS_MEMBERS_CHANNEL_ID = 1531997362728210524  # PLACEHOLDER (π.χ. "👥 Members: 120")
+STATUS_ONLINE_CHANNEL_ID  = 1532065088243105822  # PLACEHOLDER
+STATUS_BOOSTS_CHANNEL_ID  = 1532065273778278701 # PLACEHOLDER
+STATUS_BOTS_CHANNEL_ID    = 1532065388907593788  # PLACEHOLDER
 
 # =========================================================
 # GAME STATUS PANEL (Roblox)
 # =========================================================
-ROBLOX_UNIVERSE_ID = 8512095248  # PLACEHOLDER: universe id του Roblox game
-ROBLOX_GAME_URL = f"https://www.roblox.com/games/91226809988563/{ROBLOX_UNIVERSE_ID}"
-GAME_PANEL_BANNER_URL = "https://i.imgur.com/5O2AMGE.jpeg"  # PLACEHOLDER: banner εικόνα
+ROBLOX_UNIVERSE_ID = 8011462852   # PLACEHOLDER: universe id του Roblox game
+ROBLOX_GAME_URL = f"{ROBLOX_UNIVERSE_ID}"
+GAME_PANEL_BANNER_URL = "https://i.imgur.com/1J0C67l.png"  # PLACEHOLDER: banner εικόνα
 
 # =========================================================
 # ΓΕΝΙΚΑ
 # =========================================================
-EMBED_COLOR = 0xFEE75C
+EMBED_COLOR = FEE75C
