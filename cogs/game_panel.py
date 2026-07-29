@@ -42,7 +42,7 @@ class GamePanel(commands.Cog):
         info = await _fetch_game_info(config.ROBLOX_UNIVERSE_ID)
         playing = info.get("playing")
         visits = info.get("visits")
-        name = info.get("name") or "Warzone RP"
+        name = info.get("name") or "Melody Roleplay"
 
         status_text = (
             f"## {emoji('game','status')} {name}\n"
