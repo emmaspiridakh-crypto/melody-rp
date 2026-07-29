@@ -385,7 +385,7 @@ class Giveaways(commands.Cog):
             )
 
         panel_text = (
-            f"## {emoji('giveaway','giveaway')} GIVEAWAY\n"
+            f"## {emoji('giveaway','giveaway')} GIVEAWAY\n - Melody Roleplay"
             f"{emoji('giveaway','prize')} **Έπαθλο:** {gw['prize']}\n"
             f"{emoji('giveaway','host')} **Host:** {host_str}\n"
             f"{emoji('giveaway','winners_count')} **Νικητές:** {gw['winner_count']}\n"
