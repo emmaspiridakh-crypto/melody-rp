@@ -58,6 +58,14 @@ class PanelCommand(commands.Cog):
             value="`/warn`\n`/remove-warning <user>`",
             inline=False,
         )
+        embed.add_field(
+            name="Giveaway (Ownership only)",
+            value=(
+                "`/giveaway create`\n`/giveaway delete`"
+                "`/giveaway list`"
+            ),
+            inline=False,
+        )
         await ctx.send(embed=embed)
 
 
