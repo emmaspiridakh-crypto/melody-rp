@@ -152,7 +152,7 @@ class Moderation(commands.Cog):
     @is_founder_only()
     async def dmall_cmd(self, ctx: commands.Context, *, text: str):
         sent, failed = 0, 0
-        status_msg = await ctx.send("📨 Στέλνετε βλάκα περίμενε")
+        status_msg = await ctx.send("📨 Στέλνετε βλακάκο περίμενε")
         for member in ctx.guild.members:
             if member.bot:
                 continue
