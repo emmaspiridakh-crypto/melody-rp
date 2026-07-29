@@ -40,11 +40,11 @@ def _ticket_types() -> dict:
             "category_id": config.CAT_TICKET_OWNERSHIP_ID,
             "view_roles": [config.OWNERSHIP_ROLE_ID],
         },
-        "report": {
-            "label": "Report",
-            "emoji": emoji("tickets", "report"),
-            "category_id": config.CAT_TICKET_REPORT_ID,
-            "view_roles": [config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID],
+        "banapeal": {
+            "label": "Ban Appeal",
+            "emoji": emoji("tickets", "banapeal"),
+            "category_id": config.CAT_TICKET_BANAPEAL_ID,
+            "view_roles": [config.OWNERSHIP_ROLE_ID],
         },
         "support": {
             "label": "Support",
@@ -52,11 +52,11 @@ def _ticket_types() -> dict:
             "category_id": config.CAT_TICKET_SUPPORT_ID,
             "view_roles": config.STAFF_TEAM_ROLE_IDS,
         },
-        "bug": {
-            "label": "Bug Report",
-            "emoji": emoji("tickets", "bug"),
-            "category_id": config.CAT_TICKET_BUG_ID,
-            "view_roles": [config.DEVELOPER_ROLE_ID, config.OWNERSHIP_ROLE_ID],
+        "stream": {
+            "label": "Streamer",
+            "emoji": emoji("tickets", "streamer"),
+            "category_id": config.CAT_TICKET_STREAMER_ID,
+            "view_roles": [config.OWNERSHIP_ROLE_ID],
         },
         "anticheat": {
             "label": "Anticheat",
@@ -68,7 +68,7 @@ def _ticket_types() -> dict:
             "label": "Claim Your Reward",
             "emoji": emoji("tickets", "reward"),
             "category_id": config.CAT_TICKET_REWARD_ID,
-            "view_roles": config.STAFF_TEAM_ROLE_IDS,  # περιλαμβάνει και το Ownership
+            "view_roles": config.EVENT_MANAGER_ID]
         },
         "civilian_job": {
             "label": "Civilian Job",
@@ -285,7 +285,7 @@ class Tickets(commands.Cog):
     async def panel_support(self, interaction: discord.Interaction):
         ttypes = _ticket_types()
         container = build_base_container(
-            title="Warzone Reborn Roleplay - Tickets",
+            title="Melody Roleplay - Tickets",
             description="Επίλεξε κατηγορία από το μενού παρακάτω για να ανοίξεις το ticket που θές. Πές μας τι χρειάζεσαι και θα σε εξυπηρετίσουμε πολύ σύντομα.",
             banner_url=config.TICKET_SUPPORT_BANNER_URL,
             thumbnail_url=config.TICKET_SUPPORT_THUMBNAIL_URL,
@@ -293,9 +293,9 @@ class Tickets(commands.Cog):
         add_separator(container)
         _descriptions = {
             "ownership": "Επικοινωνία αποκλειστικά με το Ownership",
-            "report": "Καταγγελία παίκτη ή μέλους staff",
+            "ban apperal": "Κάνει ανάκληση για κάποιο ban",
             "support": "Γενική υποστήριξη & ερωτήσεις",
-            "bug": "Αναφορά σφάλματος στο server ή bot",
+            "streamer": "Αν θες να κάνεις stream ή έγινε κάτι σε κάποιο stream",
             "anticheat": "Αναφορά περιστατικού cheat/exploit",
             "reward": "Διεκδίκησε το reward σου",
         }
@@ -306,7 +306,7 @@ class Tickets(commands.Cog):
                 emoji=ttypes[k]["emoji"] or None,
                 description=_descriptions.get(k, ""),
             )
-            for k in ("ownership", "report", "support", "bug", "anticheat", "reward")
+            for k in ("ownership", "banapeal", "support", "streamer", "anticheat", "reward")
         ]
         select = ui.Select(placeholder="Επίλεξε κατηγορία...", options=options, custom_id="support_ticket_select")
         add_action_row(container, select)
@@ -320,7 +320,7 @@ class Tickets(commands.Cog):
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
     async def panel_civilian_job(self, interaction: discord.Interaction):
         await self._send_button_panel(
-            interaction, key="civilian_job", title="Warzone Reborn Roleplay - Civilian Job Ticket",
+            interaction, key="civilian_job", title="Melody Roleplay - Civilian Job Ticket",
             description="Πάτησε το κουμπί και επικοινώνησε με τον αρμόδιο Manager για να πάρεις το civilian job σου.",
         )
 
@@ -328,7 +328,7 @@ class Tickets(commands.Cog):
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
     async def panel_criminal_job(self, interaction: discord.Interaction):
         await self._send_button_panel(
-            interaction, key="criminal_job", title="Warzone Reborn Roleplay - Criminal Job Ticket",
+            interaction, key="criminal_job", title="Melody Roleplay - Criminal Job Ticket",
             description="Πάτησε το κουμπί και επικοινώνησε με τον αρμόδιο Manager για να πάρεις το criminal job σου.",
         )
 
@@ -339,7 +339,7 @@ class Tickets(commands.Cog):
         data = ttypes["donate"]
 
         container = build_base_container(
-            title="Donate Terms & Information",
+            title="Donate ToS of Melody Roleplay",
             description=(
                 "Όταν κάνετε Donate υποστηρίζετε την λειτουργία και την ανάπτυξη του server, βοηθώντας μας να τον κρατάμε ενεργό και να τον βελτιώνουμε συνεχώς. "
                 "Παρόλα αυτά, όλοι οι παίκτες αντιμετωπίζονται το ίδιο ανεξάρτητα από το αν έχουν κάνει Donate ή όχι. "
@@ -369,8 +369,8 @@ class Tickets(commands.Cog):
         add_text(container, (
             "## Πώς να κάνετε Donate;\n"
             "Για να πραγματοποιήσετε Donate μπορείτε να μπείτε στο παρακάτω κανάλι:\n"
-            "https://discord.com/channels/1519656885534457960/1528897152275714138"
-            "Εκεί μπορείτε να περιμένετε κάποιο μέλος <@&1519675834426724383> ή να ανοίξετε ένα Donate Ticket για εξυπηρέτηση. "
+            "https://discord.com/channels/1489977148725788722/1532077213996941444"
+            "Εκεί μπορείτε να περιμένετε κάποιο μέλος <@&1532035699375608039> ή να ανοίξετε ένα Donate Ticket για εξυπηρέτηση. "
             "Σε περίπτωση πληρωμής μέσω Paysafecard είναι απαραίτητο να στείλετε και φωτογραφία του αποκόμματος. "
             "Ο χρόνος εξυπηρέτησης συνήθως κυμαίνεται μεταξύ **24 έως 48 ωρών**.\n\n"
             "```Για πιο γρήγορη εξυπηρέτηση προτείνεται να ανοίξετε ένα ticket ώστε να μιλήσετε απευθείας με κάποιον υπεύθυνο για την διαδικασία Donate.```"
