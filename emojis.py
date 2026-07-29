@@ -18,91 +18,91 @@ Custom emojis χωρισμένα ανά κατηγορία.
 
 EMOJIS = {
     "tickets": {
-        "ownership": "<:ownership:1530210407275561071>",
-        "report": "<a:report:1528885796159885503>",
-        "support": "<a:support:1528885660340195470>",
-        "bug": "<:bug:1528885729730498761>",
-        "anticheat": "<:anticheat:1528886656982323301>",
-        "close": "<:close:1528886394288865421>",
-        "ping": "<a:ping:1528886230190919800>",
-        "ticket": "<:ticket:1528885002836644152>",
-        "reward": "<:reward:1529408322275512340>",  # PLACEHOLDER: βάλε custom emoji αν θες
+        "ownership": "<:ownership:>",
+        "report": "<a:report:>",
+        "support": "<a:support:>",
+        "bug": "<:bug:>",
+        "anticheat": "<:anticheat:>",
+        "close": "<:close:>",
+        "ping": "<a:ping:>",
+        "ticket": "<:ticket:>",
+        "reward": "<:reward:>",  # PLACEHOLDER: βάλε custom emoji αν θες
     },
     "jobs": {
-        "civilian": "<:civilian:1528885189017866300>",
-        "criminal": "<a:criminal:1528886482557730969>",
+        "civilian": "<:civilian:>",
+        "criminal": "<a:criminal:>",
     },
     "donate": {
-        "donate": "<a:donate:1528887083463213206>",  # παράδειγμα animated
+        "donate": "<a:donate:>",  # παράδειγμα animated
     },
     "suggestions": {
-        "upvote": "<:upvote:1528885896374390956>",
-        "downvote": "<:downvote:1528885977249087750>",
+        "upvote": "<:upvote:>",
+        "downvote": "<:downvote:>",
     },
     "moderation": {
-        "ban": "<a:ban:1528885432950198472>",
-        "unban": "<a:unban:1528885432950198472>",
-        "kick": "<a:kick:1528885337877647491>",
-        "timeout": "<a:timeout:1528885337877647491>",
-        "untimeout": "<a:untimeout:1528885337877647491>",
-        "clear": "<:clear:1528886566389289131>",
+        "ban": "<a:ban:>",
+        "unban": "<a:unban:>",
+        "kick": "<a:kick:>",
+        "timeout": "<a:timeout:>",
+        "untimeout": "<a:untimeout:>",
+        "clear": "<:clear:>",
     },
     "voice": {
-        "join": "<a:voice_join:1528887355698581697>",
-        "leave": "<a:voice_leave:1528887254981017705>",
-        "temp": "<a:temp_voice:1528885660340195470>",
+        "join": "<a:voice_join:>",
+        "leave": "<a:voice_leave:>",
+        "temp": "<a:temp_voice:>",
     },
     "staff_activity": {
-        "on_duty": "<a:on_duty:1528887355698581697>",
-        "off_duty": "<a:off_duty:1528887254981017705>",
-        "leaderboard": "<:leaderboard:1530210407275561071>",
+        "on_duty": "<a:on_duty:>",
+        "off_duty": "<a:off_duty:>",
+        "leaderboard": "<:leaderboard:>",
     },
     "applications": {
-        "elas": "<:elas:1520566656370217010>",
-        "ekab": "<:ekab:1528884760305205248>",
-        "staff": "<:staff:1528888125223604306>",
-        "limeniko": "<:limeniko:1528888709020123348>",
-        "fbi":     "<:fbi:1528888032735006730>",
-        "manager": "<:manager:1528887937276575747>",
-        "accept": "<:accept:1528886311820197918>",
-        "deny": "<:deny:1528886394288865421>",
-        "apply": "<:apply:1528824025600622632>",
-        "send": "<:send:1528886311820197918>",
-        "yes": "<:app_yes:1528886311820197918>",  
-        "no": "<:app_no:1528886394288865421>",    
-        "ping_staff": "<a:ping_staff:1528886230190919800>",
+        "elas": "<:elas:>",
+        "ekab": "<:ekab:>",
+        "staff": "<:staff:>",
+        "limeniko": "<:limeniko:>",
+        "fbi":     "<:fbi:>",
+        "manager": "<:manager:>",
+        "accept": "<:accept:>",
+        "deny": "<:deny:>",
+        "apply": "<:apply:>",
+        "send": "<:send:>",
+        "yes": "<:app_yes:>",  
+        "no": "<:app_no:>",    
+        "ping_staff": "<a:ping_staff:>",
     },
     "panel": {
-        "list": "<:list:1528886566389289131>",
+        "list": "<:list:>",
     },
 "giveaway": {
-    "giveaway":      "<a:giveaway:1529407370416099398>",
-    "join":          "<:gw_join:1529410479233962026>",
-    "leave":         "<:gw_leave:1529410448649355366>",
-    "info":          "<:gw_info:1529410422841675867>",
-    "edit":          "<:gw_edit:1528887760977662012>",
-    "reroll":        "<:gw_reroll:1529409770279145493>",
-    "end":           "<a:gw_end:1528887254981017705>",
-    "participants":  "<:gw_participants:1529409844514258994>",
-    "winner":        "<:gw_winner:1529407419778596874>",
-    "prize":         "<a:gw_prize:1529407370416099398>",
-    "host":          "<:gw_host:1529409206699167905>",
-    "winners_count": "<a:gw_winners:1529410389283045376>",
-    "entries":       "<:gw_entries:1529409844514258994>",
-    "time":          "<a:gw_time:1529409247530582016>",
-    "id":            "<:gw_id:1529408099394257026>",
-    "role":          "<:gw_role:1530210407275561071>",
-    "add_member":    "<:gw_add_member:1531203868958920764>",  # PLACEHOLDER: βάλε custom emoji ID
+    "giveaway":      "<a:giveaway:>",
+    "join":          "<:gw_join:>",
+    "leave":         "<:gw_leave:>",
+    "info":          "<:gw_info:>",
+    "edit":          "<:gw_edit:>",
+    "reroll":        "<:gw_reroll:>",
+    "end":           "<a:gw_end:>",
+    "participants":  "<:gw_participants:>",
+    "winner":        "<:gw_winner:>",
+    "prize":         "<a:gw_prize:>",
+    "host":          "<:gw_host:>",
+    "winners_count": "<a:gw_winners:>",
+    "entries":       "<:gw_entries:>",
+    "time":          "<a:gw_time:>",
+    "id":            "<:gw_id:>",
+    "role":          "<:gw_role:>",
+    "add_member":    "<:gw_add_member:>",  # PLACEHOLDER: βάλε custom emoji ID
     },
     "invites": {
-        "invites":  "<:invites:1531204006469177434>",   # PLACEHOLDER: βάλε custom emoji ID
-        "joined":   "<:inv_joined:1529410479233962026>",  # PLACEHOLDER
-        "left":     "<:inv_left:1529410448649355366>",    # PLACEHOLDER
-        "leaderboard": "<:inv_board:1531204190938988554>",  # PLACEHOLDER
+        "invites":  "<:invites:>",   # PLACEHOLDER: βάλε custom emoji ID
+        "joined":   "<:inv_joined:>",  # PLACEHOLDER
+        "left":     "<:inv_left:>",    # PLACEHOLDER
+        "leaderboard": "<:inv_board:>",  # PLACEHOLDER
     },
     "game": {
-        "connect": "<a:game_connect:1528887355698581697>",  # PLACEHOLDER: βάλε custom emoji ID
-        "status":  "<a:game_status:1529410389283045376>",  # PLACEHOLDER
+        "connect": "<a:game_connect:>",  # PLACEHOLDER: βάλε custom emoji ID
+        "status":  "<a:game_status:>",  # PLACEHOLDER
     },
 }
 
