@@ -56,7 +56,7 @@ class StaffActivity(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
-        target_id = config.STAFF_ACTIVITY_VOICE_CHANNEL_ID
+        target_id = config.ACTIVITY_CHANNELS_ID
         role = member.guild.get_role(config.ON_DUTY_ROLE_ID)
 
         if after.channel and after.channel.id == target_id and (not before.channel or before.channel.id != target_id):
