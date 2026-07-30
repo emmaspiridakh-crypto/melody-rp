@@ -68,7 +68,7 @@ def _ticket_types() -> dict:
             "label": "Claim Your Reward",
             "emoji": emoji("tickets", "reward"),
             "category_id": config.CAT_TICKET_REWARD_ID,
-            "view_roles": config.EVENT_MANAGER_ID]
+            "view_roles": [config.EVENT_MANAGER_ID],
         },
         "civilian_job": {
             "label": "Civilian Job",
