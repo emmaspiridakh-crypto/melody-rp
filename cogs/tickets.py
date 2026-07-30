@@ -306,7 +306,7 @@ class Tickets(commands.Cog):
                 emoji=ttypes[k]["emoji"] or None,
                 description=_descriptions.get(k, ""),
             )
-            for k in ("ownership", "banapeal", "support", "streame", "anticheat", "reward")
+            for k in ("ownership", "banapeal", "support", "stream", "anticheat", "reward")
         ]
         select = ui.Select(placeholder="Επίλεξε κατηγορία...", options=options, custom_id="support_ticket_select")
         add_action_row(container, select)
