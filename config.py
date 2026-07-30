@@ -252,4 +252,4 @@ GAME_PANEL_BANNER_URL = "https://i.imgur.com/1J0C67l.png"  # PLACEHOLDER: banner
 # =========================================================
 # ΓΕΝΙΚΑ
 # =========================================================
-EMBED_COLOR = FEE75C
+EMBED_COLOR = 0xFEE75C
