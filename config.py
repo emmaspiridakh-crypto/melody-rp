@@ -92,9 +92,11 @@ TEMP_VOICE_CATEGORY_ID     = 1532060398017052773   # PLACEHOLDER (εκεί δη�
 # =========================================================
 # STAFF ACTIVITY
 # =========================================================
-STAFF_ACTIVITY_VOICE_CHANNEL_ID_1 = 1492565367057551430
-STAFF_ACTIVITY_VOICE_CHANNEL_ID_2 = 1492565369905221672 # PLACEHOLDER (το channel που μετράμε χρόνο)
-STAFF_ACTIVITY_PANEL_CHANNEL_ID_3 = 1532001359111520428 # PLACEHOLDER (πού στέλνεται/μένει το leaderboard panel)
+ACTIVITY_CHANNELS_IDS = {
+    "activity1": 1492565367057551430, 
+    "activity2": 1492565369905221672,
+    "activity3": 1532001359111520428,
+} 
 STAFF_ACTIVITY_LOG_CHANNEL_ID   = 1532061200991653888 # PLACEHOLDER
 STAFF_ACTIVITY_BANNER_URL = "http://i.imgur.com/uYFW8Nl.png"
 
