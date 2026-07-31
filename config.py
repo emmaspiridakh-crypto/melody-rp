@@ -47,7 +47,7 @@ STAFF_TEAM_ROLE_IDS = [STAFF_ROLE_ID, MANAGER_ROLE_ID, OWNERSHIP_ROLE_ID]
 # TICKET SYSTEM #1 - SUPPORT (dropdown, 4 κατηγορίες, ξεχωριστό category η κάθε μία)
 # =========================================================
 TICKET_SUPPORT_CHANNEL_ID = 1530982949942595683  # PLACEHOLDER: πού θα σταλεί το panel (slash command target)
-TICKET_SUPPORT_BANNER_URL = "https://i.imgur.com/1QO13J1.jpeg"
+TICKET_SUPPORT_BANNER_URL = "https://i.imgur.com/uVNyHW3.jpeg"
 TICKET_SUPPORT_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
 CAT_TICKET_OWNERSHIP_ID = 1531299362620047621 
@@ -62,7 +62,7 @@ CAT_TICKET_REWARD_ID    = 1532052105005760533
 # =========================================================
 CAT_JOBS_ID = 1532054279328763965  # PLACEHOLDER (ΚΟΙΝΟ category civilian + criminal)
 
-TICKET_JOBS_BANNER_URL = "https://i.imgur.com/NtKATej.jpeg"
+TICKET_JOBS_BANNER_URL = "https://i.imgur.com/EYMdX6R.jpeg"
 TICKET_JOBS_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
 # =========================================================
@@ -70,7 +70,7 @@ TICKET_JOBS_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 # =========================================================
 CAT_DONATE_ID = 1532021724680425654 # PLACEHOLDER category
 
-TICKET_DONATE_BANNER_URL = "https://i.imgur.com/IFArJVp.jpeg"
+TICKET_DONATE_BANNER_URL = "https://i.imgur.com/MOJeSQL.jpeg"
 TICKET_DONATE_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
 # Channel όπου γίνεται ping το staff team όταν ανοίγει ΟΠΟΙΟΔΗΠΟΤΕ ticket (support/jobs/donate) ή temp voice
@@ -138,7 +138,7 @@ LOG_SAY_DMALL_CHANNEL_ID    = 1531004387068219614 # PLACEHOLDER (say, say2, dmal
 # =========================================================
 APPLICATIONS_PANEL_CHANNEL_ID =  1531096531740921877  # PLACEHOLDER (πού στέλνεται το panel)
 APPLICATIONS_CATEGORY_ID      = 1532021430085222480 # PLACEHOLDER (εκεί ανοίγουν τα application channels)
-APPLICATIONS_BANNER_URL = "https://i.imgur.com/C3BNhK5.jpeg"
+APPLICATIONS_BANNER_URL = "https://i.imgur.com/yTTFxAt.jpeg"
 
 LOG_GIVEAWAY_CHANNEL_ID = 1532021275017347142   # PLACEHOLDER
 GIVEAWAY_BANNER_URL = "http://i.imgur.com/uYFW8Nl.png"  # PLACEHOLDER (banner στο giveaway panel)
