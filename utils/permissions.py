@@ -26,6 +26,13 @@ def is_staff_team():
     return commands.check(predicate)
 
 
+def is_manager_team():
+    """Manager, Ownership (χωρίς Staff) - χρησιμοποιείται για ban/kick/timeout/clearmessages"""
+    async def predicate(ctx: commands.Context) -> bool:
+        return member_has_any_role(ctx.author, [config.MANAGER_ROLE_ID, config.OWNERSHIP_ROLE_ID])
+    return commands.check(predicate)
+
+
 def is_ownership_only():
     async def predicate(ctx: commands.Context) -> bool:
         return member_has_any_role(ctx.author, [config.OWNERSHIP_ROLE_ID])
