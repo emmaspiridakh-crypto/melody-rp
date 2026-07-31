@@ -4,7 +4,7 @@ cogs/moderation.py
 Requirement #5. Όλες οι εντολές με πρόθεμα "!" (commands.Bot prefix).
 
 Permissions:
-    ban/unban/kick/timeout/untimeout/clearmessages -> Staff, Manager, Ownership
+    ban/unban/kick/timeout/untimeout/clearmessages -> Manager, Ownership (ΟΧΙ Staff)
     say / say2                                      -> Ownership only
     dmall                                           -> Founder only
 
@@ -21,7 +21,7 @@ import discord
 from discord.ext import commands
 
 import config
-from utils.permissions import is_staff_team, is_ownership_only, is_founder_only
+from utils.permissions import is_manager_team, is_ownership_only, is_founder_only
 
 
 def _log_embed(guild: discord.Guild, *, title: str, moderator: discord.Member, target: str, reason: str | None) -> discord.Embed:
@@ -61,7 +61,7 @@ class Moderation(commands.Cog):
 
     # ---------------- BAN ----------------
     @commands.command(name="ban")
-    @is_staff_team()
+    @is_manager_team()
     async def ban_cmd(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         await member.ban(reason=reason)
         await ctx.send(f"🔨 Ο {member.mention} έκανε ban.")
@@ -71,7 +71,7 @@ class Moderation(commands.Cog):
 
     # ---------------- UNBAN ----------------
     @commands.command(name="unban")
-    @is_staff_team()
+    @is_manager_team()
     async def unban_cmd(self, ctx: commands.Context, user_id: int, *, reason: str = None):
         user = await self.bot.fetch_user(user_id)
         await ctx.guild.unban(user, reason=reason)
@@ -82,7 +82,7 @@ class Moderation(commands.Cog):
 
     # ---------------- KICK ----------------
     @commands.command(name="kick")
-    @is_staff_team()
+    @is_manager_team()
     async def kick_cmd(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         await member.kick(reason=reason)
         await ctx.send(f"👋 Ο {member.mention} έκανε kick.")
@@ -92,7 +92,7 @@ class Moderation(commands.Cog):
 
     # ---------------- TIMEOUT ----------------
     @commands.command(name="timeout")
-    @is_staff_team()
+    @is_manager_team()
     async def timeout_cmd(self, ctx: commands.Context, member: discord.Member, duration: str, *, reason: str = None):
         delta = _parse_duration(duration)
         if delta is None:
@@ -106,7 +106,7 @@ class Moderation(commands.Cog):
 
     # ---------------- UNTIMEOUT ----------------
     @commands.command(name="untimeout")
-    @is_staff_team()
+    @is_manager_team()
     async def untimeout_cmd(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         await member.timeout(None, reason=reason)
         await ctx.send(f"✅ Αφαιρέθηκε το timeout από {member.mention}.")
@@ -116,7 +116,7 @@ class Moderation(commands.Cog):
 
     # ---------------- CLEAR MESSAGES ----------------
     @commands.command(name="clearmessages")
-    @is_staff_team()
+    @is_manager_team()
     async def clear_cmd(self, ctx: commands.Context, amount: int):
         deleted = await ctx.channel.purge(limit=amount + 1)  # +1 για να σβήσει και το ίδιο το !clearmessages
         await ctx.send(f"🧹 Σβήστηκαν {len(deleted) - 1} μηνύματα.", delete_after=5)
