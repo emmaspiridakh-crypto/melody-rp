@@ -65,7 +65,7 @@ class Applications(commands.Cog):
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
     async def panel_applications(self, interaction: discord.Interaction):
         container = build_base_container(
-            title="Warzone Reborn Roleplay - Applications",
+            title="Melody Roleplay - Applications",
             description="Επίλεξε σε τι θες να κάνεις αίτηση από το παρακάτω μενού.\n**Απαγορεύεται η χρήση AI.** Έχεις 30 λεπτά να ολοκληρώσεις αλλιώς θα απορριφθεί.",
             banner_url=config.APPLICATIONS_BANNER_URL,
         )
