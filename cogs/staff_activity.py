@@ -56,16 +56,22 @@ class StaffActivity(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
-        target_id = config.ACTIVITY_CHANNELS_IDS
+        # ACTIVITY_CHANNELS_IDS is a dict of 3 channel ids -> track on-duty time across all of them
+        target_ids = set(config.ACTIVITY_CHANNELS_IDS.values())
         role = member.guild.get_role(config.ON_DUTY_ROLE_ID)
 
-        if after.channel and after.channel.id == target_id and (not before.channel or before.channel.id != target_id):
+        before_in = bool(before.channel and before.channel.id in target_ids)
+        after_in = bool(after.channel and after.channel.id in target_ids)
+
+        # Entered one of the 3 activity channels from outside all of them
+        if after_in and not before_in:
             active_sessions[member.id] = datetime.datetime.now(datetime.timezone.utc)
             if role:
                 await member.add_roles(role, reason="Staff Activity - on duty")
             await self._log(member.guild, member, joined=True)
 
-        if before.channel and before.channel.id == target_id and (not after.channel or after.channel.id != target_id):
+        # Left all 3 activity channels (switching between the 3 channels does NOT stop the timer)
+        elif before_in and not after_in:
             start = active_sessions.pop(member.id, None)
             duration = 0
             if start:
@@ -102,7 +108,7 @@ class StaffActivity(commands.Cog):
 
         container = build_base_container(
             title="Staff Activity",
-            description="Leaderboard χρόνου & live status. Μπες στο On Duty 1 για να ξεκινήσει ο χρόνος σου.",
+            description="Leaderboard χρόνου & live status. Μπες σε ένα από τα 3 On Duty κανάλια για να ξεκινήσει ο χρόνος σου.",
             banner_url=config.STAFF_ACTIVITY_BANNER_URL,
         )
         add_separator(container)
