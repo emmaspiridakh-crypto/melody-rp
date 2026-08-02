@@ -66,7 +66,7 @@ def build_scan_timeouts_embed(guild: discord.Guild) -> discord.Embed:
         embed.set_thumbnail(url=guild.icon.url)
 
     if not timed_out:
-        embed.description = "✅ Κανένα μέλος δεν έχει ενεργό timeout αυτή τη στιγμή."
+        embed.description = "Κανένα άτομο δεν έχει timeout τώρα."
         return embed
 
     timed_out.sort(key=lambda m: m.timed_out_until)
@@ -100,7 +100,7 @@ class TimeoutTools(commands.Cog):
     # =====================================================
     # /scan-timeouts
     # =====================================================
-    @app_commands.command(name="scan-timeouts", description="Σκανάρει το server και δείχνει ποια μέλη έχουν ενεργό timeout")
+    @app_commands.command(name="scan-timeouts", description="Σκανάρει το server και δείχνει ποια άτομα timeout")
     @slash_is_manager_team()
     async def scan_timeouts_cmd(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True, thinking=True)
