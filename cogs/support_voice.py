@@ -41,8 +41,10 @@ class SupportVoice(commands.Cog):
         ping_value = ping_role.mention if ping_role else "—"
 
         container = build_base_container(title=f"{emoji('notifier', 'bell')} Notifier")
+        if ping_role:
+            add_text(container, ping_role.mention)
         add_separator(container)
-        add_text(container, "**i - User Details :**")
+        add_text(container, "**User Details:**")
         add_text(
             container,
             f"{emoji('notifier', 'hash')} **Username:** `{member.name}`\n"
@@ -91,7 +93,6 @@ class SupportVoice(commands.Cog):
 
         try:
             await notify_channel.send(
-                content=ping_role.mention if ping_role else None,
                 view=view,
                 allowed_mentions=discord.AllowedMentions(roles=True),
             )
