@@ -51,6 +51,7 @@ EMOJIS = {
         "join": "<a:voice_join:1494013796535107584>",
         "leave": "<a:voice_leave:1494013821344415746>",
         "temp": "<a:temp_voice:1532130695433027794>",
+        "support_join": "<a:support_voice_join:1532130695433027794>",  # PLACEHOLDER: βάλε custom emoji ID
     },
     "staff_activity": {
         "on_duty": "<a:on_duty:1494013796535107584>",
@@ -70,8 +71,16 @@ EMOJIS = {
         "no": "<:app_no:1532130509331632359>",    
         "ping_staff": "<a:ping_staff:1532130668107005982>",
     },
+    "notifier": {
+        "bell": "<a:notif_bell:1532130668107005982>",     # PLACEHOLDER: βάλε custom emoji ID
+        "hash": "<:notif_hash:1533548060175765644>",      # PLACEHOLDER
+        "person": "<:notif_person:1532335931099709581>",  # PLACEHOLDER
+        "clock": "<:notif_clock:1532336564049412188>",    # PLACEHOLDER
+        "check": "<:notif_check:1511631201662799925>",    # PLACEHOLDER
+    },
     "panel": {
         "list": "<:list:1532338541055709386>",
+        "scan": "<:scan:1532341506055709386>",  # PLACEHOLDER: βάλε custom emoji ID
     },
 "giveaway": {
     "giveaway":      "<:giveaway:1493964674201288965>",
