@@ -30,6 +30,8 @@ COGS = [
     "cogs.tickets",
     "cogs.suggestions",
     "cogs.moderation",
+    "cogs.timeout_tools",
+    "cogs.support_voice",
     "cogs.temp_voice",
     "cogs.staff_activity",
     "cogs.logging_events",
