@@ -94,8 +94,13 @@ TEMP_VOICE_CATEGORY_ID     = 1532060398017052773   # PLACEHOLDER (εκεί δη�
 # =========================================================
 # SUPPORT VOICE JOIN NOTIFIER (Components V2 panel σαν του Support ticket)
 # =========================================================
-SUPPORT_VOICE_CHANNEL_ID = 1530982949942595683    # PLACEHOLDER: το voice channel του Support που παρακολουθούμε
-SUPPORT_VOICE_NOTIFIER_CHANNEL_ID = 1532059202636349630  # πού στέλνεται το panel (ίδιο με tickets notifier)
+# ⚠️ ΒΑΛΕ ΕΔΩ το πραγματικό VOICE channel ID του Support (ΟΧΙ text channel,
+# ΟΧΙ το TICKET_SUPPORT_CHANNEL_ID). Πριν ήταν λάθος copy-paste από το
+# TICKET_SUPPORT_CHANNEL_ID (text channel) -> γι' αυτό δεν έκανε ποτέ notify.
+SUPPORT_VOICE_CHANNEL_ID = 1531290031086370838  # PLACEHOLDER: βάλε το πραγματικό Support VOICE channel ID
+# Ξεχωριστό από τα υπόλοιπα notify - αναλαμβάνει το STAFF_PING_CHANNEL_ID
+# (πριν το χρησιμοποιούσε ΚΑΙ το temp_voice.py, τώρα εκείνο δεν κάνει πια ping).
+SUPPORT_VOICE_NOTIFIER_CHANNEL_ID = 1532059202636349630
 SUPPORT_VOICE_PING_ROLE_ID = 1531262921278099569        # ποιος ρόλος γίνεται ping στο panel
 
 # =========================================================
