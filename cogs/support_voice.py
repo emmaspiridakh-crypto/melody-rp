@@ -2,30 +2,55 @@
 cogs/support_voice.py
 ------------------------
 Requirement: όταν κάποιος μπαίνει στο Support voice channel
-(config.SUPPORT_VOICE_CHANNEL_ID), γίνεται ένα απλό text notify στο
-config.SUPPORT_VOICE_NOTIFIER_CHANNEL_ID — ΙΔΙΑ λογική με το temp_voice.py
-(cogs/temp_voice.py), απλό μήνυμα με emoji + mention, όχι Components V2 panel.
+(config.SUPPORT_VOICE_CHANNEL_ID), στέλνεται ένα Components V2 "Notifier"
+panel στο config.SUPPORT_VOICE_NOTIFIER_CHANNEL_ID (= STAFF_PING_CHANNEL_ID):
+bell τίτλος, "i - User Details :", Username / Mention / ID / Ping / Time,
+όλα με custom emoji — ίδιο στυλ με το reference panel.
 
 Ενεργοποιείται ΜΟΝΟ όταν κάποιος μπαίνει στο πραγματικό Support voice
-channel — όχι στο "Join to Create" temp-voice channel (αυτό παραμένει
-ξεχωριστό στο cogs/temp_voice.py, με το δικό του STAFF_PING_CHANNEL_ID).
+channel — όχι στο "Join to Create" temp-voice channel (cogs/temp_voice.py
+δεν κάνει πια ping εκεί, το ανέλαβε αποκλειστικά αυτό το cog).
 
 Το scan των timeouts είναι ξεχωριστό command: /scan-timeouts
-(cogs/timeout_tools.py), Manager/Ownership only.
+(cogs/timeout_tools.py), Manager/Ownership only — δεν υπάρχει κουμπί εδώ.
 """
 
 from __future__ import annotations
 
 import discord
+from discord import ui
 from discord.ext import commands
 
 import config
 from emojis import emoji
+from utils.components import build_base_container, add_separator, add_text
 
 
 class SupportVoice(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    # ---------------------------------------------------
+    # Notifier panel (Components V2)
+    # ---------------------------------------------------
+    def _build_view(self, member: discord.Member, ping_role: discord.Role | None) -> ui.LayoutView:
+        ping_value = ping_role.mention if ping_role else "—"
+
+        container = build_base_container(title=f"{emoji('notifier', 'bell')} Notifier")
+        add_separator(container)
+        add_text(container, "**i - User Details :**")
+        add_text(
+            container,
+            f"{emoji('notifier', 'hash')} **Username:** `{member.name}`\n"
+            f"{emoji('notifier', 'hash')} **Mention:** {member.mention}\n"
+            f"{emoji('notifier', 'person')} **ID:** `{member.id}`\n"
+            f"{emoji('notifier', 'bell')} **Ping:** {ping_value}\n"
+            f"{emoji('notifier', 'clock')} **Time:** {discord.utils.format_dt(discord.utils.utcnow(), style='F')}",
+        )
+
+        view = ui.LayoutView(timeout=None)
+        view.add_item(container)
+        return view
 
     # ---------------------------------------------------
     # Voice join detection — ΜΟΝΟ Support voice channel
@@ -45,11 +70,12 @@ class SupportVoice(commands.Cog):
             return
 
         ping_role = guild.get_role(config.SUPPORT_VOICE_PING_ROLE_ID)
-        ping_text = ping_role.mention if ping_role else ""
+        view = self._build_view(member, ping_role)
 
         try:
             await notify_channel.send(
-                f"{emoji('voice', 'support_join')} {ping_text} Ο {member.mention} μπήκε στο Support voice.",
+                content=ping_role.mention if ping_role else None,
+                view=view,
                 allowed_mentions=discord.AllowedMentions(roles=True),
             )
         except discord.HTTPException:
