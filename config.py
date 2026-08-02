@@ -78,6 +78,7 @@ STAFF_PING_CHANNEL_ID = 1532059202636349630  # PLACEHOLDER
 
 # Ticket logs (open + close) - ΞΕΧΩΡΙΣΤΟ από το STAFF_PING_CHANNEL_ID
 LOG_TICKETS_CHANNEL_ID = 1531009060285976796    # PLACEHOLDER
+TICKET_NOTIFIER_CHANNEL_ID = 1531009060285976796  # PLACEHOLDER: channel όπου στέλνεται το "Notifier" panel (Components V2) όταν κάποιος ανοίγει Support ticket
 
 # =========================================================
 # SUGGESTIONS
@@ -89,6 +90,13 @@ SUGGESTIONS_CHANNEL_ID = 1531099169790365778    # PLACEHOLDER (εδώ ο χρή�
 # =========================================================
 TEMP_VOICE_JOIN_CHANNEL_ID = 1531290031086370838    # PLACEHOLDER ("Join to Create" channel)
 TEMP_VOICE_CATEGORY_ID     = 1532060398017052773   # PLACEHOLDER (εκεί δημιουργούνται τα temp channels)
+
+# =========================================================
+# SUPPORT VOICE JOIN NOTIFIER (Components V2 panel σαν του Support ticket)
+# =========================================================
+SUPPORT_VOICE_CHANNEL_ID = 1530982949942595683    # PLACEHOLDER: το voice channel του Support που παρακολουθούμε
+SUPPORT_VOICE_NOTIFIER_CHANNEL_ID = 1532059202636349630  # πού στέλνεται το panel (ίδιο με tickets notifier)
+SUPPORT_VOICE_PING_ROLE_ID = 1531262921278099569        # ποιος ρόλος γίνεται ping στο panel
 
 # =========================================================
 # STAFF ACTIVITY
