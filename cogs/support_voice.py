@@ -106,7 +106,7 @@ class SupportVoice(commands.Cog):
 
         if not has_roles(interaction.user, [config.MANAGER_ROLE_ID, config.OWNERSHIP_ROLE_ID]):
             await interaction.response.send_message(
-                "⛔ Μόνο Manager/Ownership μπορεί να κάνει scan timeouts.", ephemeral=True,
+                "Μόνο Manager/Ownership κάνει scan timeouts.", ephemeral=True,
             )
             return
 
