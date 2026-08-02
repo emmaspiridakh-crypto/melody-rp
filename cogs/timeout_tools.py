@@ -14,8 +14,7 @@ Permissions: Manager, Ownership (ΟΧΙ Staff) — ίδιο scope με τα άλ
     (config.LOG_UNTIMEOUT_CHANNEL_ID).
 
 build_scan_timeouts_embed(guild)
-    Reusable helper — το χρησιμοποιεί και το κουμπί "Scan Timeouts" στο
-    Support Voice notifier panel (cogs/support_voice.py).
+    Reusable helper (async — κάνει guild.chunk() πρώτα).
 """
 
 from __future__ import annotations
@@ -50,11 +49,20 @@ async def _send_log(guild: discord.Guild, channel_id: int, embed: discord.Embed)
             pass
 
 
-def build_scan_timeouts_embed(guild: discord.Guild) -> discord.Embed:
+async def build_scan_timeouts_embed(guild: discord.Guild) -> discord.Embed:
     """Σκανάρει το guild.members και φτιάχνει το embed με όσα μέλη έχουν
-    ενεργό timeout αυτή τη στιγμή. Χρησιμοποιείται από το /scan-timeouts
-    ΚΑΙ από το κουμπί "Scan Timeouts" στο Support Voice notifier panel
-    (cogs/support_voice.py) — ίδια λογική, ένα σημείο αλήθειας."""
+    ενεργό timeout αυτή τη στιγμή. Χρησιμοποιείται από το /scan-timeouts.
+
+    ΣΗΜΑΝΤΙΚΟ: κάνει guild.chunk() πρώτα αν το member cache δεν είναι πλήρες —
+    σε μεγάλα servers το discord.py δεν έχει πάντα ΟΛΑ τα members cached
+    αυτόματα (ακόμα κι όταν το members intent είναι ενεργό), οπότε χωρίς αυτό
+    το scan μπορεί να βγάζει ελλιπή/λάθος αποτελέσματα."""
+    if not guild.chunked:
+        try:
+            await guild.chunk(cache=True)
+        except discord.HTTPException:
+            pass
+
     now = datetime.datetime.now(datetime.timezone.utc)
 
     timed_out: list[discord.Member] = [
@@ -104,7 +112,7 @@ class TimeoutTools(commands.Cog):
     @slash_is_manager_team()
     async def scan_timeouts_cmd(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True, thinking=True)
-        embed = build_scan_timeouts_embed(interaction.guild)
+        embed = await build_scan_timeouts_embed(interaction.guild)
         await interaction.followup.send(embed=embed, ephemeral=True)
 
     # =====================================================
@@ -118,8 +126,31 @@ class TimeoutTools(commands.Cog):
             await interaction.response.send_message(f"⚠️ Ο {user.mention} δεν έχει ενεργό timeout.", ephemeral=True)
             return
 
-        await user.timeout(None, reason=reason)
-        await interaction.response.send_message(f"✅ Αφαιρέθηκε το timeout από {user.mention}.", ephemeral=True)
+        # Το bot χρειάζεται δικαίωμα "Moderate Members" ΚΑΙ ο ρόλος του bot
+        # πρέπει να είναι ΠΙΟ ΨΗΛΑ στην ιεραρχία από τον χρήστη - αλλιώς η
+        # Discord API γυρνάει Forbidden και η εντολή "δεν κάνει τίποτα".
+        if not interaction.guild.me.guild_permissions.moderate_members:
+            await interaction.response.send_message(
+                "❌ Το bot δεν έχει το δικαίωμα **Moderate Members** στο server — πήγαινε στα "
+                "Server Settings > Roles και δώσε το στον ρόλο του bot.",
+                ephemeral=True,
+            )
+            return
+
+        try:
+            await user.timeout(None, reason=reason)
+        except discord.Forbidden:
+            await interaction.response.send_message(
+                f"❌ Δεν μπόρεσα να αφαιρέσω το timeout από {user.mention} — ο ρόλος του bot "
+                "πρέπει να είναι πιο ψηλά από τον δικό του στην ιεραρχία ρόλων.",
+                ephemeral=True,
+            )
+            return
+        except discord.HTTPException as e:
+            await interaction.response.send_message(f"❌ Σφάλμα `{e}`", ephemeral=True)
+            return
+
+        await interaction.response.send_message(f"Αφαιρέθηκε το timeout από {user.mention}.", ephemeral=True)
 
         await _send_log(interaction.guild, config.LOG_UNTIMEOUT_CHANNEL_ID,
                          _log_embed(interaction.guild, title="✅ Untimeout", moderator=interaction.user,
