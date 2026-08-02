@@ -30,7 +30,7 @@ EMOJIS = {
     },
     "jobs": {
         "civilian": "<:civilian:1532335931099709581>",
-        "criminal": "<:criminal:1497912956053094410>",
+        "criminal": "<a:criminal:1497912956053094410>",
     },
     "donate": {
         "donate": "<a:donate:1532336271295250542>",  # παράδειγμα animated
