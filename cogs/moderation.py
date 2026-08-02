@@ -105,14 +105,8 @@ class Moderation(commands.Cog):
                                     target=f"{member.mention} (`{member.id}`) — {duration}", reason=reason))
 
     # ---------------- UNTIMEOUT ----------------
-    @commands.command(name="untimeout")
-    @is_manager_team()
-    async def untimeout_cmd(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
-        await member.timeout(None, reason=reason)
-        await ctx.send(f"✅ Αφαιρέθηκε το timeout από {member.mention}.")
-        await _send_log(ctx.guild, config.LOG_UNTIMEOUT_CHANNEL_ID,
-                         _log_embed(ctx.guild, title="✅ Untimeout", moderator=ctx.author,
-                                    target=f"{member.mention} (`{member.id}`)", reason=reason))
+    # ΑΦΑΙΡΕΘΗΚΕ: το !untimeout αντικαταστάθηκε από το /untimeout (slash) στο
+    # cogs/timeout_tools.py — ίδιο permission scope (Manager, Ownership).
 
     # ---------------- CLEAR MESSAGES ----------------
     @commands.command(name="clearmessages")
