@@ -23,11 +23,29 @@ class PanelCommand(commands.Cog):
             embed.set_thumbnail(url=ctx.guild.icon.url)
 
         embed.add_field(
-            name="Moderation (Staff/Manager/Ownership)",
+            name="Moderation (Manager/Ownership)",
             value=(
                 "`!ban @user [reason]`\n`!unban <id> [reason]`\n`!kick @user [reason]`\n"
-                "`!timeout @user <10m/1h/1d> [reason]`\n`!untimeout @user [reason]`\n"
-                "`!clearmessages <amount>`"
+                "`!timeout @user <10m/1h/1d> [reason]`\n`!clearmessages <amount>`"
+            ),
+            inline=False,
+        )
+        embed.add_field(
+            name="Timeout Tools (Manager/Ownership) — νέο",
+            value=(
+                "`/untimeout <user> [reason]` — αντικατέστησε το παλιό `!untimeout`\n"
+                "`/scan-timeouts` — σκανάρει το server και δείχνει με mentions ποια μέλη "
+                "έχουν ενεργό timeout αυτή τη στιγμή"
+            ),
+            inline=False,
+        )
+        embed.add_field(
+            name="Support Voice Notifier — νέο (αυτόματο, όχι command)",
+            value=(
+                "Όταν κάποιος μπαίνει στο Support voice channel, στέλνεται αυτόματα "
+                "Notifier panel με τα στοιχεία του χρήστη. Το panel έχει κουμπί "
+                "**Scan Timeouts** (Manager/Ownership only) που ανοίγει το ίδιο scan "
+                "με το `/scan-timeouts`."
             ),
             inline=False,
         )
