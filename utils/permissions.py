@@ -59,6 +59,13 @@ def slash_is_ownership_only():
     return app_commands.check(predicate)
 
 
+def slash_is_manager_team():
+    """Manager, Ownership (χωρίς Staff) - slash version, ίδιο scope με is_manager_team()"""
+    async def predicate(interaction: discord.Interaction) -> bool:
+        return member_has_any_role(interaction.user, [config.MANAGER_ROLE_ID, config.OWNERSHIP_ROLE_ID])
+    return app_commands.check(predicate)
+
+
 # ---------- Γενικά helpers (χρήσιμα μέσα σε button callbacks) ----------
 
 def has_roles(member: discord.Member, role_ids: list[int]) -> bool:
