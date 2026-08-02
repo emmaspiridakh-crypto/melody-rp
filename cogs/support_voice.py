@@ -17,6 +17,8 @@ channel — όχι στο "Join to Create" temp-voice channel (cogs/temp_voice.p
 
 from __future__ import annotations
 
+import logging
+
 import discord
 from discord import ui
 from discord.ext import commands
@@ -24,6 +26,8 @@ from discord.ext import commands
 import config
 from emojis import emoji
 from utils.components import build_base_container, add_separator, add_text
+
+log = logging.getLogger("support_voice")
 
 
 class SupportVoice(commands.Cog):
@@ -59,17 +63,30 @@ class SupportVoice(commands.Cog):
     async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
         if member.bot:
             return
+
+        after_id = after.channel.id if after.channel else None
+        log.info(f"[support_voice] voice_state_update: {member} -> after.channel={after_id}")
+
         if before.channel and before.channel.id == config.SUPPORT_VOICE_CHANNEL_ID:
             return  # ήταν ήδη μέσα -> δεν είναι νέο join (π.χ. mute/unmute)
         if not after.channel or after.channel.id != config.SUPPORT_VOICE_CHANNEL_ID:
             return  # μπήκε σε ΑΛΛΟ voice channel -> δεν μας αφορά
 
+        log.info(f"[support_voice] {member} μπήκε στο SUPPORT_VOICE_CHANNEL_ID={config.SUPPORT_VOICE_CHANNEL_ID}")
+
         guild = member.guild
         notify_channel = guild.get_channel(config.SUPPORT_VOICE_NOTIFIER_CHANNEL_ID)
         if not notify_channel:
+            log.warning(
+                f"[support_voice] Δεν βρέθηκε notify_channel με ID={config.SUPPORT_VOICE_NOTIFIER_CHANNEL_ID} "
+                f"(guild.get_channel γύρισε None — ή λάθος ID ή το bot δεν το βλέπει)."
+            )
             return
 
         ping_role = guild.get_role(config.SUPPORT_VOICE_PING_ROLE_ID)
+        if not ping_role:
+            log.warning(f"[support_voice] Δεν βρέθηκε ρόλος με ID={config.SUPPORT_VOICE_PING_ROLE_ID}.")
+
         view = self._build_view(member, ping_role)
 
         try:
@@ -78,8 +95,14 @@ class SupportVoice(commands.Cog):
                 view=view,
                 allowed_mentions=discord.AllowedMentions(roles=True),
             )
-        except discord.HTTPException:
-            pass
+            log.info(f"[support_voice] Στάλθηκε notify στο #{notify_channel} για {member}.")
+        except discord.Forbidden:
+            log.error(
+                f"[support_voice] Forbidden: το bot δεν έχει δικαίωμα να στείλει μήνυμα στο "
+                f"#{notify_channel} (channel ID {config.SUPPORT_VOICE_NOTIFIER_CHANNEL_ID})."
+            )
+        except discord.HTTPException as e:
+            log.error(f"[support_voice] HTTPException κατά την αποστολή notify: {e}")
 
 
 async def setup(bot: commands.Bot):
