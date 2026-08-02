@@ -52,15 +52,6 @@ class SupportVoice(commands.Cog):
         )
         container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
-        row = ui.ActionRow()
-        row.add_item(ui.Button(
-            style=discord.ButtonStyle.secondary,
-            label="Scan Timeouts",
-            emoji=emoji("panel", "scan"),
-            custom_id=SCAN_BUTTON_CUSTOM_ID,
-        ))
-        container.add_item(row)
-
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
         return view
@@ -106,7 +97,7 @@ class SupportVoice(commands.Cog):
 
         if not has_roles(interaction.user, [config.MANAGER_ROLE_ID, config.OWNERSHIP_ROLE_ID]):
             await interaction.response.send_message(
-                "Μόνο Manager/Ownership κάνει scan timeouts.", ephemeral=True,
+                "⛔ Μόνο Manager/Ownership μπορεί να κάνει scan timeouts.", ephemeral=True,
             )
             return
 
