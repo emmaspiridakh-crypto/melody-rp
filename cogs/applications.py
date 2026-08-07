@@ -66,7 +66,7 @@ class Applications(commands.Cog):
     async def panel_applications(self, interaction: discord.Interaction):
         container = build_base_container(
             title="Melody Roleplay | Applications",
-            description="Επίλεξε την ομάδα που σε ενδιαφέρει και υπόβαλε αίτηση.\nΚάθε αίτηση εξετάζεται εντός **48 ωρών** από την ομάδα διαχείρισης.",
+            description="Επίλεξε την ομάδα που σε ενδιαφέρει και υπόβαλε αίτηση.\n **Απαγορεύετε αυστηρά η χρήση του AI.**. **Έχεις 30 λεπτά να ολοκληρώσεις την αίτηση σου αλλιώς θα ακυρωθεί.** .",
             banner_url=config.APPLICATIONS_BANNER_URL,
         )
         add_separator(container)
