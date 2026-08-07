@@ -91,6 +91,13 @@ def _ticket_types() -> dict:
     }
 
 
+def _add_info_lines(container, lines: list[str]) -> None:
+    """Προσθέτει bullet-style γραμμές (emoji + κείμενο), το ένα κάτω από το άλλο,
+    στο στυλ του νέου Assistant-panel design (βλ. screenshot)."""
+    bullet = "»"
+    add_text(container, "\n\n".join(f"{bullet} {line}" for line in lines))
+
+
 def _safe_name(text: str) -> str:
     text = text.lower().strip().replace(" ", "-")
     return "".join(c for c in text if c.isalnum() or c == "-")[:90]
@@ -285,18 +292,26 @@ class Tickets(commands.Cog):
     async def panel_support(self, interaction: discord.Interaction):
         ttypes = _ticket_types()
         container = build_base_container(
-            title="Melody Roleplay - Tickets",
-            description="Επίλεξε κατηγορία από το μενού παρακάτω για να ανοίξεις το ticket που θές. Πές μας τι χρειάζεσαι και θα σε εξυπηρετίσουμε πολύ σύντομα.",
+            title=f"{emoji('tickets', 'ticket')} Melody Roleplay - Assistant",
             banner_url=config.TICKET_SUPPORT_BANNER_URL,
             thumbnail_url=config.TICKET_SUPPORT_THUMBNAIL_URL,
         )
+        add_separator(container)
+        _add_info_lines(container, [
+            "**Για να έρθετε σε άμεση επικοινωνία με το κατάλληλο άτομο για την επίλυση του προβλήματος σας, "
+            "παρακαλώ κατά τη δημιουργία του ticket να είστε προσεκτικοί με την κατηγορία που θα επιλέξετε.**",
+            "**Tip:** Ετοιμάστε τυχόν screenshot και άλλες πληροφορίες σχετικά με το πρόβλημα σας, εάν τα έχετε στην διάθεση σας, "
+            "για την άμεση εξυπηρέτησή σας.",
+            f"Το <@&{config.STAFF_ROLE_ID}> είναι εδώ για να σε βοηθήσουν για ό,τι χρειαστείς.",
+            "*Μπορείτε να ανοίξετε έως ένα ticket την φορά.*",
+        ])
         add_separator(container)
         _descriptions = {
             "ownership": "Επικοινωνία αποκλειστικά με το Ownership",
             "ban apperal": "Κάνει ανάκληση για κάποιο ban",
             "support": "Γενική υποστήριξη & ερωτήσεις",
             "streamer": "Αν θες να κάνεις stream ή έγινε κάτι σε κάποιο stream",
-            "anticheat": "Αναφορά περιστατικού cheat/exploit",
+            "anticheat": "Αναφορά περιστατικού cheat",
             "reward": "Διεκδίκησε το reward σου",
         }
         options = [
@@ -339,16 +354,18 @@ class Tickets(commands.Cog):
         data = ttypes["donate"]
 
         container = build_base_container(
-            title="Donate ToS of Melody Roleplay",
-            description=(
-                "Όταν κάνετε Donate υποστηρίζετε την λειτουργία και την ανάπτυξη του server, βοηθώντας μας να τον κρατάμε ενεργό και να τον βελτιώνουμε συνεχώς. "
-                "Παρόλα αυτά, όλοι οι παίκτες αντιμετωπίζονται το ίδιο ανεξάρτητα από το αν έχουν κάνει Donate ή όχι. "
-                "Το Donate αποτελεί καθαρά προαιρετική δωρεά και δεν είναι απαραίτητο για να παίξετε στον server. "
-                "Μετά την ολοκλήρωση μιας δωρεάς δεν υπάρχει δυνατότητα επιστροφής χρημάτων ή αλλαγής του πακέτου."
-            ),
+            title=f"{data['emoji']} Donate ToS - Melody Roleplay",
             banner_url=config.TICKET_DONATE_BANNER_URL,
             thumbnail_url=config.TICKET_DONATE_THUMBNAIL_URL,
         )
+        add_separator(container)
+        _add_info_lines(container, [
+            "Όταν κάνετε Donate υποστηρίζετε την λειτουργία και την ανάπτυξη του server, βοηθώντας μας να τον κρατάμε "
+            "ενεργό και να τον βελτιώνουμε συνεχώς.",
+            "Όλοι οι παίκτες αντιμετωπίζονται το ίδιο ανεξάρτητα από το αν έχουν κάνει Donate ή όχι. Το Donate αποτελεί "
+            "καθαρά προαιρετική δωρεά και δεν είναι απαραίτητο για να παίξετε στον server.",
+            "*Μετά την ολοκλήρωση μιας δωρεάς δεν υπάρχει δυνατότητα επιστροφής χρημάτων ή αλλαγής του πακέτου.*",
+        ])
         add_separator(container)
         add_text(container, (
             "> Όλα τα Donates παραμένουν ενεργά μέχρι το ενδεχόμενο κλείσιμο του server. "
@@ -401,7 +418,17 @@ class Tickets(commands.Cog):
             "donate": config.TICKET_DONATE_THUMBNAIL_URL,
         }[key]
 
-        container = build_base_container(title=title, description=description, banner_url=banner, thumbnail_url=thumb)
+        container = build_base_container(
+            title=f"{data['emoji']} {title}",
+            banner_url=banner, thumbnail_url=thumb,
+        )
+        add_separator(container)
+        _add_info_lines(container, [
+            f"**{description}**",
+            "**Tip:** Ετοιμάστε τυχόν στοιχεία ή αποδεικτικά που μπορεί να χρειαστούν για την άμεση εξυπηρέτησή σας.",
+            f"Το <@&{config.STAFF_ROLE_ID}> είναι εδώ για να σε βοηθήσουν για ό,τι χρειαστείς.",
+            "*Μπορείτε να ανοίξετε έως ένα ticket την φορά.*",
+        ])
         add_separator(container)
         btn = ui.Button(
             label=data["label"], style=discord.ButtonStyle.success,
