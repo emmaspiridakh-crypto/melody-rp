@@ -6,7 +6,7 @@ Requirement #5. Όλες οι εντολές με πρόθεμα "!" (commands.B
 Permissions:
     ban/unban/kick/timeout/untimeout/clearmessages -> Manager, Ownership (ΟΧΙ Staff)
     say / say2                                      -> Ownership only
-    dmall                                           -> Founder only
+    dmall / dmuser                                   -> Founder only
 
 Κάθε εντολή logάρει σε ΔΙΚΟ ΤΗΣ channel, εκτός say/say2/dmall που μοιράζονται ένα.
 Τα logs λένε πάντα: ποιος έκανε την ενέργεια, σε ποιον, τι, και πότε.
@@ -160,6 +160,21 @@ class Moderation(commands.Cog):
         await _send_log(ctx.guild, config.LOG_SAY_DMALL_CHANNEL_ID,
                          _log_embed(ctx.guild, title="📨 DM All", moderator=ctx.author,
                                     target=f"{sent} sent / {failed} failed", reason=text))
+
+    # ---------------- DM USER (μόνο σε συγκεκριμένο χρήστη) ----------------
+    @commands.command(name="dmuser")
+    @is_founder_only()
+    async def dmuser_cmd(self, ctx: commands.Context, member: discord.Member, *, text: str):
+        try:
+            await member.send(text)
+            await ctx.send(f"✅ Το μήνυμα στάλθηκε στον {member.mention}.")
+            status = "sent"
+        except discord.Forbidden:
+            await ctx.send(f"⚠️ Δεν μπόρεσα να στείλω μήνυμα στον {member.mention} (κλειστά DMs).")
+            status = "failed"
+        await _send_log(ctx.guild, config.LOG_SAY_DMALL_CHANNEL_ID,
+                         _log_embed(ctx.guild, title="📨 DM User", moderator=ctx.author,
+                                    target=f"{member.mention} ({status})", reason=text))
 
     # ---------------- Error handling για permission checks ----------------
     @commands.Cog.listener()
