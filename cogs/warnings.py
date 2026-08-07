@@ -1,7 +1,7 @@
 """
 cogs/warnings.py
 ------------------
-Warning System (Ownership only).
+Warning System (Ownership & Staff Manager).
 
 /warn
     1. Ανοίγει Components V2 panel -> επιλογή χρήστη (UserSelect)
@@ -377,16 +377,16 @@ class Warnings(commands.Cog):
         ))
 
     # ---------------------------------------------------
-    # Slash Commands (Ownership only)
+    # Slash Commands (Ownership & Staff Manager)
     # ---------------------------------------------------
     @app_commands.command(name="warn", description="Ανοίγει το warning panel")
-    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, STAFF_MANAGER_ID)
+    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.STAFF_MANAGER_ID)
     async def warn_cmd(self, interaction: discord.Interaction):
         await interaction.response.send_message(view=WarnUserSelectView(self), ephemeral=True)
 
     @app_commands.command(name="remove-warning", description="Αφαιρεί ένα warning από έναν χρήστη")
     @app_commands.describe(user="Ο χρήστης από τον οποίο θα αφαιρεθεί το warning")
-    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, STAFF_MANAGER_ID)
+    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.STAFF_MANAGER_ID)
     async def remove_warning_cmd(self, interaction: discord.Interaction, user: discord.Member):
         existing = _get_warnings(user.id, interaction.guild.id)
         if not existing:
