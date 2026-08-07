@@ -40,7 +40,7 @@ EMOJIS = {
         "upvote": "<:upvote:1494068515169370253>",
         "downvote": "<:downvote:1494068533917651125>",
         "suggestion": "<a:suggestion:1498777433753653359>",  # PLACEHOLDER: emoji τίτλου (π.χ. 📝)
-        "submitted": "<:submitted:1532335931099709581>",    # PLACEHOLDER: emoji "Submitted From" (π.χ. 👥)
+        "submitted": "<:submitted:1511631201662799925>",    # PLACEHOLDER: emoji "Submitted From" (π.χ. 👥)
         "bullet": "<a:bullet:1492271082336551104>",          # PLACEHOLDER: emoji πριν την ημερομηνία (π.χ. »)
     },
     "moderation": {
@@ -74,6 +74,8 @@ EMOJIS = {
         "yes": "<:app_yes:1532337940821315634>",  
         "no": "<:app_no:1532130509331632359>",    
         "ping_staff": "<a:ping_staff:1532130668107005982>",
+        "status_open": "<a:status_open:1494013796535107584>",      # PLACEHOLDER: βάλε το δικό σου custom emoji ID (πράσινο dot/ανοιχτές)
+        "status_closed": "<a:status_closed:1494013821344415746>",  # PLACEHOLDER: βάλε το δικό σου custom emoji ID (κόκκινο dot/κλειστές)
     },
     "notifier": {
         "bell": "<a:notif_bell:1532130668107005982>",     # PLACEHOLDER: βάλε custom emoji ID
