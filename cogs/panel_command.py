@@ -44,6 +44,7 @@ class PanelCommand(commands.Cog):
             inline=False,
         )
         embed.add_field(name="DM All (Founder only)", value="`!dmall <text>`", inline=False)
+        embed.add_field(name="DM User (Founder only)", value="`!dmuser <@user> <text>`", inline=False)
         embed.add_field(
             name="Slash Panels (Manager/Ownership)",
             value=(
