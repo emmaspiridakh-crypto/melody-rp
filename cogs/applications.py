@@ -65,38 +65,34 @@ class Applications(commands.Cog):
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
     async def panel_applications(self, interaction: discord.Interaction):
         container = build_base_container(
-            title="Melody Roleplay - Applications",
-            description="Επίλεξε σε τι θες να κάνεις αίτηση από το παρακάτω μενού.\n**Απαγορεύεται η χρήση AI.** Έχεις 30 λεπτά να ολοκληρώσεις αλλιώς θα απορριφθεί.",
+            title="Melody Roleplay | Applications",
+            description="Επίλεξε την ομάδα που σε ενδιαφέρει και υπόβαλε αίτηση.\nΚάθε αίτηση εξετάζεται εντός **48 ωρών** από την ομάδα διαχείρισης.",
             banner_url=config.APPLICATIONS_BANNER_URL,
         )
         add_separator(container)
 
         _app_info = {
-            "elas":    {"description": "Γίνε μέλος της ΕΛ.ΑΣ — προστάτεψε πολίτες & διατήρησε την τάξη.",       "emoji_key": "elas"},
-            "ekab":    {"description": "Γίνε διασώστης ΕΚΑΒ — βοήθα τραυματίες & χειρίσου έκτακτα περιστατικά.", "emoji_key": "ekab"},
-            "staff":   {"description": "Γίνε μέλος του staff team — διαχειρίσου reports & τήρησε τους κανόνες.", "emoji_key": "staff"},
+            "elas":    {"description": "Προστάτεψε τους συμπολίτες σου. Διατήρησε την τάξη και κράτα την πόλη ασφαλή.",             "emoji_key": "elas"},
+            "ekab":    {"description": "Γίνε ο ήρωας σε κάθε επείγον περιστατικό. Στήριξε τους ανθρώπους όταν σε χρειάζονται περισσότερο.", "emoji_key": "ekab"},
+            "staff":   {"description": "Γίνε η δύναμη πίσω από την τάξη. Στήριξε την κοινότητα, βοήθησε τους παίκτες και κράτα τον server ασφαλή.", "emoji_key": "staff"},
             "manager": {"description": "Θέση υψηλής ευθύνης — διαχειρίσου server & ομάδα staff.",               "emoji_key": "manager"},
         }
 
-        options = []
         for key, data in config.APPLICATION_TYPES.items():
             info = _app_info.get(key, {"description": "", "emoji_key": "apply"})
             raw_emoji = emoji("applications", info["emoji_key"])
-            options.append(
-                discord.SelectOption(
-                    label=data["label"],
-                    value=key,
-                    description=info["description"][:100],
-                    emoji=raw_emoji if raw_emoji else None,
-                )
-            )
+            locked = _is_locked(key)
+            status_dot = emoji("applications", "status_closed") if locked else emoji("applications", "status_open")
+            status_text = "κλειστές" if locked else "ανοιχτές"
 
-        select = ui.Select(
-            placeholder="Επίλεξε τύπο αίτησης...",
-            options=options,
-            custom_id="app_select",
-        )
-        add_action_row(container, select)
+            text = f"{raw_emoji} **{data['label']}**\n{info['description']}\n\n{status_dot} Αιτήσεις **{status_text}**"
+            apply_btn = ui.Button(
+                label="Apply Now", style=discord.ButtonStyle.secondary,
+                emoji=raw_emoji if raw_emoji else None, disabled=locked,
+                custom_id=f"app_apply:{key}",
+            )
+            add_section_with_button(container, text=text, button=apply_btn)
+            add_separator(container)
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
@@ -450,8 +446,8 @@ class Applications(commands.Cog):
             return
         custom_id = interaction.data.get("custom_id", "")
 
-        if custom_id == "app_select":
-            value = interaction.data["values"][0]
+        if custom_id.startswith("app_apply:"):
+            value = custom_id.split(":", 1)[1]
             await self.start_apply(interaction, value)
         elif custom_id.startswith("app_start:"):
             await self.handle_start(interaction, int(custom_id.split(":")[1]))
