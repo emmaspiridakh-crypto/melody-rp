@@ -10,6 +10,8 @@ import discord
 from discord import ui, app_commands
 from discord.ext import commands
 
+from discord.ext import tasks
+
 import config
 from emojis import emoji
 from utils import storage
@@ -18,6 +20,10 @@ from utils.components import build_base_container, add_separator, add_text, add_
 STORE_NAME = "staff_activity"
 
 active_sessions: dict[int, datetime.datetime] = {}
+
+# Μελος -> πότε ξεκίνησε να είναι deaf+mute συνεχόμενα (server ή self)
+DEAFEN_MUTE_KICK_SECONDS = 20 * 60  # 20 λεπτά
+_deaf_mute_since: dict[int, datetime.datetime] = {}
 
 
 def _fmt_duration(seconds: int) -> str:
@@ -33,9 +39,17 @@ def _fmt_duration(seconds: int) -> str:
     return " ".join(parts)
 
 
+def _is_deaf_mute(state: discord.VoiceState) -> bool:
+    return bool((state.deaf or state.self_deaf) and (state.mute or state.self_mute))
+
+
 class StaffActivity(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.deaf_mute_check_loop.start()
+
+    def cog_unload(self):
+        self.deaf_mute_check_loop.cancel()
 
     async def _log(self, guild: discord.Guild, member: discord.Member, *, joined: bool, duration_seconds: int | None = None):
         channel = guild.get_channel(config.STAFF_ACTIVITY_LOG_CHANNEL_ID)
@@ -82,6 +96,39 @@ class StaffActivity(commands.Cog):
             if role:
                 await member.remove_roles(role, reason="Staff Activity - off duty")
             await self._log(member.guild, member, joined=False, duration_seconds=int(duration))
+
+        # ---- Deaf+Mute tracking (μόνο όσο είναι μέσα σε ένα από τα on-duty κανάλια) ----
+        if after_in and _is_deaf_mute(after):
+            _deaf_mute_since.setdefault(member.id, datetime.datetime.now(datetime.timezone.utc))
+        else:
+            _deaf_mute_since.pop(member.id, None)
+
+    @tasks.loop(seconds=60)
+    async def deaf_mute_check_loop(self):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        target_ids = set(config.ACTIVITY_CHANNELS_IDS.values())
+        for member_id, since in list(_deaf_mute_since.items()):
+            if (now - since).total_seconds() < DEAFEN_MUTE_KICK_SECONDS:
+                continue
+            for guild in self.bot.guilds:
+                member = guild.get_member(member_id)
+                if not member or not member.voice or not member.voice.channel:
+                    continue
+                if member.voice.channel.id not in target_ids:
+                    continue
+                # ξαναέλεγχος στην τελευταία στιγμή, μη μας ξεφύγει race condition
+                if not _is_deaf_mute(member.voice):
+                    continue
+                try:
+                    await member.move_to(None, reason="On Duty - deaf+mute πάνω από 20 λεπτά")
+                except discord.HTTPException:
+                    pass
+                _deaf_mute_since.pop(member_id, None)
+                break
+
+    @deaf_mute_check_loop.before_loop
+    async def before_deaf_mute_check_loop(self):
+        await self.bot.wait_until_ready()
 
     # ---------------- Panel ----------------
     def _build_panel_view(self, guild: discord.Guild) -> ui.LayoutView:
@@ -132,6 +179,34 @@ class StaffActivity(commands.Cog):
         view = self._build_panel_view(interaction.guild)
         await interaction.channel.send(view=view)
         await interaction.followup.send("✅ Στάλθηκε.", ephemeral=True)
+
+    @app_commands.command(name="resettime", description="Κάνει reset τον χρόνο on duty (όλο το panel ή έναν συγκεκριμένο χρήστη)")
+    @app_commands.describe(user="Αν δοθεί, γίνεται reset μόνο ο χρόνος αυτού του χρήστη")
+    @app_commands.checks.has_role(config.OWNERSHIP_ROLE_ID)
+    async def resettime(self, interaction: discord.Interaction, user: discord.Member | None = None):
+        if user is None:
+            storage.save(STORE_NAME, {})
+            active_sessions.clear()
+            await interaction.response.send_message(
+                f"{emoji('staff_activity', 'leaderboard')} Έγινε reset **όλο** το Staff Activity panel.",
+                ephemeral=True,
+            )
+        else:
+            store = storage.get_store(STORE_NAME)
+            store.pop(str(user.id), None)
+            storage.save(STORE_NAME, store)
+            active_sessions.pop(user.id, None)
+            await interaction.response.send_message(
+                f"{emoji('staff_activity', 'leaderboard')} Έγινε reset ο χρόνος του {user.mention}.",
+                ephemeral=True,
+            )
+
+    @resettime.error
+    async def resettime_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        if isinstance(error, app_commands.MissingRole):
+            await interaction.response.send_message("⛔ Μόνο το Ownership μπορεί να κάνει reset.", ephemeral=True)
+        else:
+            raise error
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: discord.Interaction):
