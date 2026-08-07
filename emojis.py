@@ -27,6 +27,7 @@ EMOJIS = {
         "ping": "<a:ping:1532130668107005982>",
         "ticket": "<:ticket:1532335582213308597>",
         "reward": "<:reward:1492571665333223607>",  # PLACEHOLDER: βάλε custom emoji αν θες
+        "bullet": "<a:bullet:1492271082336551104>",  # PLACEHOLDER: βάλε το δικό σου custom emoji ID (bullet/arrow για info-lines)
     },
     "jobs": {
         "civilian": "<:civilian:1532335931099709581>",
@@ -38,6 +39,9 @@ EMOJIS = {
     "suggestions": {
         "upvote": "<:upvote:1494068515169370253>",
         "downvote": "<:downvote:1494068533917651125>",
+        "suggestion": "<a:suggestion:1498777433753653359>",  # PLACEHOLDER: emoji τίτλου (π.χ. 📝)
+        "submitted": "<:submitted:1532335931099709581>",    # PLACEHOLDER: emoji "Submitted From" (π.χ. 👥)
+        "bullet": "<a:bullet:1492271082336551104>",          # PLACEHOLDER: emoji πριν την ημερομηνία (π.χ. »)
     },
     "moderation": {
         "ban": "<:ban:1532334999410442350>",
