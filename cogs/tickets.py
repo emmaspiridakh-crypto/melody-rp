@@ -94,7 +94,7 @@ def _ticket_types() -> dict:
 def _add_info_lines(container, lines: list[str]) -> None:
     """Προσθέτει bullet-style γραμμές (emoji + κείμενο), το ένα κάτω από το άλλο,
     στο στυλ του νέου Assistant-panel design (βλ. screenshot)."""
-    bullet = "»"
+    bullet = emoji("tickets", "bullet") or "»"
     add_text(container, "\n\n".join(f"{bullet} {line}" for line in lines))
 
 
@@ -298,9 +298,9 @@ class Tickets(commands.Cog):
         )
         add_separator(container)
         _add_info_lines(container, [
-            "**Για να έρθετε σε άμεση επικοινωνία με το κατάλληλο άτομο για την επίλυση του προβλήματος σας, "
-            "παρακαλώ κατά τη δημιουργία του ticket να είστε προσεκτικοί με την κατηγορία που θα επιλέξετε.**",
-            "**Tip:** Ετοιμάστε τυχόν screenshot και άλλες πληροφορίες σχετικά με το πρόβλημα σας, εάν τα έχετε στην διάθεση σας, "
+            "**Για να έρθετε σε άμεση επικοινωνία με τον κατάλληλο αρμόδιο για την επίλυση του συμβάντος σας, "
+            "παρακαλώ κατά τη δημιουργία του ticket να είστε προσεκτικοί με την επιλογή κατηγορίας.**",
+            "**Tip:** Ετοιμάστε τυχόν screenshot και άλλες πληροφορίες σχετικά με το συμβάν, εάν υπάρχουν, "
             "για την άμεση εξυπηρέτησή σας.",
             f"Το <@&{config.STAFF_ROLE_ID}> είναι εδώ για να σε βοηθήσουν για ό,τι χρειαστείς.",
             "*Μπορείτε να ανοίξετε έως ένα ticket την φορά.*",
@@ -311,7 +311,7 @@ class Tickets(commands.Cog):
             "ban apperal": "Κάνει ανάκληση για κάποιο ban",
             "support": "Γενική υποστήριξη & ερωτήσεις",
             "streamer": "Αν θες να κάνεις stream ή έγινε κάτι σε κάποιο stream",
-            "anticheat": "Αναφορά περιστατικού cheat",
+            "anticheat": "Αναφορά περιστατικού cheat/exploit",
             "reward": "Διεκδίκησε το reward σου",
         }
         options = [
