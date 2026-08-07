@@ -33,19 +33,8 @@ class PanelCommand(commands.Cog):
         embed.add_field(
             name="Timeout Tools (Manager/Ownership) — νέο",
             value=(
-                "`/untimeout <user> [reason]` — αντικατέστησε το παλιό `!untimeout`\n"
-                "`/scan-timeouts` — σκανάρει το server και δείχνει με mentions ποια μέλη "
-                "έχουν ενεργό timeout αυτή τη στιγμή"
-            ),
-            inline=False,
-        )
-        embed.add_field(
-            name="Support Voice Notifier — νέο (αυτόματο, όχι command)",
-            value=(
-                "Όταν κάποιος μπαίνει στο Support voice channel, στέλνεται αυτόματα "
-                "Notifier panel με τα στοιχεία του χρήστη. Το panel έχει κουμπί "
-                "**Scan Timeouts** (Manager/Ownership only) που ανοίγει το ίδιο scan "
-                "με το `/scan-timeouts`."
+                "`/untimeout <user> [reason]`"
+                "`/scan-timeouts`"
             ),
             inline=False,
         )
@@ -56,7 +45,7 @@ class PanelCommand(commands.Cog):
         )
         embed.add_field(name="DM All (Founder only)", value="`!dmall <text>`", inline=False)
         embed.add_field(
-            name="Slash Panels (Staff/Manager/Ownership)",
+            name="Slash Panels (Manager/Ownership)",
             value=(
                 "`/panel-support`\n`/panel-civilian-job`\n`/panel-criminal-job`\n"
                 "`/panel-donate`\n`/panel-applications`\n`/panel-staff-activity`"
