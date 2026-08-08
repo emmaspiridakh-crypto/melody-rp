@@ -10,7 +10,7 @@ def build_base_container(
     description: str = "",
     banner_url: str | None = None,
     thumbnail_url: str | None = None,
-     color: discord.Colour = discord.Colour.from_str("#FEE75C"),
+     color: discord.Colour = discord.Colour.from_str("#593695"),
 ) -> ui.Container:
     container = ui.Container(accent_colour=color)
 
