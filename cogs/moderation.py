@@ -49,9 +49,9 @@ class Moderation(commands.Cog):
     @is_manager_team()
     async def ban_cmd(self, ctx: commands.Context, member: discord.Member, *, reason: str = None):
         await member.ban(reason=reason)
-        await ctx.send(f"🔨 Ο {member.mention} έκανε ban.")
+        await ctx.send(f"Ο {member.mention} έκανε ban.")
         await _send_log(ctx.guild, config.LOG_BAN_CHANNEL_ID,
-                         _log_embed(ctx.guild, title="🔨 Ban", moderator=ctx.author,
+                         _log_embed(ctx.guild, title="Ban", moderator=ctx.author,
                                     target=f"{member.mention} (`{member.id}`)", reason=reason))
 
     @commands.command(name="unban")
@@ -83,7 +83,7 @@ class Moderation(commands.Cog):
         await member.timeout(delta, reason=reason)
         await ctx.send(f"Ο {member.mention} πήρε timeout για {duration}.")
         await _send_log(ctx.guild, config.LOG_TIMEOUT_CHANNEL_ID,
-                         _log_embed(ctx.guild, title="⏱️ Timeout", moderator=ctx.author,
+                         _log_embed(ctx.guild, title="Timeout", moderator=ctx.author,
                                     target=f"{member.mention} (`{member.id}`) — {duration}", reason=reason))
 
     @commands.command(name="clearmessages")
@@ -120,7 +120,7 @@ class Moderation(commands.Cog):
     @is_founder_only()
     async def dmall_cmd(self, ctx: commands.Context, *, text: str):
         sent, failed = 0, 0
-        status_msg = await ctx.send("📨 Στέλνετε βλακάκο περίμενε")
+        status_msg = await ctx.send("Στέλνετε βλακάκο περίμενε")
         for member in ctx.guild.members:
             if member.bot:
                 continue
@@ -132,7 +132,7 @@ class Moderation(commands.Cog):
             await __import__("asyncio").sleep(1)
         await status_msg.edit(content=f"Στάλθηκε σε {sent} μέλη. Αποτυχία σε {failed}.")
         await _send_log(ctx.guild, config.LOG_SAY_DMALL_CHANNEL_ID,
-                         _log_embed(ctx.guild, title="📨 DM All", moderator=ctx.author,
+                         _log_embed(ctx.guild, title="DM All", moderator=ctx.author,
                                     target=f"{sent} sent / {failed} failed", reason=text))
 
     @commands.command(name="dmuser")
@@ -146,7 +146,7 @@ class Moderation(commands.Cog):
             await ctx.send(f"Δεν μπόρεσα να στείλω μήνυμα στον {member.mention} (κλειστά DMs).")
             status = "failed"
         await _send_log(ctx.guild, config.LOG_SAY_DMALL_CHANNEL_ID,
-                         _log_embed(ctx.guild, title="📨 DM User", moderator=ctx.author,
+                         _log_embed(ctx.guild, title="DM User", moderator=ctx.author,
                                     target=f"{member.mention} ({status})", reason=text))
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
