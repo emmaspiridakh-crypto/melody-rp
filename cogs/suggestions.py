@@ -1,14 +1,3 @@
-"""
-cogs/suggestions.py
----------------------
-Requirement #4: Ο,τι γράψει κάποιος στο suggestions channel γίνεται αυτόματα
-ένα "suggestion" message με upvote/downvote κουμπιά (Components V2),
-μέτρηση ψήφων, και ping του συντάκτη.
-
-ΣΗΜΕΙΩΣΗ: Αυτό είναι το ΜΟΝΟ panel που ΔΕΝ ενεργοποιείται με slash command —
-ενεργοποιείται απλά όταν κάποιος γράψει στο config.SUGGESTIONS_CHANNEL_ID.
-"""
-
 from __future__ import annotations
 
 import datetime as _dt
@@ -22,7 +11,7 @@ from emojis import emoji
 from utils import storage
 from utils.components import build_base_container, add_separator, add_action_row, add_text
 
-STORE_NAME = "suggestions"  # data/suggestions.json
+STORE_NAME = "suggestions"  
 
 GREEK_DAYS = ["Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή"]
 GREEK_MONTHS = [
@@ -88,7 +77,6 @@ class Suggestions(commands.Cog):
         except discord.Forbidden:
             pass
 
-        # Στέλνουμε πρώτα placeholder για να πάρουμε ID, μετά edit με το σωστό custom_id
         temp_view = self._build_view(author=author, text=content, upvotes=0, downvotes=0, msg_id=0, created_at=created_at)
         sent = await message.channel.send(view=temp_view)
 
