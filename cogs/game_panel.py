@@ -69,7 +69,7 @@ class GamePanel(commands.Cog):
         await interaction.response.defer(ephemeral=True)
         view = await self.build_panel(interaction.guild)
         await interaction.channel.send(view=view)
-        await interaction.followup.send("✅ Το game panel στάλθηκε.", ephemeral=True)
+        await interaction.followup.send("Το game panel στάλθηκε.", ephemeral=True)
 
 
 async def setup(bot: commands.Bot):
