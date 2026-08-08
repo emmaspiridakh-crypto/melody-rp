@@ -1,10 +1,3 @@
-"""
-cogs/autorole.py
--------------------
-Όταν μπαίνει νέο μέλος στο server, παίρνει αυτόματα τον ρόλο config.AUTOROLE_ID.
-Μόνο σε ανθρώπους - τα bots ΔΕΝ παίρνουν τον ρόλο.
-"""
-
 import discord
 from discord.ext import commands
 
