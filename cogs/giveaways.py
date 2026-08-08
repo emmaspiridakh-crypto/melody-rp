@@ -361,7 +361,7 @@ class Giveaways(commands.Cog):
             f"{winners_str}"
         )
 
-        container = ui.Container(accent_colour=discord.Colour.gold() if not is_ended else discord.Colour.greyple())
+        container = ui.Container(accent_colour=discord.Colour.from_str("#593695") if not is_ended else discord.Colour.greyple())
 
         if config.GIVEAWAY_BANNER_URL:
             container.add_item(ui.MediaGallery(discord.MediaGalleryItem(media=config.GIVEAWAY_BANNER_URL)))
@@ -395,7 +395,7 @@ class Giveaways(commands.Cog):
         return view
 
     def build_info_panel(self, gw: dict) -> ui.LayoutView:
-        container = ui.Container(accent_colour=discord.Colour.blurple())
+        container = ui.Container(accent_colour=discord.Colour.from_str("#593695"))
         container.add_item(ui.TextDisplay(
             f"## {emoji('giveaway','info')} Giveaway Management\n"
             f"**ID:** `#{gw['id']}` | **Έπαθλο:** {gw['prize']}\n"
@@ -729,7 +729,7 @@ class Giveaways(commands.Cog):
                 lines.append(f"*... και {len(entries) - 50} ακόμα*")
             participant_text = "\n".join(lines)
 
-        container = ui.Container(accent_colour=discord.Colour.blurple())
+        container = ui.Container(accent_colour=discord.Colour.from_str("#593695"))
         container.add_item(ui.TextDisplay(
             f"## {emoji('giveaway','participants')} Συμμετέχοντες — `#{gw_id}`\n"
             f"**Σύνολο:** {len(entries)}\n\n{participant_text}"
