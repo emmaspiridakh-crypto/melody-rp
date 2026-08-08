@@ -43,6 +43,12 @@ class StaffActivity(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.deaf_mute_check_loop.start()
+        persistent_view = ui.LayoutView(timeout=None)
+        persistent_container = ui.Container(accent_colour=discord.Colour.from_str("#593695"))
+        persistent_container.add_item(ui.ActionRow())
+        persistent_container.children[-1].add_item(self._make_refresh_button())
+        persistent_view.add_item(persistent_container)
+        self.bot.add_view(persistent_view)
 
     def cog_unload(self):
         self.deaf_mute_check_loop.cancel()
@@ -124,6 +130,23 @@ class StaffActivity(commands.Cog):
         await self.bot.wait_until_ready()
 
 
+    def _make_refresh_button(self) -> ui.Button:
+        refresh_btn = ui.Button(label="Refresh", style=discord.ButtonStyle.secondary,
+                                 emoji="🔄", custom_id="staff_activity_refresh")
+
+        async def _on_refresh(interaction: discord.Interaction):
+            member = interaction.user
+            allowed_ids = {config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID}
+            has_access = any(r.id in allowed_ids for r in getattr(member, "roles", []))
+            if not has_access:
+                await interaction.response.send_message("Δεν έχεις δικαίωμα να κάνεις refresh.", ephemeral=True)
+                return
+            new_view = self._build_panel_view(interaction.guild)
+            await interaction.response.edit_message(view=new_view)
+
+        refresh_btn.callback = _on_refresh
+        return refresh_btn
+
     def _build_panel_view(self, guild: discord.Guild) -> ui.LayoutView:
         store = storage.get_store(STORE_NAME)
         totals = dict(store)
@@ -156,8 +179,7 @@ class StaffActivity(commands.Cog):
         add_separator(container)
         add_text(container, f"**Live Status**\n{on_duty_text}")
         add_separator(container)
-        refresh_btn = ui.Button(label="Refresh", style=discord.ButtonStyle.secondary,
-                                 emoji="🔄", custom_id="staff_activity_refresh")
+        refresh_btn = self._make_refresh_button()
         add_action_row(container, refresh_btn)
 
         view = ui.LayoutView(timeout=None)
@@ -200,20 +222,6 @@ class StaffActivity(commands.Cog):
             await interaction.response.send_message("Μόνο το Ownership μπορεί να κάνει reset.", ephemeral=True)
         else:
             raise error
-
-    @commands.Cog.listener()
-    async def on_interaction(self, interaction: discord.Interaction):
-        if interaction.type != discord.InteractionType.component:
-            return
-        if interaction.data.get("custom_id") == "staff_activity_refresh":
-            member = interaction.user
-            has_ownership = any(r.id == config.OWNERSHIP_ROLE_ID for r in getattr(member, "roles", []))
-            if not has_ownership:
-                await interaction.response.send_message("Μόνο το Ownership μπορεί να κάνει refresh.", ephemeral=True)
-                return
-            view = self._build_panel_view(interaction.guild)
-            await interaction.response.edit_message(view=view)
-
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(StaffActivity(bot))
