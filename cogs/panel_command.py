@@ -27,7 +27,7 @@ class PanelCommand(commands.Cog):
         embed.add_field(
             name="Timeout Tools (Manager/Ownership)",
             value=(
-                "`/untimeout <user> [reason]`"
+                "`/untimeout <user> [reason]`\n"
                 "`/scan-timeouts`"
             ),
             inline=False,
@@ -63,7 +63,7 @@ class PanelCommand(commands.Cog):
         embed.add_field(
             name="Giveaway (Ownership only)",
             value=(
-                "`/giveaway create`\n`/giveaway delete`"
+                "`/giveaway create`\n`/giveaway delete`\n"
                 "`/giveaway list`"
             ),
             inline=False,
