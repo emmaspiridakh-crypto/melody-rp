@@ -1,53 +1,35 @@
-"""
-config.py
----------
-ΟΛΑ τα IDs του server μπαίνουν εδώ. Κάθε placeholder λέει ΤΙ ΑΚΡΙΒΩΣ πρέπει να βάλεις.
-Βάλε τα IDs σαν integers (χωρίς εισαγωγικά), π.χ. OWNERSHIP_ROLE_ID = 123456789012345678
-
-Tip: Discord Developer Mode -> Right click role/channel/category -> Copy ID
-"""
-
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# =========================================================
-# BOT TOKEN (μπαίνει στο .env locally, ή Environment Variable στο Render)
-# =========================================================
+
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-GUILD_ID = 1489977148725788722   # PLACEHOLDER: το ID του server σου
+GUILD_ID = 1489977148725788722 
 PREFIX = "!"
 
-# =========================================================
-# ROLES
-# =========================================================
-OWNERSHIP_ROLE_ID        = 1532007403787124816 # PLACEHOLDER
-MANAGER_ROLE_ID          = 1531987866228363315 # PLACEHOLDER
-STAFF_ROLE_ID            = 1531262921278099569# PLACEHOLDER
-DEVELOPER_ROLE_ID        = 1531987093461667921 # PLACEHOLDER
-CIVILIAN_MANAGER_ROLE_ID = 1530985516499992776  # PLACEHOLDER
-CRIMINAL_MANAGER_ROLE_ID = 1530985516499992776  # PLACEHOLDER
-DONATE_MANAGER_ROLE_ID   = 1532035699375608039  # PLACEHOLDER
-FOUNDER_ROLE_ID          = 1530985002148433930   # PLACEHOLDER
+OWNERSHIP_ROLE_ID        = 1532007403787124816
+MANAGER_ROLE_ID          = 1531987866228363315
+STAFF_ROLE_ID            = 1531262921278099569
+DEVELOPER_ROLE_ID        = 1531987093461667921 
+CIVILIAN_MANAGER_ROLE_ID = 1530985516499992776 
+CRIMINAL_MANAGER_ROLE_ID = 1530985516499992776  
+DONATE_MANAGER_ROLE_ID   = 1532035699375608039  
+FOUNDER_ROLE_ID          = 1530985002148433930 
 ON_DUTY_ROLE_ID          = 1532038134278389991
 STAFF_MANAGER_ID         = 1532008264240468038
-ANTICHEAT_MANAGER_ID = 1532038774215676075# PLACEHOLDER
-EVENT_MANAGER_ID = 1532038774215676075 # PLACEHOLDER - TODO: set your real Event Manager role ID
+ANTICHEAT_MANAGER_ID = 1532038774215676075
+EVENT_MANAGER_ID = 1532038774215676075
 APPLICATION_ACCEPTED_ROLES = {
     "staff": 1532038506887643267  , 
     "manager": 1532038506887643267 ,  
 }
-AUTOROLE_ID = 1530986809914425514 # PLACEHOLDER (μπαίνει σε accepted applicants)
+AUTOROLE_ID = 1530986809914425514 
 
-# Ρόλοι που θεωρούνται "staff team" γενικά (χρησιμοποιείται σε αρκετά permission checks)
 STAFF_TEAM_ROLE_IDS = [STAFF_ROLE_ID, MANAGER_ROLE_ID, OWNERSHIP_ROLE_ID]
 
-# =========================================================
-# TICKET SYSTEM #1 - SUPPORT (dropdown, 4 κατηγορίες, ξεχωριστό category η κάθε μία)
-# =========================================================
-TICKET_SUPPORT_CHANNEL_ID = 1530982949942595683  # PLACEHOLDER: πού θα σταλεί το panel (slash command target)
+TICKET_SUPPORT_CHANNEL_ID = 1530982949942595683 
 TICKET_SUPPORT_BANNER_URL = "https://i.imgur.com/uVNyHW3.jpeg"
 TICKET_SUPPORT_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
@@ -58,117 +40,86 @@ CAT_TICKET_STREAMER_ID  = 1531298299204599818
 CAT_TICKET_ANTICHEAT_ID = 1532056211917377607
 CAT_TICKET_REWARD_ID    = 1532052105005760533
 
-# =========================================================
-# TICKET SYSTEM #2 - JOBS (button, civilian + criminal, ΙΔΙΟ category και τα δύο)
-# =========================================================
-CAT_JOBS_ID = 1532054279328763965  # PLACEHOLDER (ΚΟΙΝΟ category civilian + criminal)
+CAT_JOBS_ID = 1532054279328763965 
 
 TICKET_JOBS_BANNER_URL = "https://i.imgur.com/EYMdX6R.jpeg"
 TICKET_JOBS_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
-# =========================================================
-# TICKET SYSTEM #3 - DONATE (button, δικό του category)
-# =========================================================
-CAT_DONATE_ID = 1532021724680425654 # PLACEHOLDER category
+
+CAT_DONATE_ID = 1532021724680425654
 
 TICKET_DONATE_BANNER_URL = "https://i.imgur.com/MOJeSQL.jpeg"
 TICKET_DONATE_THUMBNAIL_URL = "https://i.imgur.com/pXVPwRN.gif"
 
-# Channel όπου γίνεται ping το staff team όταν ανοίγει ΟΠΟΙΟΔΗΠΟΤΕ ticket (support/jobs/donate) ή temp voice
-STAFF_PING_CHANNEL_ID = 1532059202636349630  # PLACEHOLDER
+STAFF_PING_CHANNEL_ID = 1532059202636349630 
 
-# Ticket logs (open + close) - ΞΕΧΩΡΙΣΤΟ από το STAFF_PING_CHANNEL_ID
-LOG_TICKETS_CHANNEL_ID = 1531009060285976796    # PLACEHOLDER
-TICKET_NOTIFIER_CHANNEL_ID = 1531009060285976796  # PLACEHOLDER: channel όπου στέλνεται το "Notifier" panel (Components V2) όταν κάποιος ανοίγει Support ticket
 
-# =========================================================
-# SUGGESTIONS
-# =========================================================
-SUGGESTIONS_CHANNEL_ID = 1531099169790365778    # PLACEHOLDER (εδώ ο χρήστης γράφει -> γίνεται auto suggestion)
+LOG_TICKETS_CHANNEL_ID = 1531009060285976796 
+TICKET_NOTIFIER_CHANNEL_ID = 1531009060285976796 
 
-# =========================================================
-# TEMP VOICE
-# =========================================================
-TEMP_VOICE_JOIN_CHANNEL_ID = 1531290031086370838    # PLACEHOLDER ("Join to Create" channel)
-TEMP_VOICE_CATEGORY_ID     = 1532060398017052773   # PLACEHOLDER (εκεί δημιουργούνται τα temp channels)
+SUGGESTIONS_CHANNEL_ID = 1531099169790365778   
 
-# =========================================================
-# SUPPORT VOICE JOIN NOTIFIER (Components V2 panel σαν του Support ticket)
-# =========================================================
-# ⚠️ ΒΑΛΕ ΕΔΩ το πραγματικό VOICE channel ID του Support (ΟΧΙ text channel,
-# ΟΧΙ το TICKET_SUPPORT_CHANNEL_ID). Πριν ήταν λάθος copy-paste από το
-# TICKET_SUPPORT_CHANNEL_ID (text channel) -> γι' αυτό δεν έκανε ποτέ notify.
-SUPPORT_VOICE_CHANNEL_ID = 1531290031086370838  # PLACEHOLDER: βάλε το πραγματικό Support VOICE channel ID
-# Ξεχωριστό από τα υπόλοιπα notify - αναλαμβάνει το STAFF_PING_CHANNEL_ID
-# (πριν το χρησιμοποιούσε ΚΑΙ το temp_voice.py, τώρα εκείνο δεν κάνει πια ping).
+
+TEMP_VOICE_JOIN_CHANNEL_ID = 1531290031086370838  
+TEMP_VOICE_CATEGORY_ID     = 1532060398017052773  
+
+
+SUPPORT_VOICE_CHANNEL_ID = 1531290031086370838
+
 SUPPORT_VOICE_NOTIFIER_CHANNEL_ID = 1532059202636349630
-SUPPORT_VOICE_PING_ROLE_ID = 1531262921278099569        # ποιος ρόλος γίνεται ping στο panel
+SUPPORT_VOICE_PING_ROLE_ID = 1531262921278099569     
 
-# =========================================================
-# STAFF ACTIVITY
-# =========================================================
 ACTIVITY_CHANNELS_IDS = {
     "activity1": 1492565367057551430, 
     "activity2": 1492565369905221672,
     "activity3": 1532001359111520428,
 } 
-STAFF_ACTIVITY_LOG_CHANNEL_ID   = 1532061200991653888 # PLACEHOLDER
+STAFF_ACTIVITY_LOG_CHANNEL_ID   = 1532061200991653888
 STAFF_ACTIVITY_BANNER_URL = "http://i.imgur.com/uYFW8Nl.png"
 
-# =========================================================
-# LOGS (Requirement 8)
-# =========================================================
-LOG_JOIN_LEAVE_CHANNEL_ID = 1531004433314611302 # PLACEHOLDER (join + leave μαζί)
-LOG_ROLES_CHANNEL_ID      = 1531005010479943720  # PLACEHOLDER
-LOG_CHANNELS_CHANNEL_ID   = 1531005065639235765 # PLACEHOLDER (create/delete/edit channels)
-LOG_MESSAGES_CHANNEL_ID   = 1531004775976669336 # PLACEHOLDER (edit/delete messages)
-LOG_VOICE_CHANNEL_ID      = 1531004826207391844 # PLACEHOLDER
-LOG_APPLICATIONS_CHANNEL_ID = 1532032702931533864     # PLACEHOLDER (fallback + shared staff/manager channel)
+LOG_JOIN_LEAVE_CHANNEL_ID = 1531004433314611302 
+LOG_ROLES_CHANNEL_ID      = 1531005010479943720 
+LOG_CHANNELS_CHANNEL_ID   = 1531005065639235765 
+LOG_MESSAGES_CHANNEL_ID   = 1531004775976669336
+LOG_VOICE_CHANNEL_ID      = 1531004826207391844 
+LOG_APPLICATIONS_CHANNEL_ID = 1532032702931533864
 
-# Ξεχωριστό channel ανά τύπο αίτησης όταν στέλνεται (Send) — ΕΚΤΟΣ από staff/manager
-# που πάνε μαζί στο ΙΔΙΟ channel (LOG_APPLICATIONS_CHANNEL_ID).
-# Βάλε το δικό σου channel ID για κάθε τύπο.
+
 LOG_APPLICATIONS_CHANNEL_IDS = {
-    "elas":  1532032751962947875   ,  # PLACEHOLDER: βάλε το channel ΕΛ.ΑΣ
-    "ekab":  1532032818186813683   ,  # PLACEHOLDER: βάλε το channel ΕΚΑΒ
-    "staff": 1532032702931533864   ,   # staff + manager πάνε ΜΑΖΙ εδώ
-    "manager": 1532032702931533864 ,   # staff + manager πάνε ΜΑΖΙ εδώ
+    "elas":  1532032751962947875   , 
+    "ekab":  1532032818186813683   , 
+    "staff": 1532032702931533864   ,  
+    "manager": 1532032702931533864 ,   
 }
 
-# Invite logs: ποιος προσκάλεσε ποιον, πόσα invites/μέλη μέσα/έχουν φύγει ανά inviter
-INVITE_LOG_CHANNEL_ID = 1532067024573042910   # PLACEHOLDER
 
-# Command logs (Requirement 5) - ξεχωριστό log ανά εντολή, εκτός say/say2/dmall (κοινό)
-LOG_BAN_CHANNEL_ID          = 1532021145606291609 # PLACEHOLDER
-LOG_UNBAN_CHANNEL_ID        = 1532021145606291609# PLACEHOLDER
-LOG_KICK_CHANNEL_ID         = 1532021231434334219  # PLACEHOLDER
-LOG_TIMEOUT_CHANNEL_ID      = 1532021202518802552  # PLACEHOLDER
-LOG_UNTIMEOUT_CHANNEL_ID    = 1532021202518802552# PLACEHOLDER
-LOG_CLEARMESSAGES_CHANNEL_ID = 1531004387068219614 # PLACEHOLDER
-LOG_SAY_DMALL_CHANNEL_ID    = 1531004387068219614 # PLACEHOLDER (say, say2, dmall μαζί)
+INVITE_LOG_CHANNEL_ID = 1532067024573042910 
 
-# =========================================================
-# APPLICATIONS (Requirement 9)
-# =========================================================
-APPLICATIONS_PANEL_CHANNEL_ID =  1531096531740921877  # PLACEHOLDER (πού στέλνεται το panel)
-APPLICATIONS_CATEGORY_ID      = 1532021430085222480 # PLACEHOLDER (εκεί ανοίγουν τα application channels)
+
+LOG_BAN_CHANNEL_ID          = 1532021145606291609 
+LOG_UNBAN_CHANNEL_ID        = 1532021145606291609
+LOG_KICK_CHANNEL_ID         = 1532021231434334219 
+LOG_TIMEOUT_CHANNEL_ID      = 1532021202518802552
+LOG_UNTIMEOUT_CHANNEL_ID    = 1532021202518802552
+LOG_CLEARMESSAGES_CHANNEL_ID = 1531004387068219614 
+LOG_SAY_DMALL_CHANNEL_ID    = 1531004387068219614
+
+APPLICATIONS_PANEL_CHANNEL_ID =  1531096531740921877  
+APPLICATIONS_CATEGORY_ID      = 1532021430085222480
 APPLICATIONS_BANNER_URL = "https://i.imgur.com/yTTFxAt.jpeg"
 
-LOG_GIVEAWAY_CHANNEL_ID = 1532021275017347142   # PLACEHOLDER
-GIVEAWAY_BANNER_URL = "http://i.imgur.com/uYFW8Nl.png"  # PLACEHOLDER (banner στο giveaway panel)
+LOG_GIVEAWAY_CHANNEL_ID = 1532021275017347142 
+GIVEAWAY_BANNER_URL = "http://i.imgur.com/uYFW8Nl.png" 
 
-# =========================================================
-# WARNING SYSTEM
-# =========================================================
+
 LOG_WARN_CHANNEL_ID = 1532021307426865182
-WARN_ANNOUNCE_CHANNEL_ID = 1530999884487069836 # PLACEHOLDER (logs για /warn και /remove-warning)
+WARN_ANNOUNCE_CHANNEL_ID = 1530999884487069836 
 
-# Ρόλος που παίρνει ο χρήστης ανάλογα με το επίπεδο του warning
-WARN_ROLE_1_ID = 1530990052069474395  # PLACEHOLDER
-WARN_ROLE_2_ID = 1532067601692233818  # PLACEHOLDER
-WARN_ROLE_3_ID = 1532067803950092449 # PLACEHOLDER
 
-# Τύποι αιτήσεων -> ερωτήσεις. Βάλε τις ερωτήσεις σου εδώ (μία λίστα string ανά τύπο).
+WARN_ROLE_1_ID = 1530990052069474395  
+WARN_ROLE_2_ID = 1532067601692233818  
+WARN_ROLE_3_ID = 1532067803950092449 
+
 APPLICATION_TYPES = {
     "elas": {
         "label": "ΕΛ.ΑΣ",
@@ -249,20 +200,15 @@ APPLICATION_TYPES = {
         ],
     },
 }
-# =========================================================
-# SERVER STATUS (Requirement 10) - voice channels που λειτουργούν ως "οθόνες"
-# =========================================================
-STATUS_MEMBERS_CHANNEL_ID = 1531997362728210524  # PLACEHOLDER (π.χ. "👥 Members: 120")
-STATUS_ONLINE_CHANNEL_ID  = 1532065088243105822  # PLACEHOLDER
-STATUS_BOOSTS_CHANNEL_ID  = 1532065273778278701 # PLACEHOLDER
-STATUS_BOTS_CHANNEL_ID    = 1532065388907593788  # PLACEHOLDER
 
-# =========================================================
-# GAME STATUS PANEL (Roblox)
-# =========================================================
-ROBLOX_UNIVERSE_ID = 8011462852   # PLACEHOLDER: universe id του Roblox game
+STATUS_MEMBERS_CHANNEL_ID = 1531997362728210524  
+STATUS_ONLINE_CHANNEL_ID  = 1532065088243105822  
+STATUS_BOOSTS_CHANNEL_ID  = 1532065273778278701 
+STATUS_BOTS_CHANNEL_ID    = 1532065388907593788  
+
+ROBLOX_UNIVERSE_ID = 8011462852 
 ROBLOX_GAME_URL = f"{ROBLOX_UNIVERSE_ID}"
-GAME_PANEL_BANNER_URL = "https://i.imgur.com/1J0C67l.png"  # PLACEHOLDER: banner εικόνα
+GAME_PANEL_BANNER_URL = "https://i.imgur.com/1J0C67l.png" 
 
 # =========================================================
 # ΓΕΝΙΚΑ
