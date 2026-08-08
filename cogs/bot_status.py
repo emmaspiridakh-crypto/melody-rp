@@ -1,12 +1,3 @@
-"""
-cogs/bot_status.py
----------------------
-Επιτρέπει στο Ownership να αλλάζει το status του bot κάτω από το όνομά του
-(π.χ. "Watching Server") με ένα slash command — χωρίς να πειράξει κώδικα.
-Το status αποθηκεύεται (μέσω utils.storage -> Turso) και ξαναμπαίνει
-αυτόματα κάθε φορά που το bot ξεκινάει/κάνει redeploy.
-"""
-
 from __future__ import annotations
 
 import discord
@@ -45,7 +36,7 @@ class BotStatus(commands.Cog):
     async def on_ready(self):
         await self._apply_saved_status()
 
-    @app_commands.command(name="setstatus", description="Αλλάζει το status του bot (μόνο Ownership)")
+    @app_commands.command(name="setstatus", description="Αλλάζει το status του bot")
     @app_commands.describe(type="Τύπος status", text="Το κείμενο που θα εμφανίζεται")
     @app_commands.choices(type=[
         app_commands.Choice(name="Playing", value="playing"),
@@ -55,14 +46,14 @@ class BotStatus(commands.Cog):
     ])
     async def setstatus(self, interaction: discord.Interaction, type: app_commands.Choice[str], text: str):
         if not member_has_any_role(interaction.user, [config.OWNERSHIP_ROLE_ID]):
-            await interaction.response.send_message("⛔ Μόνο το Ownership μπορεί να αλλάξει το status του bot.", ephemeral=True)
+            await interaction.response.send_message(" Μόνο το Ownership μπορεί να αλλάξει το status του bot.", ephemeral=True)
             return
 
         storage.save(STORE, {"type": type.value, "text": text})
         await self._apply_saved_status()
 
         await interaction.response.send_message(
-            f"✅ Το status ενημερώθηκε: **{type.name} {text}**", ephemeral=True
+            f"Το status ενημερώθηκε: **{type.name} {text}**", ephemeral=True
         )
 
 
