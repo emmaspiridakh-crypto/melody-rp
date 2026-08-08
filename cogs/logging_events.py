@@ -108,7 +108,7 @@ class LoggingEvents(commands.Cog):
         if message.author.bot or not message.guild:
             return
         embed = _base_embed(message.guild, title="Message Deleted", color=0xED4245)
-        embed.add_field(name="Moderator", value=f"{message.author.mention} (`{message.author.id}`)", inline=False)
+        embed.add_field(name="Χρήστης", value=f"{message.author.mention} (`{message.author.id}`)", inline=False)
         embed.add_field(name="Channel", value=message.channel.mention, inline=False)
         embed.add_field(name="Περιεχόμενο", value=(message.content or "*[χωρίς κείμενο / attachment]*")[:1000], inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
@@ -119,7 +119,7 @@ class LoggingEvents(commands.Cog):
         if before.author.bot or not before.guild or before.content == after.content:
             return
         embed = _base_embed(before.guild, title="Message Edited")
-        embed.add_field(name="Moderator", value=f"{before.author.mention} (`{before.author.id}`)", inline=False)
+        embed.add_field(name="Χρήστης", value=f"{before.author.mention} (`{before.author.id}`)", inline=False)
         embed.add_field(name="Channel", value=before.channel.mention, inline=False)
         embed.add_field(name="Πριν", value=(before.content or "—")[:500], inline=False)
         embed.add_field(name="Μετά", value=(after.content or "—")[:500], inline=False)
