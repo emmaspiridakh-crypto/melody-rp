@@ -1,22 +1,3 @@
-"""
-cogs/giveaways.py
-------------------
-Premium Giveaway System με Components V2 panels και SQLite persistence.
-
-Ροή:
-  /giveaway create  → Modal (prize, duration, winners, required role)
-                    → Panel στο channel (Components V2 + server icon thumbnail)
-                    → Background task τελειώνει το giveaway αυτόματα
-  /giveaway delete  → Διαγράφει giveaway (ownership only)
-
-Buttons:
-  🎉 Join           → Toggle join/leave, disabled όταν τελειώσει
-  ℹ️ Information    → Ephemeral panel (μόνο host + authorized staff)
-                       ✏️ Edit | 🔄 Reroll | ⏹️ End | 👥 View Participants
-
-Logs: Embeds (με server icon thumbnail) για κάθε action.
-"""
-
 from __future__ import annotations
 
 import asyncio
@@ -37,14 +18,11 @@ from emojis import emoji
 from utils.permissions import has_roles
 from utils import turso
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
-
 def _gen_id(length: int = 6) -> str:
     return "".join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 
 def _parse_duration(text: str) -> Optional[datetime.timedelta]:
-    """Δέχεται: 1d, 2h, 30m, 1d2h30m κλπ."""
     pattern = r"(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?"
     m = re.fullmatch(pattern, text.strip().lower())
     if not m or not any(m.groups()):
@@ -54,7 +32,6 @@ def _parse_duration(text: str) -> Optional[datetime.timedelta]:
 
 
 def _parse_signed_duration(text: str) -> Optional[datetime.timedelta]:
-    """Ίδιο με _parse_duration αλλά δέχεται προαιρετικό '-' μπροστά για μείωση χρόνου (π.χ. -30m)."""
     text = text.strip()
     negative = text.startswith("-")
     if negative:
@@ -93,8 +70,6 @@ def _is_authorized(member: discord.Member, host_id: int) -> bool:
         return True
     return has_roles(member, config.STAFF_TEAM_ROLE_IDS)
 
-# ── Modals ────────────────────────────────────────────────────────────────────
-
 class CreateGiveawayModal(ui.Modal, title="Δημιουργία Giveaway"):
     prize = ui.TextInput(label="Έπαθλο", placeholder="π.χ. Discord Nitro", max_length=200, required=True)
     duration = ui.TextInput(label="Διάρκεια", placeholder="π.χ. 1d, 2h, 30m, 1h30m", max_length=20, required=True)
@@ -108,13 +83,13 @@ class CreateGiveawayModal(ui.Modal, title="Δημιουργία Giveaway"):
     async def on_submit(self, interaction: discord.Interaction):
         delta = _parse_duration(str(self.duration))
         if not delta:
-            await interaction.response.send_message("⚠️ Λάθος format διάρκειας. Χρήση: `1d`, `2h`, `30m`, `1h30m`", ephemeral=True)
+            await interaction.response.send_message("Λάθος format διάρκειας. Χρήση: `1d`, `2h`, `30m`, `1h30m`", ephemeral=True)
             return
 
         try:
             winner_count = max(1, int(str(self.winners)))
         except ValueError:
-            await interaction.response.send_message("⚠️ Ο αριθμός νικητών πρέπει να είναι αριθμός.", ephemeral=True)
+            await interaction.response.send_message("Ο αριθμός νικητών πρέπει να είναι αριθμός.", ephemeral=True)
             return
 
         role_id = None
@@ -123,10 +98,10 @@ class CreateGiveawayModal(ui.Modal, title="Δημιουργία Giveaway"):
             try:
                 role_id = int(role_raw)
                 if not interaction.guild.get_role(role_id):
-                    await interaction.response.send_message("⚠️ Δεν βρέθηκε ρόλος με αυτό το ID.", ephemeral=True)
+                    await interaction.response.send_message("Δεν βρέθηκε ρόλος με αυτό το ID.", ephemeral=True)
                     return
             except ValueError:
-                await interaction.response.send_message("⚠️ Το Required Role ID πρέπει να είναι αριθμός.", ephemeral=True)
+                await interaction.response.send_message("Το Required Role ID πρέπει να είναι αριθμός.", ephemeral=True)
                 return
 
         await interaction.response.defer(ephemeral=True)
@@ -154,7 +129,7 @@ class EditGiveawayModal(ui.Modal, title="Επεξεργασία Giveaway"):
         await interaction.response.defer(ephemeral=True)
         gw = await self.cog.db_get(self.giveaway_id)
         if not gw or gw["status"] != "active":
-            await interaction.followup.send("❌ Το giveaway δεν βρέθηκε ή έχει λήξει.", ephemeral=True)
+            await interaction.followup.send("Το giveaway δεν βρέθηκε ή έχει λήξει.", ephemeral=True)
             return
 
         changes = []
@@ -210,7 +185,7 @@ class EditGiveawayModal(ui.Modal, title="Επεξεργασία Giveaway"):
             except discord.NotFound:
                 pass
 
-        await interaction.followup.send(f"✅ Το giveaway ενημερώθηκε:\n" + "\n".join(changes), ephemeral=True)
+        await interaction.followup.send(f"Το giveaway ενημερώθηκε:\n" + "\n".join(changes), ephemeral=True)
 
         host = guild.get_member(gw["host_id"])
         await _send_log(guild, _log_embed(guild,
@@ -243,7 +218,7 @@ class AddMemberModal(ui.Modal, title="Προσθήκη Μελών στο Giveawa
         await interaction.response.defer(ephemeral=True)
         gw = await self.cog.db_get(self.giveaway_id)
         if not gw or gw["status"] != "active":
-            await interaction.followup.send("❌ Το giveaway δεν βρέθηκε ή έχει λήξει.", ephemeral=True)
+            await interaction.followup.send("Το giveaway δεν βρέθηκε ή έχει λήξει.", ephemeral=True)
             return
 
         tokens = re.split(r"[,\s]+", str(self.users).strip())
@@ -284,11 +259,11 @@ class AddMemberModal(ui.Modal, title="Προσθήκη Μελών στο Giveawa
         if added:
             summary.append(f"{emoji('giveaway','add_member')} Προστέθηκαν: " + ", ".join(f"<@{u}>" for u in added))
         if already:
-            summary.append("ℹ️ Ήδη συμμετείχαν: " + ", ".join(already))
+            summary.append("Ήδη συμμετείχαν: " + ", ".join(already))
         if missing:
-            summary.append("⚠️ Δεν βρέθηκαν στον server: " + ", ".join(missing))
+            summary.append("Δεν βρέθηκαν στον server: " + ", ".join(missing))
         if invalid:
-            summary.append("❌ Μη έγκυρα ID: " + ", ".join(invalid))
+            summary.append("Μη έγκυρα ID: " + ", ".join(invalid))
         await interaction.followup.send("\n".join(summary) or "Καμία αλλαγή.", ephemeral=True)
 
         if added:
@@ -303,16 +278,11 @@ class AddMemberModal(ui.Modal, title="Προσθήκη Μελών στο Giveawa
                 ]
             ))
 
-
-# ── Main Cog ──────────────────────────────────────────────────────────────────
-
 class Giveaways(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     async def cog_load(self):
-        # Turso (ή local sqlite fallback αν δεν έχουν μπει τα TURSO_* env vars) —
-        # έτσι τα giveaways ΔΕΝ χάνονται σε redeploy/reset στο Render.
         await turso.async_execute("""
             CREATE TABLE IF NOT EXISTS giveaways (
                 id TEXT PRIMARY KEY,
@@ -334,8 +304,6 @@ class Giveaways(commands.Cog):
 
     async def cog_unload(self):
         self.check_giveaways.cancel()
-
-    # ── DB helpers (Turso) ───────────────────────────────────────────────────
 
     @staticmethod
     def _row_to_gw(d: dict) -> dict:
@@ -365,8 +333,6 @@ class Giveaways(commands.Cog):
         await turso.async_execute("UPDATE giveaways SET entries = ? WHERE id = ?",
                                    [json.dumps(entries), giveaway_id])
 
-    # ── Panel Builder ─────────────────────────────────────────────────────────
-
     def build_panel(self, gw: dict, guild: discord.Guild) -> ui.LayoutView:
         is_ended = gw["status"] != "active"
         entries_count = len(gw["entries"])
@@ -394,7 +360,6 @@ class Giveaways(commands.Cog):
             f"{role_str}"
             f"{winners_str}"
         )
-        # Σκόπιμα ΔΕΝ εμφανίζεται το ID εδώ — φαίνεται μόνο στο Information panel.
 
         container = ui.Container(accent_colour=discord.Colour.gold() if not is_ended else discord.Colour.greyple())
 
@@ -470,8 +435,6 @@ class Giveaways(commands.Cog):
         view.add_item(container)
         return view
 
-    # ── Create ────────────────────────────────────────────────────────────────
-
     async def create_giveaway(self, interaction: discord.Interaction, *, prize: str,
                                delta: datetime.timedelta, winner_count: int, role_id: Optional[int]):
         guild = interaction.guild
@@ -502,7 +465,7 @@ class Giveaways(commands.Cog):
         """, [gw_id, guild.id, interaction.channel.id, msg.id, interaction.user.id,
               prize, winner_count, end_ts, role_id, "[]", "active", "[]", now])
 
-        await interaction.followup.send(f"✅ Giveaway δημιουργήθηκε! ID: `#{gw_id}`", ephemeral=True)
+        await interaction.followup.send(f" Giveaway δημιουργήθηκε! ID: `#{gw_id}`", ephemeral=True)
 
         role_str = f"<@&{role_id}>" if role_id else "Καμία"
         await _send_log(guild, _log_embed(guild,
@@ -517,8 +480,6 @@ class Giveaways(commands.Cog):
                 ("Required Role", role_str, True),
             ]
         ))
-
-    # ── End ───────────────────────────────────────────────────────────────────
 
     async def end_giveaway(self, gw: dict, *, reroll: bool = False, forced_by: Optional[discord.Member] = None):
         guild = self.bot.get_guild(gw["guild_id"])
@@ -560,7 +521,7 @@ class Giveaways(commands.Cog):
                 ann_container.add_item(ui.TextDisplay(
                     f"## {emoji('giveaway','winner')} {'Rerolled Winner' if reroll else 'Giveaway Ended'}!\n"
                     f"{emoji('giveaway','prize')} **Έπαθλο:** {prize}\n"
-                    f"🏆 **{'Νέος ν' if reroll else 'Ν'}ικητ{'ές' if len(winners) > 1 else 'ής'}:** {mentions}\n"
+                    f"**{'Νέος ν' if reroll else 'Ν'}ικητ{'ές' if len(winners) > 1 else 'ής'}:** {mentions}\n"
                     f"Συγχαρητήρια! {emoji('giveaway','giveaway')}"
                 ))
                 ann_view = ui.LayoutView(timeout=None)
@@ -572,7 +533,7 @@ class Giveaways(commands.Cog):
                     if member:
                         try:
                             await member.send(
-                                f"🎉 Κέρδισες **{prize}** στον server **{guild.name}**! "
+                                f"Κέρδισες **{prize}** στον server **{guild.name}**! "
                                 f"Επικοινώνησε με τον δημιουργό του giveaway ή άνοιξε ένα ticket για να λάβεις το έπαθλο σου."
                             )
                         except discord.Forbidden:
@@ -601,8 +562,6 @@ class Giveaways(commands.Cog):
             color=log_color, fields=fields
         ))
 
-    # ── Background task ───────────────────────────────────────────────────────
-
     @tasks.loop(seconds=10)
     async def check_giveaways(self):
         try:
@@ -617,8 +576,6 @@ class Giveaways(commands.Cog):
     @check_giveaways.before_loop
     async def before_check(self):
         await self.bot.wait_until_ready()
-
-    # ── Interaction listener ──────────────────────────────────────────────────
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: discord.Interaction):
@@ -641,19 +598,17 @@ class Giveaways(commands.Cog):
         elif custom_id.startswith("gw_addmember:"):
             await self._handle_add_member(interaction, custom_id.split(":", 1)[1])
 
-    # ── Handlers ──────────────────────────────────────────────────────────────
-
     async def _handle_join(self, interaction: discord.Interaction, gw_id: str):
         gw = await self.db_get(gw_id)
         if not gw or gw["status"] != "active":
-            await interaction.response.send_message("❌ Αυτό το giveaway έχει λήξει.", ephemeral=True)
+            await interaction.response.send_message("Αυτό το giveaway έχει λήξει.", ephemeral=True)
             return
 
         if gw.get("required_role_id"):
             role = interaction.guild.get_role(gw["required_role_id"])
             if role and role not in interaction.user.roles:
                 await interaction.response.send_message(
-                    f"❌ Χρειάζεσαι τον ρόλο {role.mention} για να συμμετέχεις.", ephemeral=True
+                    f"Χρειάζεσαι τον ρόλο {role.mention} για να συμμετέχεις.", ephemeral=True
                 )
                 return
 
@@ -686,7 +641,7 @@ class Giveaways(commands.Cog):
             except discord.HTTPException:
                 pass
             await interaction.response.send_message(
-                f"{emoji('giveaway','join')} Μπήκες στο giveaway **{gw['prize']}**! Καλή τύχη! 🍀", ephemeral=True
+                f"{emoji('giveaway','join')} Μπήκες στο giveaway **{gw['prize']}**! Καλή τύχη!", ephemeral=True
             )
             await _send_log(interaction.guild, _log_embed(interaction.guild,
                 title=f"{emoji('giveaway','join')} Giveaway Joined",
@@ -699,7 +654,7 @@ class Giveaways(commands.Cog):
     async def _handle_info(self, interaction: discord.Interaction, gw_id: str):
         gw = await self.db_get(gw_id)
         if not gw:
-            await interaction.response.send_message("❌ Giveaway δεν βρέθηκε.", ephemeral=True)
+            await interaction.response.send_message("Giveaway δεν βρέθηκε.", ephemeral=True)
             return
         if not _is_authorized(interaction.user, gw["host_id"]):
             await interaction.response.send_message(
@@ -712,57 +667,57 @@ class Giveaways(commands.Cog):
     async def _handle_edit(self, interaction: discord.Interaction, gw_id: str):
         gw = await self.db_get(gw_id)
         if not gw:
-            await interaction.response.send_message("❌ Giveaway δεν βρέθηκε.", ephemeral=True)
+            await interaction.response.send_message("Giveaway δεν βρέθηκε.", ephemeral=True)
             return
         if not _is_authorized(interaction.user, gw["host_id"]):
-            await interaction.response.send_message("⛔ Δεν έχεις δικαίωμα.", ephemeral=True)
+            await interaction.response.send_message("Δεν έχεις δικαίωμα.", ephemeral=True)
             return
         if gw["status"] != "active":
-            await interaction.response.send_message("❌ Το giveaway έχει ήδη λήξει.", ephemeral=True)
+            await interaction.response.send_message("Το giveaway έχει ήδη λήξει.", ephemeral=True)
             return
         await interaction.response.send_modal(EditGiveawayModal(gw_id, self))
 
     async def _handle_reroll(self, interaction: discord.Interaction, gw_id: str):
         gw = await self.db_get(gw_id)
         if not gw:
-            await interaction.response.send_message("❌ Giveaway δεν βρέθηκε.", ephemeral=True)
+            await interaction.response.send_message("Giveaway δεν βρέθηκε.", ephemeral=True)
             return
         if not _is_authorized(interaction.user, gw["host_id"]):
-            await interaction.response.send_message("⛔ Δεν έχεις δικαίωμα.", ephemeral=True)
+            await interaction.response.send_message("Δεν έχεις δικαίωμα.", ephemeral=True)
             return
         await interaction.response.defer(ephemeral=True)
         gw_fresh = await self.db_get(gw_id)
         pool = [e for e in gw_fresh["entries"] if e not in gw_fresh["winners"]] or gw_fresh["entries"]
         if not pool:
-            await interaction.followup.send("❌ Δεν υπάρχουν συμμετοχές για reroll.", ephemeral=True)
+            await interaction.followup.send("Δεν υπάρχουν συμμετοχές για reroll.", ephemeral=True)
             return
         gw_fresh["status"] = "ended"
         gw_fresh["entries"] = pool
         await self.end_giveaway(gw_fresh, reroll=True, forced_by=interaction.user)
-        await interaction.followup.send("✅ Reroll ολοκληρώθηκε!", ephemeral=True)
+        await interaction.followup.send("Reroll ολοκληρώθηκε!", ephemeral=True)
 
     async def _handle_end_now(self, interaction: discord.Interaction, gw_id: str):
         gw = await self.db_get(gw_id)
         if not gw:
-            await interaction.response.send_message("❌ Giveaway δεν βρέθηκε.", ephemeral=True)
+            await interaction.response.send_message("Giveaway δεν βρέθηκε.", ephemeral=True)
             return
         if not _is_authorized(interaction.user, gw["host_id"]):
-            await interaction.response.send_message("⛔ Δεν έχεις δικαίωμα.", ephemeral=True)
+            await interaction.response.send_message("Δεν έχεις δικαίωμα.", ephemeral=True)
             return
         if gw["status"] != "active":
-            await interaction.response.send_message("❌ Το giveaway έχει ήδη λήξει.", ephemeral=True)
+            await interaction.response.send_message("Το giveaway έχει ήδη λήξει.", ephemeral=True)
             return
         await interaction.response.defer(ephemeral=True)
         await self.end_giveaway(gw, forced_by=interaction.user)
-        await interaction.followup.send("✅ Το giveaway τερματίστηκε.", ephemeral=True)
+        await interaction.followup.send("Το giveaway τερματίστηκε.", ephemeral=True)
 
     async def _handle_participants(self, interaction: discord.Interaction, gw_id: str):
         gw = await self.db_get(gw_id)
         if not gw:
-            await interaction.response.send_message("❌ Giveaway δεν βρέθηκε.", ephemeral=True)
+            await interaction.response.send_message("Giveaway δεν βρέθηκε.", ephemeral=True)
             return
         if not _is_authorized(interaction.user, gw["host_id"]):
-            await interaction.response.send_message("⛔ Δεν έχεις δικαίωμα.", ephemeral=True)
+            await interaction.response.send_message("Δεν έχεις δικαίωμα.", ephemeral=True)
             return
 
         entries = gw["entries"]
@@ -786,17 +741,16 @@ class Giveaways(commands.Cog):
     async def _handle_add_member(self, interaction: discord.Interaction, gw_id: str):
         gw = await self.db_get(gw_id)
         if not gw:
-            await interaction.response.send_message("❌ Giveaway δεν βρέθηκε.", ephemeral=True)
+            await interaction.response.send_message("Giveaway δεν βρέθηκε.", ephemeral=True)
             return
         if not _is_authorized(interaction.user, gw["host_id"]):
-            await interaction.response.send_message("⛔ Δεν έχεις δικαίωμα.", ephemeral=True)
+            await interaction.response.send_message("Δεν έχεις δικαίωμα.", ephemeral=True)
             return
         if gw["status"] != "active":
-            await interaction.response.send_message("❌ Το giveaway έχει ήδη λήξει.", ephemeral=True)
+            await interaction.response.send_message("Το giveaway έχει ήδη λήξει.", ephemeral=True)
             return
         await interaction.response.send_modal(AddMemberModal(gw_id, self))
 
-    # ── Slash Commands ────────────────────────────────────────────────────────
 
     giveaway_group = app_commands.Group(name="giveaway", description="Giveaway commands")
 
@@ -811,7 +765,7 @@ class Giveaways(commands.Cog):
     async def giveaway_delete(self, interaction: discord.Interaction, giveaway_id: str):
         gw = await self.db_get(giveaway_id.upper())
         if not gw:
-            await interaction.response.send_message("❌ Giveaway δεν βρέθηκε.", ephemeral=True)
+            await interaction.response.send_message("Giveaway δεν βρέθηκε.", ephemeral=True)
             return
 
         guild = interaction.guild
@@ -825,7 +779,7 @@ class Giveaways(commands.Cog):
 
         await turso.async_execute("DELETE FROM giveaways WHERE id = ?", [giveaway_id.upper()])
 
-        await interaction.response.send_message(f"✅ Giveaway `#{giveaway_id.upper()}` διαγράφηκε.", ephemeral=True)
+        await interaction.response.send_message(f"Giveaway `#{giveaway_id.upper()}` διαγράφηκε.", ephemeral=True)
         await _send_log(guild, _log_embed(guild,
             title=f"{emoji('giveaway','end')} Giveaway Deleted",
             color=0xED4245,
