@@ -1,22 +1,3 @@
-"""
-cogs/timeout_tools.py
-------------------------
-Permissions: Manager, Ownership (ΟΧΙ Staff) — ίδιο scope με τα άλλα moderation commands.
-
-/scan-timeouts
-    Σκανάρει όλα τα μέλη του server, βρίσκει ποια έχουν ενεργό timeout
-    αυτή τη στιγμή, και ανοίγει ένα panel (embed) που τα αναφέρει με
-    mention, μαζί με το πότε λήγει το timeout του καθενός.
-
-/untimeout
-    Αφαιρεί το timeout από έναν χρήστη. Αντικαθιστά πλήρως το παλιό
-    !untimeout (cogs/moderation.py) — logάρει στο ίδιο channel
-    (config.LOG_UNTIMEOUT_CHANNEL_ID).
-
-build_scan_timeouts_embed(guild)
-    Reusable helper (async — κάνει guild.chunk() πρώτα).
-"""
-
 from __future__ import annotations
 
 import datetime
@@ -50,13 +31,6 @@ async def _send_log(guild: discord.Guild, channel_id: int, embed: discord.Embed)
 
 
 async def build_scan_timeouts_embed(guild: discord.Guild) -> discord.Embed:
-    """Σκανάρει το guild.members και φτιάχνει το embed με όσα μέλη έχουν
-    ενεργό timeout αυτή τη στιγμή. Χρησιμοποιείται από το /scan-timeouts.
-
-    ΣΗΜΑΝΤΙΚΟ: κάνει guild.chunk() πρώτα αν το member cache δεν είναι πλήρες —
-    σε μεγάλα servers το discord.py δεν έχει πάντα ΟΛΑ τα members cached
-    αυτόματα (ακόμα κι όταν το members intent είναι ενεργό), οπότε χωρίς αυτό
-    το scan μπορεί να βγάζει ελλιπή/λάθος αποτελέσματα."""
     if not guild.chunked:
         try:
             await guild.chunk(cache=True)
@@ -69,7 +43,7 @@ async def build_scan_timeouts_embed(guild: discord.Guild) -> discord.Embed:
         m for m in guild.members if m.timed_out_until and m.timed_out_until > now
     ]
 
-    embed = discord.Embed(title="🔎 Scan Timeouts", color=config.EMBED_COLOR, timestamp=now)
+    embed = discord.Embed(title="Scan Timeouts", color=config.EMBED_COLOR, timestamp=now)
     if guild.icon:
         embed.set_thumbnail(url=guild.icon.url)
 
@@ -83,7 +57,6 @@ async def build_scan_timeouts_embed(guild: discord.Guild) -> discord.Embed:
         for member in timed_out
     ]
 
-    # Discord embed field/description limits -> κόβουμε σε chunks
     chunk, chunks, length = [], [], 0
     for line in lines:
         if length + len(line) + 1 > 3900:
@@ -105,9 +78,6 @@ class TimeoutTools(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # =====================================================
-    # /scan-timeouts
-    # =====================================================
     @app_commands.command(name="scan-timeouts", description="Σκανάρει το server και δείχνει ποια άτομα timeout")
     @slash_is_manager_team()
     async def scan_timeouts_cmd(self, interaction: discord.Interaction):
@@ -115,23 +85,17 @@ class TimeoutTools(commands.Cog):
         embed = await build_scan_timeouts_embed(interaction.guild)
         await interaction.followup.send(embed=embed, ephemeral=True)
 
-    # =====================================================
-    # /untimeout
-    # =====================================================
     @app_commands.command(name="untimeout", description="Αφαιρεί το timeout από έναν χρήστη")
     @app_commands.describe(user="Ο χρήστης από τον οποίο θα αφαιρεθεί το timeout", reason="Λόγος (προαιρετικό)")
     @slash_is_manager_team()
     async def untimeout_cmd(self, interaction: discord.Interaction, user: discord.Member, reason: str = None):
         if not user.timed_out_until or user.timed_out_until <= datetime.datetime.now(datetime.timezone.utc):
-            await interaction.response.send_message(f"⚠️ Ο {user.mention} δεν έχει ενεργό timeout.", ephemeral=True)
+            await interaction.response.send_message(f"Ο {user.mention} δεν έχει ενεργό timeout.", ephemeral=True)
             return
 
-        # Το bot χρειάζεται δικαίωμα "Moderate Members" ΚΑΙ ο ρόλος του bot
-        # πρέπει να είναι ΠΙΟ ΨΗΛΑ στην ιεραρχία από τον χρήστη - αλλιώς η
-        # Discord API γυρνάει Forbidden και η εντολή "δεν κάνει τίποτα".
         if not interaction.guild.me.guild_permissions.moderate_members:
             await interaction.response.send_message(
-                "❌ Το bot δεν έχει το δικαίωμα **Moderate Members** στο server — πήγαινε στα "
+                "Το bot δεν έχει το δικαίωμα **Moderate Members** στο server — πήγαινε στα "
                 "Server Settings > Roles και δώσε το στον ρόλο του bot.",
                 ephemeral=True,
             )
@@ -141,27 +105,24 @@ class TimeoutTools(commands.Cog):
             await user.timeout(None, reason=reason)
         except discord.Forbidden:
             await interaction.response.send_message(
-                f"❌ Δεν μπόρεσα να αφαιρέσω το timeout από {user.mention} — ο ρόλος του bot "
+                f"Δεν μπόρεσα να αφαιρέσω το timeout από {user.mention} — ο ρόλος του bot "
                 "πρέπει να είναι πιο ψηλά από τον δικό του στην ιεραρχία ρόλων.",
                 ephemeral=True,
             )
             return
         except discord.HTTPException as e:
-            await interaction.response.send_message(f"❌ Σφάλμα `{e}`", ephemeral=True)
+            await interaction.response.send_message(f"Σφάλμα `{e}`", ephemeral=True)
             return
 
         await interaction.response.send_message(f"Αφαιρέθηκε το timeout από {user.mention}.", ephemeral=True)
 
         await _send_log(interaction.guild, config.LOG_UNTIMEOUT_CHANNEL_ID,
-                         _log_embed(interaction.guild, title="✅ Untimeout", moderator=interaction.user,
+                         _log_embed(interaction.guild, title="Untimeout", moderator=interaction.user,
                                     target=f"{user.mention} (`{user.id}`)", reason=reason))
 
-    # =====================================================
-    # Error handling (permission checks)
-    # =====================================================
     async def cog_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
         if isinstance(error, app_commands.CheckFailure):
-            msg = "⛔ Δεν έχεις δικαίωμα να χρησιμοποιήσεις αυτή την εντολή."
+            msg = "Δεν έχεις δικαίωμα να χρησιμοποιήσεις αυτή την εντολή."
             if interaction.response.is_done():
                 await interaction.followup.send(msg, ephemeral=True)
             else:
