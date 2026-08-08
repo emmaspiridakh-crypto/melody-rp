@@ -211,10 +211,8 @@ class StaffActivity(commands.Cog):
             if not has_ownership:
                 await interaction.response.send_message("Μόνο το Ownership μπορεί να κάνει refresh.", ephemeral=True)
                 return
-            await interaction.response.defer()
             view = self._build_panel_view(interaction.guild)
-
-            await interaction.channel.send(view=view)
+            await interaction.response.edit_message(view=view)
 
 
 async def setup(bot: commands.Bot):
