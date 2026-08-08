@@ -19,7 +19,7 @@ class TempVoice(commands.Cog):
         if after.channel and after.channel.id == config.TEMP_VOICE_JOIN_CHANNEL_ID:
             category = guild.get_channel(config.TEMP_VOICE_CATEGORY_ID)
             new_channel = await guild.create_voice_channel(
-                name=f"🔊 {member.display_name}", category=category,
+                name=f"{member.display_name}", category=category,
             )
             await new_channel.set_permissions(member, manage_channels=True, connect=True, speak=True)
             await member.move_to(new_channel)
