@@ -1,26 +1,8 @@
-"""
-utils/turso.py
-----------------
-Κεντρική σύνδεση με Turso (hosted libSQL) ώστε ΟΛΑ τα δεδομένα του bot
-(giveaways, invites, bot status, κτλ) να επιβιώνουν σε redeploy / reset
-στο Render — δεν χάνεται τίποτα, δεν χρειάζεται να ξαναστείλεις κανένα panel.
 
-Env vars (Render -> Environment, ή .env local):
-    TURSO_DATABASE_URL   π.χ. libsql://warzone-rp-<org>.turso.io
-    TURSO_AUTH_TOKEN     το token από `turso db tokens create <db-name>`
-
-Αν λείπουν (π.χ. τρέχεις local χωρίς Turso account), το bot πέφτει
-αυτόματα σε τοπικό αρχείο SQLite (data/local.db) — δουλεύει κανονικά,
-απλά δεν είναι persistent σε redeploy.
-
-Χρήση:
-    from utils.turso import async_execute, sync_execute
+from utils.turso import async_execute, sync_execute
 
     rows = await async_execute("SELECT * FROM giveaways WHERE id = ?", [gw_id])
     rows = sync_execute("SELECT value FROM kv_store WHERE store = ?", ["invite_stats"])
-
-Κάθε "rows" είναι list[dict] (κάθε dict = μία γραμμή, κλειδιά = ονόματα στηλών).
-"""
 
 from __future__ import annotations
 
@@ -38,7 +20,6 @@ _LOCAL_PATH = os.path.join(_DATA_DIR, "local.db")
 
 
 def is_configured() -> bool:
-    """True αν έχουν μπει τα Turso env vars (αλλιώς χρησιμοποιούμε local sqlite fallback)."""
     return bool(TURSO_URL)
 
 
