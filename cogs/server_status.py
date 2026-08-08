@@ -1,16 +1,3 @@
-"""
-cogs/server_status.py
-------------------------
-Live stats σε voice channels.
-Χρησιμοποιεί debounce (1 δευτερόλεπτο) ώστε πολλαπλά γρήγορα events
-να συγχωνεύονται σε ένα μόνο API call — αμεσότητα χωρίς rate limit spam.
-Backup loop κάθε 5 λεπτά για ασφάλεια.
-
-ΑΠΑΡΑΙΤΗΤΟ στο main.py:
-    intents.members   = True
-    intents.presences = True
-"""
-
 from __future__ import annotations
 
 import asyncio
@@ -34,9 +21,8 @@ def _counts(guild: discord.Guild):
 class ServerStatus(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self._pending: dict[int, asyncio.Task] = {}  # guild_id -> debounce task
+        self._pending: dict[int, asyncio.Task] = {}
 
-    # ── Core update ──────────────────────────────────────────────────────────
 
     async def update_stats(self, guild: discord.Guild):
         members, online, boosts, bots = _counts(guild)
@@ -51,23 +37,17 @@ class ServerStatus(commands.Cog):
         for key, (channel_id, new_name) in targets.items():
             cache_key = f"{guild.id}:{key}"
             if _last_values.get(cache_key) == new_name:
-                continue  # δεν άλλαξε τίποτα, skip
+                continue 
             channel = guild.get_channel(channel_id)
             if channel:
                 try:
                     await channel.edit(name=new_name)
                     _last_values[cache_key] = new_name
                 except discord.HTTPException:
-                    pass  # rate limit του Discord — θα ξαναπροσπαθήσει στο επόμενο trigger
-
-    # ── Debounce ─────────────────────────────────────────────────────────────
+                    pass  
 
     def _schedule_update(self, guild: discord.Guild):
-        """
-        Ακυρώνει τυχόν εκκρεμή update για αυτό το guild και φτιάχνει νέο
-        με 1 δευτερόλεπτο καθυστέρηση. Έτσι αν έρθουν 10 events μαζί,
-        γίνεται μόνο 1 API call.
-        """
+
         existing = self._pending.get(guild.id)
         if existing and not existing.done():
             existing.cancel()
@@ -79,8 +59,6 @@ class ServerStatus(commands.Cog):
 
         self._pending[guild.id] = asyncio.create_task(_delayed())
 
-    # ── Backup loop (κάθε 5 λεπτά) ──────────────────────────────────────────
-
     @tasks.loop(minutes=5)
     async def _refresh_loop(self):
         for guild in self.bot.guilds:
@@ -89,8 +67,6 @@ class ServerStatus(commands.Cog):
     @_refresh_loop.before_loop
     async def _before_refresh(self):
         await self.bot.wait_until_ready()
-
-    # ── Events ────────────────────────────────────────────────────────────────
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -118,7 +94,6 @@ class ServerStatus(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
-        # Πιάνει αλλαγές bot status (π.χ. νέο bot προστέθηκε/αφαιρέθηκε)
         if before.bot != after.bot:
             self._schedule_update(after.guild)
 
