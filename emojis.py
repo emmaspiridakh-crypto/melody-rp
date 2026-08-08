@@ -1,8 +1,4 @@
 
-from emojis import emoji
-    emoji("tickets", "close")
-
-
 EMOJIS = {
     "tickets": {
         "ownership": "<:ownership:1531212404782792755>",
@@ -70,6 +66,12 @@ EMOJIS = {
         "person": "<:notif_person:1532335931099709581>",  
         "clock": "<:notif_clock:1532336564049412188>",    
         "check": "<:notif_check:1511631201662799925>",  
+    },
+    "status": {
+        "members": "<:notif_person:1532335931099709581>",
+        "online": "<a:on_duty:1494013796535107584>",
+        "boost": "<a:donate:1532336271295250542>",
+        "bots": "<:notif_hash:1533548060175765644>",
     },
     "panel": {
         "list": "<:list:1532338541055709386>",
