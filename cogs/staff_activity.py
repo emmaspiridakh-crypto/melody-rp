@@ -1,7 +1,3 @@
-"""
-cogs/staff_activity.py
-"""
-
 from __future__ import annotations
 
 import datetime
@@ -21,8 +17,8 @@ STORE_NAME = "staff_activity"
 
 active_sessions: dict[int, datetime.datetime] = {}
 
-# Μελος -> πότε ξεκίνησε να είναι deaf+mute συνεχόμενα (server ή self)
-DEAFEN_MUTE_KICK_SECONDS = 20 * 60  # 20 λεπτά
+
+DEAFEN_MUTE_KICK_SECONDS = 20 * 60 
 _deaf_mute_since: dict[int, datetime.datetime] = {}
 
 
@@ -70,21 +66,19 @@ class StaffActivity(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
-        # ACTIVITY_CHANNELS_IDS is a dict of 3 channel ids -> track on-duty time across all of them
+
         target_ids = set(config.ACTIVITY_CHANNELS_IDS.values())
         role = member.guild.get_role(config.ON_DUTY_ROLE_ID)
 
         before_in = bool(before.channel and before.channel.id in target_ids)
         after_in = bool(after.channel and after.channel.id in target_ids)
 
-        # Entered one of the 3 activity channels from outside all of them
         if after_in and not before_in:
             active_sessions[member.id] = datetime.datetime.now(datetime.timezone.utc)
             if role:
                 await member.add_roles(role, reason="Staff Activity - on duty")
             await self._log(member.guild, member, joined=True)
 
-        # Left all 3 activity channels (switching between the 3 channels does NOT stop the timer)
         elif before_in and not after_in:
             start = active_sessions.pop(member.id, None)
             duration = 0
@@ -97,7 +91,6 @@ class StaffActivity(commands.Cog):
                 await member.remove_roles(role, reason="Staff Activity - off duty")
             await self._log(member.guild, member, joined=False, duration_seconds=int(duration))
 
-        # ---- Deaf+Mute tracking (μόνο όσο είναι μέσα σε ένα από τα on-duty κανάλια) ----
         if after_in and _is_deaf_mute(after):
             _deaf_mute_since.setdefault(member.id, datetime.datetime.now(datetime.timezone.utc))
         else:
@@ -116,7 +109,7 @@ class StaffActivity(commands.Cog):
                     continue
                 if member.voice.channel.id not in target_ids:
                     continue
-                # ξαναέλεγχος στην τελευταία στιγμή, μη μας ξεφύγει race condition
+
                 if not _is_deaf_mute(member.voice):
                     continue
                 try:
@@ -130,7 +123,7 @@ class StaffActivity(commands.Cog):
     async def before_deaf_mute_check_loop(self):
         await self.bot.wait_until_ready()
 
-    # ---------------- Panel ----------------
+
     def _build_panel_view(self, guild: discord.Guild) -> ui.LayoutView:
         store = storage.get_store(STORE_NAME)
         totals = dict(store)
@@ -171,14 +164,14 @@ class StaffActivity(commands.Cog):
         view.add_item(container)
         return view
 
-    # FIX: CRITICAL — σπαστεί indentation στο original (await ήταν εκτός μεθόδου → SyntaxError)
+
     @app_commands.command(name="panel-staff-activity", description="Στέλνει το Staff Activity leaderboard panel")
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID)
     async def panel_staff_activity(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
         view = self._build_panel_view(interaction.guild)
         await interaction.channel.send(view=view)
-        await interaction.followup.send("✅ Στάλθηκε.", ephemeral=True)
+        await interaction.followup.send("Στάλθηκε.", ephemeral=True)
 
     @app_commands.command(name="resettime", description="Κάνει reset τον χρόνο on duty (όλο το panel ή έναν συγκεκριμένο χρήστη)")
     @app_commands.describe(user="Αν δοθεί, γίνεται reset μόνο ο χρόνος αυτού του χρήστη")
@@ -204,7 +197,7 @@ class StaffActivity(commands.Cog):
     @resettime.error
     async def resettime_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
         if isinstance(error, app_commands.MissingRole):
-            await interaction.response.send_message("⛔ Μόνο το Ownership μπορεί να κάνει reset.", ephemeral=True)
+            await interaction.response.send_message("Μόνο το Ownership μπορεί να κάνει reset.", ephemeral=True)
         else:
             raise error
 
@@ -216,11 +209,11 @@ class StaffActivity(commands.Cog):
             member = interaction.user
             has_ownership = any(r.id == config.OWNERSHIP_ROLE_ID for r in getattr(member, "roles", []))
             if not has_ownership:
-                await interaction.response.send_message("⛔ Μόνο το Ownership μπορεί να κάνει refresh.", ephemeral=True)
+                await interaction.response.send_message("Μόνο το Ownership μπορεί να κάνει refresh.", ephemeral=True)
                 return
             await interaction.response.defer()
             view = self._build_panel_view(interaction.guild)
-            # FIX: flags απαραίτητα για Components V2 στο edit_message
+
             await interaction.channel.send(view=view)
 
 
