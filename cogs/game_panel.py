@@ -1,13 +1,3 @@
-"""
-cogs/game_panel.py
----------------------
-/panel-game -> Components V2 panel: banner, separator, live status, separator,
-"Connect" κουμπί που πάει στη σελίδα του Roblox game (universe id στο config.py).
-
-Ζωντανό player count μέσω του δημόσιου Roblox games API (games.roblox.com).
-Αν το API δεν απαντήσει, δείχνει "—" αντί να σκάσει.
-"""
-
 from __future__ import annotations
 
 import aiohttp
