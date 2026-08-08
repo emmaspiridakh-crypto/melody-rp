@@ -30,7 +30,7 @@ AUTOROLE_ID = 1530986809914425514
 STAFF_TEAM_ROLE_IDS = [STAFF_ROLE_ID, MANAGER_ROLE_ID, OWNERSHIP_ROLE_ID]
 
 TICKET_SUPPORT_CHANNEL_ID = 1530982949942595683 
-TICKET_SUPPORT_BANNER_URL = "https://i.imgur.com/Wugt6ME.jpeg"
+TICKET_SUPPORT_BANNER_URL = "https://i.imgur.com/be8Qh4z.jpeg"
 TICKET_SUPPORT_THUMBNAIL_URL = "https://i.imgur.com/oUS96Me.gif"
 
 CAT_TICKET_OWNERSHIP_ID = 1531299362620047621 
@@ -42,13 +42,13 @@ CAT_TICKET_REWARD_ID    = 1532052105005760533
 
 CAT_JOBS_ID = 1532054279328763965 
 
-TICKET_JOBS_BANNER_URL = "https://i.imgur.com/Wugt6ME.jpeg"
+TICKET_JOBS_BANNER_URL = "https://i.imgur.com/m3rDp60.jpeg"
 TICKET_JOBS_THUMBNAIL_URL = "https://i.imgur.com/oUS96Me.gif"
 
 
 CAT_DONATE_ID = 1532021724680425654
 
-TICKET_DONATE_BANNER_URL = "https://i.imgur.com/Wugt6ME.jpeg"
+TICKET_DONATE_BANNER_URL = "https://i.imgur.com/qIyqLhn.jpeg"
 TICKET_DONATE_THUMBNAIL_URL = "https://i.imgur.com/oUS96Me.gif"
 
 STAFF_PING_CHANNEL_ID = 1532059202636349630 
@@ -75,7 +75,7 @@ ACTIVITY_CHANNELS_IDS = {
     "activity3": 1532001359111520428,
 } 
 STAFF_ACTIVITY_LOG_CHANNEL_ID   = 1532061200991653888
-STAFF_ACTIVITY_BANNER_URL = "https://i.imgur.com/Wugt6ME.jpeg"
+STAFF_ACTIVITY_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"
 
 LOG_JOIN_LEAVE_CHANNEL_ID = 1531004433314611302 
 LOG_ROLES_CHANNEL_ID      = 1531005010479943720 
@@ -106,10 +106,10 @@ LOG_SAY_DMALL_CHANNEL_ID    = 1531004387068219614
 
 APPLICATIONS_PANEL_CHANNEL_ID =  1531096531740921877  
 APPLICATIONS_CATEGORY_ID      = 1532021430085222480
-APPLICATIONS_BANNER_URL = "https://i.imgur.com/Wugt6ME.jpeg"
+APPLICATIONS_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"
 
 LOG_GIVEAWAY_CHANNEL_ID = 1532021275017347142 
-GIVEAWAY_BANNER_URL = "https://i.imgur.com/Wugt6ME.jpeg" 
+GIVEAWAY_BANNER_URL = "https://i.imgur.com/3EPzoQG.png" 
 
 
 LOG_WARN_CHANNEL_ID = 1532021307426865182
@@ -129,7 +129,6 @@ APPLICATION_TYPES = {
             "Έχετε εμπειρία σαν Αστυνομικός σε άλλη πόλη ? (Αν ναι. Σε ποια πόλη και μέχρι τι θέση)?.",
             "Το ονοματεπώνυμο σας (RP)?.",
             "Πόσες ώρες θα μπορείτε να διαθέτετε καθημερινά σαν Αστυνομικός?.",
-            "Γιατί θέλετε να ενταχθείτε στο σώμα της Ελληνικής Αστυνομίας?.",
             "Γιατί θέλετε να ενταχθείτε στο σώμα της Ελληνικής Αστυνομίας?.",
             "Έχετε ποινικό μητρώο στην ΕΛ.ΑΣ? (in game).",
             "Πείτε μας μερικά από τα αρνητικά χαρακτηριστικά σας.",
@@ -208,6 +207,6 @@ STATUS_BOTS_CHANNEL_ID    = 1532065388907593788
 
 ROBLOX_UNIVERSE_ID = 8011462852 
 ROBLOX_GAME_URL = f"https://www.roblox.com/games/{ROBLOX_UNIVERSE_ID}"
-GAME_PANEL_BANNER_URL = "https://i.imgur.com/Wugt6ME.jpeg" 
+GAME_PANEL_BANNER_URL = "https://i.imgur.com/3EPzoQG.png" 
 
-EMBED_COLOR = int(os.getenv("EMBED_COLOR", "593695"), 16)
+EMBED_COLOR = int(os.getenv("EMBED_COLOR", "#9B59B6"), 16)
