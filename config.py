@@ -209,4 +209,4 @@ ROBLOX_UNIVERSE_ID = 8011462852
 ROBLOX_GAME_URL = f"https://www.roblox.com/games/{ROBLOX_UNIVERSE_ID}"
 GAME_PANEL_BANNER_URL = "https://i.imgur.com/3EPzoQG.png" 
 
-EMBED_COLOR = int(os.getenv("EMBED_COLOR", "#9B59B6"), 16)
+EMBED_COLOR = int(os.getenv("EMBED_COLOR", "9B59B6"), 16)
