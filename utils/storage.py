@@ -1,16 +1,3 @@
-"""
-utils/storage.py
-------------------
-Απλό key-value persistence layer. Η δημόσια συνάρτηση (load/save/get_store/
-update_store) είναι ΙΔΙΑ όπως πριν, οπότε κανένα άλλο cog δεν χρειάζεται
-αλλαγή — αλλά τώρα από κάτω αποθηκεύει σε Turso (hosted libSQL) αντί για
-τοπικά .json αρχεία, ώστε να ΜΗΝ χάνεται τίποτα σε redeploy/reset στο Render.
-
-Αν δεν έχουν μπει τα TURSO_DATABASE_URL / TURSO_AUTH_TOKEN env vars, πέφτει
-αυτόματα σε τοπικά JSON αρχεία (ίδια συμπεριφορά με πριν) ώστε να δουλεύει
-και local χωρίς Turso account.
-"""
-
 import json
 import os
 import threading
@@ -43,9 +30,6 @@ def _ensure_schema():
 def _path(name: str) -> str:
     return os.path.join(DATA_DIR, f"{name}.json")
 
-
-# ---------- Τοπικό JSON fallback (μόνο όταν δεν υπάρχει Turso config) ----------
-
 def _local_load(name: str, default):
     path = _path(name)
     if not os.path.exists(path):
@@ -64,8 +48,6 @@ def _local_save(name: str, data) -> None:
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-
-# ---------- Δημόσιο API ----------
 
 def load(name: str, default=None):
     if default is None:
@@ -86,7 +68,6 @@ def load(name: str, default=None):
 
 
 def save(name: str, data) -> None:
-    # Πάντα κρατάμε και τοπικό αντίγραφο σαν backup/cache — ελαφρύ, δεν πειράζει.
     _local_save(name, data)
 
     if not turso.is_configured():
@@ -103,8 +84,6 @@ def save(name: str, data) -> None:
     except Exception as e:
         print(f"[storage] Turso save απέτυχε για '{name}' (έμεινε μόνο το local αντίγραφο): {e}")
 
-
-# ---------- Συγκεκριμένα helpers ----------
 
 def get_store(name: str, default=None) -> dict:
     return load(name, default or {})
