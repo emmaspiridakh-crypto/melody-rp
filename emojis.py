@@ -10,7 +10,7 @@ EMOJIS = {
         "ping": "<a:ping:1532130668107005982>",
         "ticket": "<:ticket:1535587061216579724>",
         "reward": "<:reward:1492571665333223607>", 
-        "bullet": "<a:bullet:1492271082336551104>",  
+        "bullet": "<:bullet:1535605416757825646>",  
     },
     "jobs": {
         "civilian": "<:civilian:1532335931099709581>",
@@ -24,7 +24,7 @@ EMOJIS = {
         "downvote": "<:downvote:1494068533917651125>",
         "suggestion": "<a:suggestion:1498777433753653359>",
         "submitted": "<a:submitted:1492271082336551104>", 
-        "bullet": "<a:bullet:1492271082336551104>",       
+        "bullet": "<:bullet:1535605416757825646>",       
     },
     "moderation": {
         "ban": "<:ban:1532334999410442350>",
