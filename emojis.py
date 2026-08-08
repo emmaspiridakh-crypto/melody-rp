@@ -1,14 +1,14 @@
 
 EMOJIS = {
     "tickets": {
-        "ownership": "<:ownership:1531212404782792755>",
+        "ownership": "<:ownership:1535586964416495707>",
         "banapeal": "<a:banapeal:1532334999410442350>",
         "support": "<a:support:1532130695433027794>",
         "streamer": "<:streamer:1498769681161388203>",
         "anticheat": "<:anticheat:1532130590885810411>",
         "close": "<:close:1532130509331632359>",
         "ping": "<a:ping:1532130668107005982>",
-        "ticket": "<:ticket:1532335582213308597>",
+        "ticket": "<:ticket:1535587061216579724>",
         "reward": "<:reward:1492571665333223607>", 
         "bullet": "<a:bullet:1492271082336551104>",  
     },
@@ -43,10 +43,10 @@ EMOJIS = {
     "staff_activity": {
         "on_duty": "<a:on_duty:1494013796535107584>",
         "off_duty": "<a:off_duty:1494013821344415746>",
-        "leaderboard": "<:leaderboard:1531212404782792755>",
+        "leaderboard": "<:leaderboard:1535586964416495707>",
     },
     "applications": {
-        "elas": "<:elas:1499816748776558613>",
+        "elas": "<:elas:1535550649910165534>",
         "ekab": "<:ekab:1532337538595946616>",
         "staff": "<:staff:1532337651020075189>",
         "manager": "<:manager:1493964247993028698>",
@@ -66,12 +66,6 @@ EMOJIS = {
         "person": "<:notif_person:1532335931099709581>",  
         "clock": "<:notif_clock:1532336564049412188>",    
         "check": "<:notif_check:1511631201662799925>",  
-    },
-    "status": {
-        "members": "<:notif_person:1532335931099709581>",
-        "online": "<a:on_duty:1494013796535107584>",
-        "boost": "<a:donate:1532336271295250542>",
-        "bots": "<:notif_hash:1533548060175765644>",
     },
     "panel": {
         "list": "<:list:1532338541055709386>",
