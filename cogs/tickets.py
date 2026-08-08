@@ -259,7 +259,6 @@ class Tickets(commands.Cog):
         container = build_base_container(
             title=f"{emoji('tickets', 'ticket')} Melody Roleplay Ticket",
             banner_url=config.TICKET_SUPPORT_BANNER_URL,
-            thumbnail_url=config.TICKET_SUPPORT_THUMBNAIL_URL,
         )
         add_separator(container)
         _add_info_lines(container, [
