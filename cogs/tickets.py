@@ -293,21 +293,37 @@ class Tickets(commands.Cog):
         await interaction.channel.send(view=view)
         await interaction.response.send_message("Στάλθηκε.", ephemeral=True)
 
-    @app_commands.command(name="panel-civilian-job", description="Στέλνει το Civilian Job panel")
+    @app_commands.command(name="panel-jobs", description="Στέλνει το Civilian/Criminal Job panel (ένα panel, δύο κουμπιά)")
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
-    async def panel_civilian_job(self, interaction: discord.Interaction):
-        await self._send_button_panel(
-            interaction, key="civilian_job", title="Melody Roleplay - Civilian Job Ticket",
-            description="Πάτησε το κουμπί και επικοινώνησε με τον αρμόδιο Manager για να πάρεις το civilian job σου.",
-        )
+    async def panel_jobs(self, interaction: discord.Interaction):
+        ttypes = _ticket_types()
+        civ, crim = ttypes["civilian_job"], ttypes["criminal_job"]
 
-    @app_commands.command(name="panel-criminal-job", description="Στέλνει το Criminal Job panel")
-    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
-    async def panel_criminal_job(self, interaction: discord.Interaction):
-        await self._send_button_panel(
-            interaction, key="criminal_job", title="Melody Roleplay - Criminal Job Ticket",
-            description="Πάτησε το κουμπί και επικοινώνησε με τον αρμόδιο Manager για να πάρεις το criminal job σου.",
+        container = build_base_container(
+            title=f"{emoji('tickets', 'ticket')} Melody Roleplay - Job Ticket",
+            banner_url=config.TICKET_JOBS_BANNER_URL,
+            thumbnail_url=config.TICKET_JOBS_THUMBNAIL_URL,
         )
+        add_separator(container)
+        _add_info_lines(container, [
+            "**Πάτησε το κατάλληλο κουμπί ανάλογα με το job που θες, και επικοινώνησε με τον αρμόδιο Manager για να το αποκτήσεις.**",
+            "*Μπορείτε να ανοίξετε έως ένα ticket την φορά.*",
+        ])
+        add_separator(container)
+        civ_btn = ui.Button(
+            label=civ["label"], style=discord.ButtonStyle.success,
+            emoji=civ["emoji"] or None, custom_id="ticket_open_civilian_job",
+        )
+        crim_btn = ui.Button(
+            label=crim["label"], style=discord.ButtonStyle.danger,
+            emoji=crim["emoji"] or None, custom_id="ticket_open_criminal_job",
+        )
+        add_action_row(container, civ_btn, crim_btn)
+
+        view = ui.LayoutView(timeout=None)
+        view.add_item(container)
+        await interaction.channel.send(view=view)
+        await interaction.response.send_message("Στάλθηκε.", ephemeral=True)
 
     @app_commands.command(name="panel-donate", description="Στέλνει το Donate panel")
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
@@ -365,44 +381,6 @@ class Tickets(commands.Cog):
         view.add_item(container)
         await interaction.channel.send(view=view)
         await interaction.response.send_message("Στάλθηκε.", ephemeral=True)
-
-    async def _send_button_panel(self, interaction: discord.Interaction, *, key: str, title: str, description: str):
-        ttypes = _ticket_types()
-        data = ttypes[key]
-        banner = {
-            "civilian_job": config.TICKET_JOBS_BANNER_URL,
-            "criminal_job": config.TICKET_JOBS_BANNER_URL,
-            "donate": config.TICKET_DONATE_BANNER_URL,
-        }[key]
-        thumb = {
-            "civilian_job": config.TICKET_JOBS_THUMBNAIL_URL,
-            "criminal_job": config.TICKET_JOBS_THUMBNAIL_URL,
-            "donate": config.TICKET_DONATE_THUMBNAIL_URL,
-        }[key]
-
-        container = build_base_container(
-            title=f"{data['emoji']} {title}",
-            banner_url=banner, thumbnail_url=thumb,
-        )
-        add_separator(container)
-        _add_info_lines(container, [
-            f"**{description}**",
-            "**Tip:** Ετοιμάστε τυχόν στοιχεία ή αποδεικτικά που μπορεί να χρειαστούν για την άμεση εξυπηρέτησή σας.",
-            f"Το <@&{config.STAFF_ROLE_ID}> είναι εδώ για να σε βοηθήσουν για ό,τι χρειαστείς.",
-            "*Μπορείτε να ανοίξετε έως ένα ticket την φορά.*",
-        ])
-        add_separator(container)
-        btn = ui.Button(
-            label=data["label"], style=discord.ButtonStyle.success,
-            emoji=data["emoji"] or None, custom_id=f"ticket_open_{key}",
-        )
-        add_action_row(container, btn)
-
-        view = ui.LayoutView(timeout=None)
-        view.add_item(container)
-        await interaction.channel.send(view=view)
-        await interaction.response.send_message("Στάλθηκε.", ephemeral=True)
-
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Tickets(bot))
