@@ -194,7 +194,7 @@ class InviteTracking(commands.Cog):
             f"{emoji('invites','left')} **Έχουν φύγει:** {len(entry['left_ids'])}"
         )
 
-        container = ui.Container(accent_colour=discord.Colour.blurple())
+        container = ui.Container(accent_colour=discord.Colour.from_str("#593695"))
         if member.display_avatar:
             section = ui.Section(accessory=ui.Thumbnail(media=member.display_avatar.url))
             section.add_item(ui.TextDisplay(text))
@@ -221,7 +221,7 @@ class InviteTracking(commands.Cog):
                     f"{emoji('invites','left')} {len(entry.get('left_ids', []))})"
                 )
 
-        container = ui.Container(accent_colour=discord.Colour.blurple())
+        container = ui.Container(accent_colour=discord.Colour.from_str("#593695"))
         header_text = "\n".join(lines)
         if guild.icon:
             section = ui.Section(accessory=ui.Thumbnail(media=guild.icon.url))
