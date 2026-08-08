@@ -1,7 +1,7 @@
 
 EMOJIS = {
     "tickets": {
-        "ownership": "<:ownership:1535586964416495707>",
+        "ownership": "<:ownership:1535589849719898193>",
         "banapeal": "<a:banapeal:1532334999410442350>",
         "support": "<a:support:1532130695433027794>",
         "streamer": "<:streamer:1498769681161388203>",
@@ -23,7 +23,7 @@ EMOJIS = {
         "upvote": "<:upvote:1494068515169370253>",
         "downvote": "<:downvote:1494068533917651125>",
         "suggestion": "<a:suggestion:1498777433753653359>",
-        "submitted": "<:submitted:1511631201662799925>", 
+        "submitted": "<a:submitted:1492271082336551104>", 
         "bullet": "<a:bullet:1492271082336551104>",       
     },
     "moderation": {
