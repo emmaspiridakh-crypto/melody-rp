@@ -207,10 +207,7 @@ STATUS_BOOSTS_CHANNEL_ID  = 1532065273778278701
 STATUS_BOTS_CHANNEL_ID    = 1532065388907593788  
 
 ROBLOX_UNIVERSE_ID = 8011462852 
-ROBLOX_GAME_URL = f"{ROBLOX_UNIVERSE_ID}"
+ROBLOX_GAME_URL = f"https://www.roblox.com/games/{ROBLOX_UNIVERSE_ID}"
 GAME_PANEL_BANNER_URL = "https://i.imgur.com/1J0C67l.png" 
 
-# =========================================================
-# ΓΕΝΙΚΑ
-# =========================================================
 EMBED_COLOR = 0xFEE75C
