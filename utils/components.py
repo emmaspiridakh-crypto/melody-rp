@@ -1,19 +1,3 @@
-"""
-utils/components.py
----------------------
-Βοηθητικές συναρτήσεις για χτίσιμο Components V2 panels (discord.py >= 2.6).
-
-Δομή που χρησιμοποιούμε παντού:
-    Container
-        -> MediaGallery (banner, optional)
-        -> Section (text + thumbnail accessory, optional) ή απλό TextDisplay
-        -> Separator
-        -> ActionRow(s) με Buttons / Select menus
-
-Κάθε panel cog χτίζει το δικό του discord.ui.LayoutView, αλλά χρησιμοποιεί
-αυτές τις γενικές συναρτήσεις ώστε να μην ξαναγράφουμε το ίδιο boilerplate.
-"""
-
 from __future__ import annotations
 
 import discord
@@ -28,8 +12,6 @@ def build_base_container(
     thumbnail_url: str | None = None,
      color: discord.Colour = discord.Colour.from_str("#FEE75C"),
 ) -> ui.Container:
-    """Φτιάχνει ένα Container με optional banner πάνω-πάνω + τίτλο/περιγραφή
-    (με optional thumbnail δίπλα)."""
     container = ui.Container(accent_colour=color)
 
     if banner_url:
@@ -58,8 +40,7 @@ def add_text(container: ui.Container, text: str) -> None:
 
 
 def add_action_row(container: ui.Container, *items: ui.Item) -> ui.ActionRow:
-    """Δημιουργεί ActionRow, βάζει μέσα τα items (buttons/selects) και το προσθέτει
-    στο container. Επιστρέφει το ActionRow σε περίπτωση που θες reference."""
+
     row = ui.ActionRow()
     for item in items:
         row.add_item(item)
@@ -73,8 +54,7 @@ def add_section_with_button(
     text: str,
     button: ui.Button,
 ) -> ui.Section:
-    """Section: αριστερά κείμενο, δεξιά (accessory) ένα button.
-    Χρησιμοποιείται στο application panel (λίστα με Apply buttons)."""
+
     section = ui.Section(accessory=button)
     section.add_item(ui.TextDisplay(text))
     container.add_item(section)
@@ -82,9 +62,6 @@ def add_section_with_button(
 
 
 class SimpleLayoutView(ui.LayoutView):
-    """Γενικό LayoutView wrapper - απλά τυλίγει ένα container.
-    timeout=None ώστε τα buttons να δουλεύουν για πάντα (persistent),
-    ΑΡΚΕΙ να γίνει bot.add_view() στο on_ready με το ίδιο custom_id."""
 
     def __init__(self, container: ui.Container):
         super().__init__(timeout=None)
