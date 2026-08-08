@@ -135,6 +135,25 @@ class Moderation(commands.Cog):
                          _log_embed(ctx.guild, title="DM All", moderator=ctx.author,
                                     target=f"{sent} sent / {failed} failed", reason=text))
 
+    @commands.command(name="dmrole")
+    @is_ownership_only()
+    async def dmrole_cmd(self, ctx: commands.Context, role: discord.Role, *, text: str):
+        sent, failed = 0, 0
+        status_msg = await ctx.send(f"Στέλνετε στο {role.name} περίμενε")
+        for member in role.members:
+            if member.bot:
+                continue
+            try:
+                await member.send(text)
+                sent += 1
+            except discord.Forbidden:
+                failed += 1
+            await __import__("asyncio").sleep(1)
+        await status_msg.edit(content=f"Στάλθηκε σε {sent} μέλη του {role.mention}. Αποτυχία σε {failed}.")
+        await _send_log(ctx.guild, config.LOG_SAY_DMALL_CHANNEL_ID,
+                         _log_embed(ctx.guild, title="DM Role", moderator=ctx.author,
+                                    target=f"{role.mention} — {sent} sent / {failed} failed", reason=text))
+
     @commands.command(name="dmuser")
     @is_founder_only()
     async def dmuser_cmd(self, ctx: commands.Context, member: discord.Member, *, text: str):
