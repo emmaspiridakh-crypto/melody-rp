@@ -19,7 +19,7 @@ def is_staff_team():
 def is_manager_team():
     """Manager, Ownership (χωρίς Staff) - χρησιμοποιείται για ban/kick/timeout/clearmessages"""
     async def predicate(ctx: commands.Context) -> bool:
-        return member_has_any_role(ctx.author, [config.OWNERSHIP_ROLE_ID])
+        return member_has_any_role(ctx.author, [config.MANAGER_ROLE_ID, config.OWNERSHIP_ROLE_ID])
     return commands.check(predicate)
 
 
@@ -50,11 +50,8 @@ def slash_is_ownership_only():
 def slash_is_manager_team():
     """Manager, Ownership (χωρίς Staff) - slash version, ίδιο scope με is_manager_team()"""
     async def predicate(interaction: discord.Interaction) -> bool:
-        return member_has_any_role(interaction.user, [config.OWNERSHIP_ROLE_ID])
+        return member_has_any_role(interaction.user, [config.MANAGER_ROLE_ID, config.OWNERSHIP_ROLE_ID])
     return app_commands.check(predicate)
-
-
-# ---------- Γενικά helpers (χρήσιμα μέσα σε button callbacks) ----------
 
 def has_roles(member: discord.Member, role_ids: list[int]) -> bool:
     return member_has_any_role(member, role_ids)
