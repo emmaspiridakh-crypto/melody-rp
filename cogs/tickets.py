@@ -257,18 +257,18 @@ class Tickets(commands.Cog):
     async def panel_support(self, interaction: discord.Interaction):
         ttypes = _ticket_types()
         container = build_base_container(
-            title=f"{emoji('tickets', 'ticket')} Melody Roleplay - Assistant",
+            title=f"{emoji('tickets', 'ticket')} Melody Roleplay Ticket",
             banner_url=config.TICKET_SUPPORT_BANNER_URL,
             thumbnail_url=config.TICKET_SUPPORT_THUMBNAIL_URL,
         )
         add_separator(container)
         _add_info_lines(container, [
-            "**Για να έρθετε σε άμεση επικοινωνία με τον κατάλληλο αρμόδιο για την επίλυση του συμβάντος σας, "
-            "παρακαλώ κατά τη δημιουργία του ticket να είστε προσεκτικοί με την επιλογή κατηγορίας.**",
-            "**Tip:** Ετοιμάστε τυχόν screenshot και άλλες πληροφορίες σχετικά με το συμβάν, εάν υπάρχουν, "
-            "για την άμεση εξυπηρέτησή σας.",
-            f"Το <@&{config.STAFF_ROLE_ID}> είναι εδώ για να σε βοηθήσουν για ό,τι χρειαστείς.",
-            "*Μπορείτε να ανοίξετε έως ένα ticket την φορά.*",
+            "**Για οποιοδήποτε θέμα, απορία ή πρόβλημα αντιμετωπίζετε στον server, μπορείτε να ανοίξετε ένα ticket και ένα μέλος του <@&{config.STAFF_ROLE_ID}> θα σας εξυπηρετήσει το συντομότερο δυνατό.,"**
+            "**Tip:** 1. Περιγράψτε με σαφήνεια το πρόβλημά σας.",
+                      "2. Παρέχετε screenshots ή άλλα απαραίτητα στοιχεία, εφόσον υπάρχουν.",
+                      "3. Μην κάνετε spam ή ανοίγετε πολλαπλά tickets για το ίδιο θέμα.",
+                      "4. Παρακαλούμε να δείχνετε σεβασμό και υπομονή προς το Staff Team.",
+            "Ευχαριστούμε για την κατανόηση σας."
         ])
         add_separator(container)
         _descriptions = {
