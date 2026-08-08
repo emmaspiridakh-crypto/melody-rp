@@ -1,20 +1,3 @@
-"""
-cogs/support_voice.py
-------------------------
-Requirement: όταν κάποιος μπαίνει στο Support voice channel
-(config.SUPPORT_VOICE_CHANNEL_ID), στέλνεται ένα Components V2 "Notifier"
-panel στο config.SUPPORT_VOICE_NOTIFIER_CHANNEL_ID (= STAFF_PING_CHANNEL_ID):
-bell τίτλος, "i - User Details :", Username / Mention / ID / Ping / Time,
-όλα με custom emoji — ίδιο στυλ με το reference panel.
-
-Ενεργοποιείται ΜΟΝΟ όταν κάποιος μπαίνει στο πραγματικό Support voice
-channel — όχι στο "Join to Create" temp-voice channel (cogs/temp_voice.py
-δεν κάνει πια ping εκεί, το ανέλαβε αποκλειστικά αυτό το cog).
-
-Το scan των timeouts είναι ξεχωριστό command: /scan-timeouts
-(cogs/timeout_tools.py), Manager/Ownership only — δεν υπάρχει κουμπί εδώ.
-"""
-
 from __future__ import annotations
 
 import logging
@@ -34,9 +17,6 @@ class SupportVoice(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # ---------------------------------------------------
-    # Notifier panel (Components V2)
-    # ---------------------------------------------------
     def _build_view(self, member: discord.Member, ping_role: discord.Role | None) -> ui.LayoutView:
         ping_value = ping_role.mention if ping_role else "—"
 
@@ -58,9 +38,6 @@ class SupportVoice(commands.Cog):
         view.add_item(container)
         return view
 
-    # ---------------------------------------------------
-    # Voice join detection — ΜΟΝΟ Support voice channel
-    # ---------------------------------------------------
     @commands.Cog.listener()
     async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
         if member.bot:
@@ -70,9 +47,9 @@ class SupportVoice(commands.Cog):
         log.info(f"[support_voice] voice_state_update: {member} -> after.channel={after_id}")
 
         if before.channel and before.channel.id == config.SUPPORT_VOICE_CHANNEL_ID:
-            return  # ήταν ήδη μέσα -> δεν είναι νέο join (π.χ. mute/unmute)
+            return
         if not after.channel or after.channel.id != config.SUPPORT_VOICE_CHANNEL_ID:
-            return  # μπήκε σε ΑΛΛΟ voice channel -> δεν μας αφορά
+            return
 
         log.info(f"[support_voice] {member} μπήκε στο SUPPORT_VOICE_CHANNEL_ID={config.SUPPORT_VOICE_CHANNEL_ID}")
 
