@@ -1,9 +1,3 @@
-"""
-cogs/panel_command.py
-------------------------
-Requirement #11: !panel -> embed με όλες τις εντολές. Μόνο Staff/Manager/Ownership.
-"""
-
 import discord
 from discord.ext import commands
 
@@ -18,7 +12,7 @@ class PanelCommand(commands.Cog):
     @commands.command(name="panel")
     @is_staff_team()
     async def panel_cmd(self, ctx: commands.Context):
-        embed = discord.Embed(title="📜 Commands Panel", color=config.EMBED_COLOR)
+        embed = discord.Embed(title="Commands Panel", color=config.EMBED_COLOR)
         if ctx.guild.icon:
             embed.set_thumbnail(url=ctx.guild.icon.url)
 
@@ -31,7 +25,7 @@ class PanelCommand(commands.Cog):
             inline=False,
         )
         embed.add_field(
-            name="Timeout Tools (Manager/Ownership) — νέο",
+            name="Timeout Tools (Manager/Ownership)",
             value=(
                 "`/untimeout <user> [reason]`"
                 "`/scan-timeouts`"
