@@ -1,9 +1,3 @@
-
-from utils.turso import async_execute, sync_execute
-
-    rows = await async_execute("SELECT * FROM giveaways WHERE id = ?", [gw_id])
-    rows = sync_execute("SELECT value FROM kv_store WHERE store = ?", ["invite_stats"])
-
 from __future__ import annotations
 
 import os
