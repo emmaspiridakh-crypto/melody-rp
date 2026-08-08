@@ -1,24 +1,3 @@
-"""
-cogs/invite_tracking.py
---------------------------
-Invite tracking: ποιος προσκάλεσε ποιον, πόσα invites έχει συνολικά ο καθένας,
-πόσα από τα άτομα που προσκάλεσε είναι ακόμα μέσα, και πόσα έχουν φύγει.
-
-Πώς δουλεύει:
-  1. Κρατάμε σε memory cache τα invites του server (code -> uses) ανά guild,
-     συμπεριλαμβανομένου του vanity URL αν υπάρχει.
-  2. Όταν μπαίνει νέο μέλος, συγκρίνουμε τα νέα invites με το cache για να
-     βρούμε ποιο invite χρησιμοποιήθηκε (αυτό με αυξημένο uses· αν λείπει
-     -> best effort έλεγχος στα audit logs, μάλλον ήταν single-use invite).
-  3. Αποθηκεύουμε ποιος προσκάλεσε ποιον (data/invite_attribution.json) και
-     τα στατιστικά ανά inviter (data/invite_stats.json).
-  4. Όταν φύγει κάποιος, αν βρούμε ποιος τον προσκάλεσε, ενημερώνουμε τα
-     στατιστικά (μετακινείται από "joined" σε "left") και κάνουμε log.
-
-ΑΠΑΡΑΙΤΗΤΟ permission για το bot: Manage Server (να μπορεί να δει τα invites
-του server μέσω guild.invites()).
-"""
-
 from __future__ import annotations
 
 import discord
@@ -30,10 +9,9 @@ from emojis import emoji
 from utils import storage
 from utils.permissions import member_has_any_role
 
-STATS_STORE = "invite_stats"              # {inviter_id: {"total": int, "joined_ids": [...], "left_ids": [...]}}
-ATTRIBUTION_STORE = "invite_attribution"  # {member_id: inviter_id | "vanity" | "unknown"}
+STATS_STORE = "invite_stats"              
+ATTRIBUTION_STORE = "invite_attribution"
 
-# guild_id -> {code: uses}  (το "__vanity__" κρατάει το uses του vanity invite αν υπάρχει)
 _invite_cache: dict[int, dict[str, int]] = {}
 
 
@@ -158,7 +136,7 @@ class InviteTracking(commands.Cog):
         if not log_channel:
             return
 
-        embed = discord.Embed(title="📨 Νέο μέλος μέσω Invite", color=config.EMBED_COLOR, timestamp=discord.utils.utcnow())
+        embed = discord.Embed(title="Νέο μέλος μέσω Invite", color=config.EMBED_COLOR, timestamp=discord.utils.utcnow())
         embed.add_field(name="Μέλος", value=f"{member.mention} (`{member.id}`)", inline=False)
         if inviter is not None and entry is not None:
             embed.add_field(name="Προσκλήθηκε από", value=f"{inviter.mention} (`{inviter.id}`)", inline=False)
@@ -180,7 +158,7 @@ class InviteTracking(commands.Cog):
         inviter_key = attribution.get(str(member.id))
 
         if not inviter_key or inviter_key in ("unknown", "vanity"):
-            return  # δεν ξέρουμε ποιος τον προσκάλεσε με συγκεκριμένο μέλος, τίποτα να ενημερώσουμε
+            return 
 
         stats = storage.get_store(STATS_STORE)
         entry = _stats_entry(stats, inviter_key)
@@ -204,9 +182,6 @@ class InviteTracking(commands.Cog):
         if guild.icon:
             embed.set_thumbnail(url=guild.icon.url)
         await log_channel.send(embed=embed)
-
-
-    # ── /invites command ─────────────────────────────────────────────────────
 
     def _build_user_panel(self, guild: discord.Guild, member: discord.Member) -> ui.LayoutView:
         stats = storage.get_store(STATS_STORE)
@@ -263,7 +238,7 @@ class InviteTracking(commands.Cog):
     @app_commands.describe(user="Άφησέ το κενό για να δεις τα invites όλου του server")
     async def invites_cmd(self, interaction: discord.Interaction, user: discord.Member | None = None):
         if not member_has_any_role(interaction.user, config.STAFF_TEAM_ROLE_IDS):
-            await interaction.response.send_message("⛔ Δεν έχεις δικαίωμα να χρησιμοποιήσεις αυτή την εντολή.", ephemeral=True)
+            await interaction.response.send_message("Δεν έχεις δικαίωμα να χρησιμοποιήσεις αυτή την εντολή.", ephemeral=True)
             return
 
         if user is not None:
