@@ -28,10 +28,10 @@ class ServerStatus(commands.Cog):
         members, online, boosts, bots = _counts(guild)
 
         targets = {
-            "members": (config.STATUS_MEMBERS_CHANNEL_ID, f"{emoji('status','members')} Members: {members}"),
-            "online":  (config.STATUS_ONLINE_CHANNEL_ID,  f"{emoji('status','online')} Online: {online}"),
-            "boosts":  (config.STATUS_BOOSTS_CHANNEL_ID,  f"{emoji('status','boost')} Boosts: {boosts}"),
-            "bots":    (config.STATUS_BOTS_CHANNEL_ID,    f"{emoji('status','bots')} Bots: {bots}"),
+            "members": (config.STATUS_MEMBERS_CHANNEL_ID, f"('members')} Members: {members}"),
+            "online":  (config.STATUS_ONLINE_CHANNEL_ID,  f"('online')} Online: {online}"),
+            "boosts":  (config.STATUS_BOOSTS_CHANNEL_ID,  f"('boost')} Boosts: {boosts}"),
+            "bots":    (config.STATUS_BOTS_CHANNEL_ID,    f"('bots')} Bots: {bots}"),
         }
 
         for key, (channel_id, new_name) in targets.items():
