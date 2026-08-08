@@ -40,7 +40,7 @@ class GamePanel(commands.Cog):
             f"{emoji('invites','invites')} **Συνολικές επισκέψεις:** {visits if visits is not None else '—'}"
         )
 
-        container = ui.Container(accent_colour=discord.Colour.gold())
+        container = ui.Container(accent_colour=discord.Colour.from_str("#593695"))
 
         if config.GAME_PANEL_BANNER_URL:
             container.add_item(ui.MediaGallery(discord.MediaGalleryItem(media=config.GAME_PANEL_BANNER_URL)))
