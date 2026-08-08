@@ -1,7 +1,7 @@
 
 EMOJIS = {
     "tickets": {
-        "ownership": "<:ownership:1535589849719898193>",
+        "ownership": "<:ownership:1531999528633241660>",
         "banapeal": "<a:banapeal:1532334999410442350>",
         "support": "<a:support:1532130695433027794>",
         "streamer": "<:streamer:1498769681161388203>",
