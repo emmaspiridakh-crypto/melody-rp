@@ -50,6 +50,12 @@ def _ticket_types() -> dict:
             "category_id": config.CAT_TICKET_REWARD_ID,
             "view_roles": [config.EVENT_MANAGER_ID],
         },
+        "report": { 
+            "lable": "Report",
+            "emoji": emoji("tickets", "report"),
+            "category_id": config.CAT_TICKET_REPORT_ID,
+            "view_roles": [config.OWNERSHIP_ROLE_ID],
+        },
         "civilian_job": {
             "label": "Civilian Job",
             "emoji": emoji("jobs", "civilian"),
