@@ -271,7 +271,7 @@ class Tickets(commands.Cog):
             "Για οποιοδήποτε θέμα, απορία ή πρόβλημα αντιμετωπίζετε στον server, μπορείτε να ανοίξετε ένα ticket και ένα μέλος του staff team θα σας εξυπηρετήσει το συντομότερο δυνατό.",
             "**Tip: Περιγράψτε με σαφήνεια το πρόβλημά σας, παρέχετε screenshots ή άλλα απαραίτητα στοιχεία, εφόσον υπάρχουν, μην κάνετε spam ή ανοίγετε πολλαπλά tickets για το ίδιο θέμα.**",
             
-        "Ευχαριστούμε για την κατανόηση σας. Παρακαλούμε μην κάνετε spam ή spam ping.",
+        "Ευχαριστούμε για την κατανόηση σας. Παρακαλούμε μην κάνετε spam ping.",
         ])
         add_separator(container)
         _descriptions = {
@@ -281,6 +281,7 @@ class Tickets(commands.Cog):
             "streamer": "Αν θες να κάνεις stream ή έγινε κάτι σε κάποιο stream",
             "anticheat": "Αναφορά περιστατικού cheat/exploit",
             "reward": "Διεκδίκησε το reward σου",
+            "report": "Κάνε report κάποιον παίκτη ή staff/manager",
         }
         options = [
             discord.SelectOption(
@@ -289,7 +290,7 @@ class Tickets(commands.Cog):
                 emoji=ttypes[k]["emoji"] or None,
                 description=_descriptions.get(k, ""),
             )
-            for k in ("ownership", "banapeal", "support", "stream", "anticheat", "reward")
+            for k in ("ownership", "banapeal", "support", "stream", "anticheat", "reward", "report")
         ]
         select = ui.Select(placeholder="Επίλεξε κατηγορία...", options=options, custom_id="support_ticket_select")
         add_action_row(container, select)
