@@ -11,6 +11,7 @@ EMOJIS = {
         "ticket": "<:ticket:1535587061216579724>",
         "reward": "<:reward:1492571665333223607>", 
         "bullet": "<:bullet:1535605416757825646>",  
+        "report": "<:report:1532338541055709386>",
     },
     "jobs": {
         "civilian": "<:civilian:1532335931099709581>",
