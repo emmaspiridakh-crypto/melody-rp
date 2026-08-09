@@ -38,6 +38,7 @@ COGS = [
     "cogs.bot_status",
     "cogs.game_panel",
     "cogs.join_ping",
+    "cogs.emoji_manager",
 ]
 
 
