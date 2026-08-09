@@ -69,7 +69,7 @@ class Applications(commands.Cog):
         _app_info = {
             "elas":    {"description": "Προστάτεψε τους συμπολίτες σου. Διατήρησε την τάξη και κράτα την πόλη ασφαλή.",             "emoji_key": "elas"},
             "ekab":    {"description": "Γίνε ο ήρωας σε κάθε επείγον περιστατικό. Στήριξε τους ανθρώπους όταν σε χρειάζονται περισσότερο.", "emoji_key": "ekab"},
-            "dikastiko": {"description": "Δούλεψε στο δικαστικό μέγαρο και κράτα την πόλη ασφαλή.", "emoji_key": "dikastiko"}
+            "dikastiko": {"description": "Δούλεψε στο δικαστικό μέγαρο και κράτα την πόλη ασφαλή.", "emoji_key": "dikastiko"},
             "staff":   {"description": "Γίνε η δύναμη πίσω από την τάξη. Στήριξε την κοινότητα, βοήθησε τους παίκτες και κράτα τον server ασφαλή.", "emoji_key": "staff"},
             "manager": {"description": "Θέση υψηλής ευθύνης — διαχειρίσου server & ομάδα staff.",               "emoji_key": "manager"},
         }
