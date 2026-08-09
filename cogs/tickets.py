@@ -51,7 +51,7 @@ def _ticket_types() -> dict:
             "view_roles": [config.EVENT_MANAGER_ID],
         },
         "report": { 
-            "lable": "Report",
+            "label": "Report",
             "emoji": emoji("tickets", "report"),
             "category_id": config.CAT_TICKET_REPORT_ID,
             "view_roles": [config.OWNERSHIP_ROLE_ID],
