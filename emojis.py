@@ -48,6 +48,7 @@ EMOJIS = {
     "applications": {
         "elas": "<:elas:1535550649910165534>",
         "ekab": "<:ekab:1532337538595946616>",
+        "dikastiko": "<:dikastiko:1499816960328732865>",
         "staff": "<:staff:1532337651020075189>",
         "manager": "<:manager:1493964247993028698>",
         "accept": "<:accept:1532337940821315634>",
