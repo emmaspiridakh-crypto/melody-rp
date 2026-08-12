@@ -1,4 +1,3 @@
-
 EMOJIS = {
     "tickets": {
         "ownership": "<:ownership:1531999528633241660>",
@@ -11,7 +10,6 @@ EMOJIS = {
         "ticket": "<:ticket:1535587061216579724>",
         "reward": "<:reward:1492571665333223607>", 
         "bullet": "<:bullet:1535605416757825646>",  
-        "report": "<:report:1532338541055709386>",
     },
     "jobs": {
         "civilian": "<:civilian:1532335931099709581>",
@@ -97,6 +95,18 @@ EMOJIS = {
         "joined":   "<:inv_joined:1532130548351500348>", 
         "left":     "<:inv_left:1532338786237943960>",   
         "leaderboard": "<:inv_board:1532338541055709386>", 
+    },
+    "whitelist": {
+        "apply":          "<:wl_apply:1532338098304712836>",
+        "accept":         "<:wl_accept:1532337940821315634>",
+        "deny":           "<:wl_deny:1532130509331632359>",
+        "send":           "<:wl_send:1532337940821315634>",
+        "close":          "<:wl_close:1532130509331632359>",
+        "start":          "<:wl_start:1535605416757825646>",
+        "status_open":    "<a:wl_status_open:1494013796535107584>",
+        "status_closed":  "<a:wl_status_closed:1494013821344415746>",
+        "question":       "<:wl_question:1532338541055709386>",
+        "check":          "<:wl_check:1532337940821315634>",
     },
     "game": {
         "connect": "<:game_connect:1493918780114341888>", 
