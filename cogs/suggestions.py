@@ -127,7 +127,13 @@ class Suggestions(commands.Cog):
             author=author or interaction.user, text=info["text"],
             upvotes=len(ups), downvotes=len(downs), msg_id=msg_id, created_at=created_at,
         )
-        await interaction.response.edit_message(view=new_view)
+        try:
+            if interaction.response.is_done():
+                await interaction.edit_original_response(view=new_view)
+            else:
+                await interaction.response.edit_message(view=new_view)
+        except discord.HTTPException:
+            pass
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: discord.Interaction):
