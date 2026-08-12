@@ -70,6 +70,14 @@ class Whitelist(commands.Cog):
         )
         add_section_with_button(container, text=text, button=apply_btn)
 
+        link_url = getattr(config, "WHITELIST_LINK_URL", None)
+        if link_url:
+            add_separator(container)
+            link_text = getattr(config, "WHITELIST_LINK_TEXT", "Για να μπορείς να μπείς στο roblox game μας θα πρέπει να είσαι μέλος στο roblox group.")
+            link_label = getattr(config, "WHITELIST_LINK_LABEL", "Join Now")
+            link_btn = ui.Button(label=link_label, style=discord.ButtonStyle.link, url=link_url)
+            add_section_with_button(container, text=link_text, button=link_btn)
+
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
         await interaction.channel.send(view=view)
