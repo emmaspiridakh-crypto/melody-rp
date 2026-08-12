@@ -130,10 +130,10 @@ WHITELIST_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"
 WHITELIST_QUESTIONS = [
     "Τι ηλικία έχει το roblox account σου?",
     "Ποιο είναι το Roblox Name σου?",
-    "Εισαι μέλος του roblox group?"
+    "Εισαι μέλος του roblox group?",
     "Γιατί θέλεις να μπεις στον server?",
     "Έχεις διαβάσει τους κανόνες του server?",
-    "Πες μας λίγα λόγια για το backstory του χαρακτήρα σου (in game)"
+    "Πες μας λίγα λόγια για το backstory του χαρακτήρα σου (in game)",
 ]
 
 APPLICATION_TYPES = {
