@@ -126,6 +126,9 @@ WHITELIST_CATEGORY_ID = 1537196283046002760
 LOG_WHITELIST_CHANNEL_ID = 1537196370354642995        
 WHITELIST_ACCEPTED_ROLE_ID = 1537196463807922187       
 WHITELIST_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"      
+WHITELIST_LINK_URL = "https://www.roblox.com/share/g/120555068"   
+WHITELIST_LINK_LABEL = "Join Now" 
+WHITELIST_LINK_TEXT = "Για να μπείς στο game μας θα πρέπει να είσαι μέλος του roblox group μας. Πάτα το κουμπί δίπλα για να μπείς στο group." 
 
 WHITELIST_QUESTIONS = [
     "Τι ηλικία έχει το roblox account σου?",
