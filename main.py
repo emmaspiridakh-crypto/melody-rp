@@ -39,6 +39,7 @@ COGS = [
     "cogs.game_panel",
     "cogs.join_ping",
     "cogs.emoji_manager",
+    "cogs.whitelist",
 ]
 
 
