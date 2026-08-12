@@ -55,7 +55,7 @@ class Whitelist(commands.Cog):
             title="Melody Roleplay | Whitelist",
             description=(
                 "Υπόβαλε αίτηση whitelist για να μπεις στον server.\n"
-                "**Απαγορεύετε αυστηρά η χρήση του AI.** **Έχεις 30 λεπτά να ολοκληρώσεις την αίτηση σου αλλιώς θα ακυρωθεί.**"
+                "**Έχεις 15 λεπτά να ολοκληρώσεις την αίτηση σου αλλιώς θα ακυρωθεί.**"
             ),
             banner_url=getattr(config, "WHITELIST_BANNER_URL", None),
         )
@@ -115,7 +115,7 @@ class Whitelist(commands.Cog):
 
         container = build_base_container(
             title="Whitelist Application",
-            description=f"{user.mention}\nΠάτησε **Start Your Application** όταν είσαι έτοιμος/η. Χρόνος ολοκλήρωσης: 30 λεπτά",
+            description=f"{user.mention}\nΠάτησε **Start Your Application** όταν είσαι έτοιμος/η. Χρόνος ολοκλήρωσης: 15 λεπτά",
         )
         add_separator(container)
         start_btn = ui.Button(label="Start Your Application", style=discord.ButtonStyle.success,
