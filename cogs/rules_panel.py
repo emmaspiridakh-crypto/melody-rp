@@ -9,7 +9,7 @@ from utils.permissions import slash_is_staff_team
 
 ACCENT_COLOR = discord.Colour.from_str("#593695")
 
-RULES_PANEL_BANNER_URL = ""  # βάλε εδώ url banner αν θες, αλλιώς άσε το κενό
+RULES_PANEL_BANNER_URL = ""
 
 
 def _section(container: ui.Container, title: str, lines: list[str]) -> None:
@@ -17,10 +17,22 @@ def _section(container: ui.Container, title: str, lines: list[str]) -> None:
     container.add_item(ui.TextDisplay(text))
 
 
-def build_general_rules_container() -> ui.Container:
-    container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## 📜 General Rules"))
-    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+def build_general_rules_containers() -> list[ui.Container]:
+    part1 = ui.Container(accent_colour=ACCENT_COLOR)
+    part1.add_item(ui.TextDisplay("## General Rules"))
+    part1.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+    part1.add_item(ui.TextDisplay(
+        "**Melody Roleplay Roblox**\n"
+        "Καλώς ήρθατε στον Melody RP server.\n\n"
+        "Παρακαλώ διαβάστε και τηρήστε τους παρακάτω κανόνες.\n"
+        "Μη τήρηση των κανόνων θεωρείται αδυναμία role play και θα τιμωρείται ανάλογα την "
+        "παράβαση με warning/kick/ban.\n\n"
+        "Ο server είναι τύπου Roleplay και ζητάμε από του παίκτες να φτιάξουνε έναν χαρακτήρα με "
+        "συγκεκριμένο background και ιστορικό ο οποίος θα αλληλεπιδρά με τους άλλους και με τον "
+        "γύρω κόσμο."
+    ))
+    part1.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+    container = part1
 
     _section(container, "Αφορά τα μαγαζιά", [
         "Προσέχουμε πάντα για να έχουμε όπως λέει και ο λαός! Δεν χρειάζεται να χρεώνετε ένα "
@@ -67,7 +79,7 @@ def build_general_rules_container() -> ui.Container:
         "σκηνικά που μπορεί να προκύψουν και πολλά άλλα που θα τα καταλάβετε και μόνοι σας.",
     ])
     part2 = ui.Container(accent_colour=ACCENT_COLOR)
-    part2.add_item(ui.TextDisplay("## 📜 General Rules (συνέχεια)"))
+    part2.add_item(ui.TextDisplay("## General Rules"))
     part2.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
     container = part2
 
@@ -101,12 +113,47 @@ def build_general_rules_container() -> ui.Container:
         "μοιράζεται δεξιά, αριστερά χωρίς κέρδος θα δημιουργείται πάντα προβλήματα.",
     ])
 
-    return [part1, part2]
+    part3 = ui.Container(accent_colour=ACCENT_COLOR)
+    part3.add_item(ui.TextDisplay("## General Rules"))
+    part3.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+    container = part3
+
+    _section(container, "RDM", [
+        "Το RDM είναι όταν ένας παίκτης πάει και σκοτώνει έναν άλλο παίκτη, χωρίς να έχει "
+        "προηγηθεί κάποιο RP ή INTERACT.",
+        "Απαγορεύεται αυστηρά να σκοτώσω κάποιον επειδή με τράκαρε η αντίστοιχα επειδή τον "
+        "τράκαρα εγώ και μη έβρισε θα πρέπει να παίζετε RP και μόνο.",
+    ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+
+    _section(container, "VDM", [
+        "Το VDM είναι όταν ένας παίκτης χτυπά κάποιον άλλον παίκτη με το αμάξι του και δεν "
+        "σταματήσει να δει αν είναι καλά ή αν χρειάζεται ασθενοφόρο.",
+    ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+
+    _section(container, "METAGAMING", [
+        "Το METAGAMING είναι όταν κάποιος παίκτης χρησιμοποιεί πληροφορίες που αποκτήθηκαν χωρίς "
+        "RP. Το να χρησιμοποιείτε ή να αναμεταδίδετε, σκοπίμως, πληροφορίες που ο χαρακτήρας σας "
+        "δεν έμαθε In Character (μέσω Discord channels, Twitch chats). Προσπαθήστε να αποφύγετε "
+        "τη δημιουργία πολλών χαρακτήρων που εμπλέκονται στα ίδια σενάρια, λόγω του ότι ασυνείδητα "
+        "θα μπορούσατε να μεταφέρετε τις πληροφορίες από τον έναν χαρακτήρα στον άλλον.",
+    ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+
+    _section(container, "New Life Rule", [
+        "Όταν πεθαίνει κάποιος παίκτης σε οποιοδήποτε σκηνικό και κάνεις respawn, δεν θυμάται τι "
+        "έχει γίνει στο συγκεκριμένο σκηνικό και επιπλέον δεν μπορεί να γυρίσει σε αυτό εκτός αν "
+        "περάσει το χρονικό περιθώριο των 30 λεπτών και δεν τον καλέσει (INGAME η ομάδα σου) να "
+        "πάει πάλι.",
+    ])
+
+    return [part1, part2, part3]
 
 
 def build_police_ekab_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## 🚓 Police / EKAB Rules"))
+    container.add_item(ui.TextDisplay("## Police / EKAB Rules"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "Ε.Λ.ΑΣ", [
@@ -152,7 +199,7 @@ def build_police_ekab_container() -> ui.Container:
 
 def build_zones_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## 🗺️ Zones"))
+    container.add_item(ui.TextDisplay("## Zones"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "Greenzone", [
@@ -188,8 +235,8 @@ class RulesPanel(commands.Cog):
             container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
         container.add_item(ui.TextDisplay(
-            "## 📜 Κανόνες Server\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
-            "αντίστοιχους κανόνες. Το μήνυμα θα είναι ορατό μόνο σε εσάς."
+            "##Κανόνες Melody Roleplay\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
+            "αντίστοιχους κανόνες. Είναι αναγκαστηκή η γνώση των κανώνων."
         ))
         container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
@@ -250,3 +297,4 @@ class RulesPanel(commands.Cog):
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(RulesPanel(bot))
+    
