@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import io
+import datetime as dt
+
 import discord
 from discord import ui, app_commands
 from discord.ext import commands
@@ -11,6 +14,7 @@ from utils.permissions import has_roles
 from utils.components import build_base_container, add_action_row, add_separator, add_text
 
 STORE_NAME = "tickets"
+TRANSCRIPT_STORE = "ticket_transcripts"
 
 def _ticket_types() -> dict:
     return {
@@ -176,6 +180,35 @@ class Tickets(commands.Cog):
 
         await interaction.response.send_message(f"Το ticket σου: {new_channel.mention}", ephemeral=True)
 
+    async def _build_transcript_text(self, channel: discord.TextChannel) -> str:
+        lines = []
+        try:
+            async for msg in channel.history(limit=None, oldest_first=True):
+                ts = msg.created_at.strftime("%d/%m %H:%M")
+                author = msg.author.display_name
+                content = msg.content or ""
+                line = f"[{ts}] {author}: {content}"
+                if msg.attachments:
+                    for a in msg.attachments:
+                        line += f" [📎 {a.filename}]"
+                lines.append(line)
+        except discord.HTTPException:
+            pass
+
+        return "\n".join(lines) if lines else "(δεν υπάρχουν μηνύματα)"
+
+    def _add_transcript_fields(self, embed: discord.Embed, transcript: str, *, max_fields: int = 20, chunk_size: int = 1000) -> None:
+        chunks = [transcript[i:i + chunk_size] for i in range(0, len(transcript), chunk_size)]
+        truncated = len(chunks) > max_fields
+        chunks = chunks[:max_fields]
+
+        for i, chunk in enumerate(chunks, start=1):
+            name = "📜 Transcript" if len(chunks) == 1 else f"📜 Transcript ({i}/{len(chunks)})"
+            embed.add_field(name=name, value=f"```{chunk}```" if chunk.strip() else "```(κενό)```", inline=False)
+
+        if truncated:
+            embed.add_field(name="⚠️ Σημείωση", value="Το transcript ήταν πολύ μεγάλο και κόπηκε.", inline=False)
+
     async def handle_close(self, interaction: discord.Interaction, channel_id: int):
         store = storage.get_store(STORE_NAME)
         info = store.get(str(channel_id))
@@ -193,6 +226,17 @@ class Tickets(commands.Cog):
 
         log_channel = interaction.guild.get_channel(config.LOG_TICKETS_CHANNEL_ID)
         if log_channel:
+            transcript_text = await self._build_transcript_text(interaction.channel)
+
+            transcripts = storage.get_store(TRANSCRIPT_STORE)
+            transcripts[str(channel_id)] = {
+                "text": transcript_text,
+                "channel_name": interaction.channel.name,
+                "opener_id": info["opener_id"],
+                "closed_by": interaction.user.id,
+            }
+            storage.save(TRANSCRIPT_STORE, transcripts)
+
             ttypes = _ticket_types()
             type_label = ttypes.get(info["type"], {}).get("label", info["type"])
             embed = discord.Embed(
@@ -204,7 +248,14 @@ class Tickets(commands.Cog):
             embed.add_field(name="Channel", value=f"`#{interaction.channel.name}`", inline=True)
             embed.add_field(name="Άνοιξε από", value=f"<@{info['opener_id']}>", inline=False)
             embed.add_field(name="Έκλεισε από", value=f"{interaction.user.mention} (`{interaction.user.id}`)", inline=False)
-            await log_channel.send(embed=embed)
+
+            transcript_btn = ui.Button(
+                label="View Transcript", style=discord.ButtonStyle.secondary,
+                emoji="📄", custom_id=f"ticket_transcript:{channel_id}",
+            )
+            view = ui.View(timeout=None)
+            view.add_item(transcript_btn)
+            await log_channel.send(embed=embed, view=view)
 
         store.pop(str(channel_id), None)
         storage.save(STORE_NAME, store)
@@ -236,6 +287,34 @@ class Tickets(commands.Cog):
             except discord.Forbidden:
                 pass
 
+    async def handle_view_transcript(self, interaction: discord.Interaction, channel_id: int):
+        transcripts = storage.get_store(TRANSCRIPT_STORE)
+        record = transcripts.get(str(channel_id))
+        if not record:
+            await interaction.response.send_message("Δεν βρέθηκε transcript για αυτό το ticket.", ephemeral=True)
+            return
+
+        text = record["text"]
+        header = f"**Transcript — #{record.get('channel_name', channel_id)}**\n"
+
+        chunks = []
+        current = ""
+        for line in text.split("\n"):
+            piece = line + "\n"
+            if len(current) + len(piece) > 1900:
+                chunks.append(current)
+                current = ""
+            current += piece
+        if current:
+            chunks.append(current)
+        if not chunks:
+            chunks = ["(δεν υπάρχουν μηνύματα)"]
+
+        first = f"{header}```\n{chunks[0]}```"
+        await interaction.response.send_message(first, ephemeral=True)
+        for chunk in chunks[1:]:
+            await interaction.followup.send(f"```\n{chunk}```", ephemeral=True)
+
     @commands.Cog.listener()
     async def on_interaction(self, interaction: discord.Interaction):
         if interaction.type != discord.InteractionType.component:
@@ -257,6 +336,9 @@ class Tickets(commands.Cog):
         elif custom_id.startswith("ticket_ping:"):
             channel_id = int(custom_id.split(":")[1])
             await self.handle_ping_user(interaction, channel_id)
+        elif custom_id.startswith("ticket_transcript:"):
+            channel_id = int(custom_id.split(":")[1])
+            await self.handle_view_transcript(interaction, channel_id)
 
     @app_commands.command(name="panel-support", description="Στέλνει το Support ticket panel")
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
