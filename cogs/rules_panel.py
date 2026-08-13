@@ -235,7 +235,7 @@ class RulesPanel(commands.Cog):
             container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
         container.add_item(ui.TextDisplay(
-            "##Κανόνες Melody Roleplay\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
+            "# Κανόνες Melody Roleplay\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
             "αντίστοιχους κανόνες. Είναι αναγκαστηκή η γνώση των κανόνων."
         ))
         container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
