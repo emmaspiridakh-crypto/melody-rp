@@ -9,7 +9,7 @@ from utils.permissions import slash_is_staff_team
 
 ACCENT_COLOR = discord.Colour.from_str("#593695")
 
-RULES_PANEL_BANNER_URL = ""
+RULES_PANEL_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"
 
 
 def _section(container: ui.Container, title: str, lines: list[str]) -> None:
@@ -236,7 +236,7 @@ class RulesPanel(commands.Cog):
 
         container.add_item(ui.TextDisplay(
             "##Κανόνες Melody Roleplay\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
-            "αντίστοιχους κανόνες. Είναι αναγκαστηκή η γνώση των κανώνων."
+            "αντίστοιχους κανόνες. Είναι αναγκαστηκή η γνώση των κανόνων."
         ))
         container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
