@@ -40,6 +40,7 @@ COGS = [
     "cogs.join_ping",
     "cogs.emoji_manager",
     "cogs.whitelist",
+    "cogs.rules_panel",
 ]
 
 
