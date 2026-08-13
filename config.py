@@ -128,7 +128,7 @@ WHITELIST_ACCEPTED_ROLE_ID = 1537196463807922187
 WHITELIST_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"      
 WHITELIST_LINK_URL = "https://www.roblox.com/share/g/120555068"   
 WHITELIST_LINK_LABEL = "Join Now" 
-WHITELIST_LINK_TEXT = "Για να μπείς στο game μας θα πρέπει να είσαι μέλος του roblox group μας. Πάτα το κουμπί δίπλα για να μπείς στο group." 
+WHITELIST_LINK_TEXT = "Για να μπείς στο game μας θα πρέπει αναγκαστικά να είσαι μέλος του roblox group. Πάτα το κουμπί **Join Now** για να γίνεις μέλος στο group." 
 
 WHITELIST_QUESTIONS = [
     "Τι ηλικία έχει το roblox account σου?",
@@ -136,7 +136,7 @@ WHITELIST_QUESTIONS = [
     "Εισαι μέλος του roblox group?",
     "Γιατί θέλεις να μπεις στον server?",
     "Έχεις διαβάσει τους κανόνες του server?",
-    "Πες μας λίγα λόγια για το backstory του χαρακτήρα σου (in game)",
+    "Πες μας λίγα λόγια για το backstory του χαρακτήρα σου (in game).",
 ]
 
 APPLICATION_TYPES = {
