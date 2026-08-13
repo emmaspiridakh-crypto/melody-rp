@@ -9,7 +9,7 @@ from utils.permissions import slash_is_staff_team
 
 ACCENT_COLOR = discord.Colour.from_str("#593695")
 
-RULES_PANEL_BANNER_URL = ""  # βάλε εδώ url banner αν θες, αλλιώς άσε το κενό
+RULES_PANEL_BANNER_URL = ""  
 
 
 def _section(container: ui.Container, title: str, lines: list[str]) -> None:
@@ -19,7 +19,7 @@ def _section(container: ui.Container, title: str, lines: list[str]) -> None:
 
 def build_general_rules_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## 📜 General Rules"))
+    container.add_item(ui.TextDisplay("## General Rules"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "Αφορά τα μαγαζιά", [
@@ -103,7 +103,7 @@ def build_general_rules_container() -> ui.Container:
 
 def build_police_ekab_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## 🚓 Police / EKAB Rules"))
+    container.add_item(ui.TextDisplay("## Police / EKAB Rules"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "Ε.Λ.ΑΣ", [
@@ -149,7 +149,7 @@ def build_police_ekab_container() -> ui.Container:
 
 def build_zones_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## 🗺️ Zones"))
+    container.add_item(ui.TextDisplay("## Zones"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "Greenzone", [
@@ -185,8 +185,8 @@ class RulesPanel(commands.Cog):
             container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
         container.add_item(ui.TextDisplay(
-            "## 📜 Κανόνες Server\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
-            "αντίστοιχους κανόνες. Το μήνυμα θα είναι ορατό μόνο σε εσάς."
+            "## Κανόνες Server\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
+            "αντίστοιχους κανόνες. **Η γνώση τους είναι υποχρεωτική.**"
         ))
         container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
