@@ -9,7 +9,7 @@ from utils.permissions import slash_is_staff_team
 
 ACCENT_COLOR = discord.Colour.from_str("#593695")
 
-RULES_PANEL_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"  
+RULES_PANEL_BANNER_URL = ""  # βάλε εδώ url banner αν θες, αλλιώς άσε το κενό
 
 
 def _section(container: ui.Container, title: str, lines: list[str]) -> None:
@@ -19,20 +19,17 @@ def _section(container: ui.Container, title: str, lines: list[str]) -> None:
 
 def build_general_rules_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## General Rules"))
+    container.add_item(ui.TextDisplay("## 📜 General Rules"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
-    _section(container, "Καλώς ήρθατε στον Melody Roleplay server.", [
-        "Μη τήρηση των κανόνων θεωρείται αδυναμία role play και θα τιμωρείται ανάλογα την παράβαση με warning/kick/ban."
-        "O server είναι τύπου Roleplay και ζητάμε από του παίκτες να φτιάξουνε έναν χαρακτήρα με συγκεκριμένο background και ιστορικό ο οποίος θα αλληλεπιδρά με τους άλλους και με τον γύρω κόσμο.",
-        ])
-    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
-
-    _section(container, "RDM", [
-               "Το RDM είναι όταν ένας παίκτης πάει και σκοτώνει έναν άλλο παίκτη,"
-               "χωρίς να έχει προηγηθεί κάποιο RP ή INTERACT."
-               "Απαγορεύεται αυστηρά να σκοτώσω κάποιον επειδή με τράκαρε η αντίστοιχα επειδή τον τράκαρα εγώ και μη έβρισε θα πρέπει να παίξετε RP και μόνο",
-        ])
+    _section(container, "Αφορά τα μαγαζιά", [
+        "Προσέχουμε πάντα για να έχουμε όπως λέει και ο λαός! Δεν χρειάζεται να χρεώνετε ένα "
+        "μαγαζί με τις διάφορες κινήσεις σας. Πολλοί από σας δεν καταλαβαίνετε το ότι ένα μαγαζί "
+        "θα έχει και τις επιπτώσεις του (πρόστιμο, κλείσιμο κτλ) αν η αστυνομία έχει στοιχεία που "
+        "το συνδέουν με κάποιο «gang» π.χ. είστε ενεργοί σε μαγαζί με μάσκα/bandana. Οπότε το "
+        "καλύτερο που έχετε να κάνετε είναι να προστατέψετε τα μαγαζιά σας και ταυτόχρονα να μην "
+        "κάνετε δραστηριότητες που τα συνδέουν με την ομάδα σας.",
+    ])
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "VOL", [
@@ -41,40 +38,14 @@ def build_general_rules_container() -> ui.Container:
         "απειλείστε με όπλα ή άλλα μέσα που μπορεί να αντιμετωπίσετε σε μελλοντικά σενάρια.",
         "• Κατά τη διάρκεια του game θα έρθουν αρκετές περιπτώσεις όπου κάποιος θα απειλεί τη ζωή "
         "του χαρακτήρα σας. Θα πρέπει όλοι, σε όλα τα σενάρια, να έχουν στο πίσω μέρος του μυαλού "
-        "τους ότι η ζωή του χαρακτήρα τους πρέπει πάντα να είναι πάνω απ' όλα.",
-    ])
-    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
-    
-    _section(container, "VDM", [
-        "Το VDM είναι όταν ένας παίκτης χτυπά κάποιον άλλον παίκτη με το αμάξι του και δεν σταματήσει να δει αν είναι καλά ή αν χρειάζεται ασθενοφόρο.",
+        "τους ότι η ζωή του χαρακτήρα τους πρέπει πάντα να είναι πάνω απ' όλα. Αυτό ισχύει και για "
+        "cops vs criminals, και για criminals vs criminals.",
     ])
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
-    _section(container, "METAGAMING", [
-        "Το METAGAMING είναι όταν κάποιος παίκτης χρησιμοποιεί πληροφορίες που αποκτήθηκαν χωρίς RP."
-        "Το να χρησιμοποιείτε ή να αναμεταδίδετε, σκοπίμως, πληροφορίες που ο χαρακτήρας σας δεν έμαθε In Character (μέσω Discord channels, Twitch chats)."
-        "Προσπαθήστε να αποφύγετε τη δημιουργία πολλών χαρακτήρων που εμπλέκονται στα ίδια σενάρια, λόγω του ότι ασυνείδητα θα μπορούσατε να μεταφέρετε τις"
-        "πληροφορίες από τον έναν χαρακτήρα στον άλλον.",
-    ])
-    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
-        
     _section(container, "Combat Log", [
         "Το COMBAT LOG αναφέρεται στο όταν κάνεις quit από το παιχνίδι ενώ είσαι πεθαμένος, "
         "λιπόθυμος η σε κάποιο σκηνικό. Είναι ένα γεγονός το οποίο απαγορεύεται ρητά.",
-    ])
-    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
-
-    _section(container, "New Life Rule (NFL)", [
-        "Όταν πεθαίνει κάποιος παίκτης σε οποιοδήποτε σκηνικό και κάνεις respawn," 
-        "δεν θυμάται τι έχει γίνει στο συγκεκριμένο σκηνικό και επιπλέον δεν μπορεί να γυρίσει σε αυτό εκτός αν περάσει το χρονικό περιθώριο των 30 λεπτών και δεν τον καλέσει (INGAME η ομάδα σου) να πάει πάλι.",
-    ])
-    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
-
-    _section(container, "Αφορά τα μαγαζιά", [
-        "Προσέχουμε πάντα για να έχουμε όπως λέει και ο λαός! Δεν χρειάζεται να χρεώνετε ένα "
-        "μαγαζί με τις διάφορες κινήσεις σας. Πολλοί από σας δεν καταλαβαίνετε το ότι ένα μαγαζί "
-        "θα έχει και τις επιπτώσεις του (πρόστιμο, κλείσιμο κτλ) αν η αστυνομία έχει στοιχεία που "
-        "το συνδέουν με κάποιο «gang» π.χ. είστε ενεργοί σε μαγαζί με μάσκα/bandana.",
     ])
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
@@ -95,7 +66,10 @@ def build_general_rules_container() -> ui.Container:
         "το τι συμβαίνει στην πόλη, δεύτερον είναι μια πολύ καλή κάλυψη σε διάφορα θέματα ή "
         "σκηνικά που μπορεί να προκύψουν και πολλά άλλα που θα τα καταλάβετε και μόνοι σας.",
     ])
-    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+    part2 = ui.Container(accent_colour=ACCENT_COLOR)
+    part2.add_item(ui.TextDisplay("## 📜 General Rules (συνέχεια)"))
+    part2.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+    container = part2
 
     _section(container, "Αφορά εσάς προς την Αστυνομία", [
         "Σταματήστε να είστε επιθετικοί απέναντι στην αστυνομία. Δεν θα είστε ΠΟΤΕ μα ΠΟΤΕ "
@@ -106,7 +80,8 @@ def build_general_rules_container() -> ui.Container:
         "την αστυνομία σίγουρα θα υπάρξουν αλλά κάντε το για κάτι που θα αξίζει και μόνο όταν "
         "είναι η τελευταία επιλογή. Μην προσπαθήσετε να το παίξετε «gangsta OG» ή ότι άλλο μπορεί "
         "να θέλετε να το παίξετε, χαμένοι θα βγείτε απ' όλο αυτό. Προσπαθήστε να δώσετε αξία σε "
-        "αυτό που κάνετε. Υπάρχουν τρόποι να βγείτε μπροστά από την αστυνομία σκεφτείτε σενάρια.",
+        "αυτό που κάνετε. Υπάρχουν τρόποι να βγείτε μπροστά από την αστυνομία σκεφτείτε σενάρια "
+        "«keep that in mind».",
     ])
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
@@ -122,15 +97,16 @@ def build_general_rules_container() -> ui.Container:
         "Οι πληροφορίες ειδικά για το κομμάτι του criminal είναι ένα από τα δυνατότερα όπλα. "
         "Σταματήστε να μοιράζετε πληροφορίες δεξιά και αριστερά ή τουλάχιστον μην τις δίνετε "
         "χωρίς να έχετε κάτι να κερδίσετε και εσείς. Δεν γίνετε να βρίσκει κάποιος κάτι και μέσα "
-        "σε 24 ώρες να το έχουν μάθει μέχρι και στην Αστυνομία.",
+        "σε 24 ώρες να το έχουν μάθει μέχρι και στην Αστυνομία. Αν δεν κρατάτε πληροφορίες Η τις "
+        "μοιράζεται δεξιά, αριστερά χωρίς κέρδος θα δημιουργείται πάντα προβλήματα.",
     ])
 
-    return container
+    return [part1, part2]
 
 
 def build_police_ekab_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## Police / EKAB Rules"))
+    container.add_item(ui.TextDisplay("## 🚓 Police / EKAB Rules"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "Ε.Λ.ΑΣ", [
@@ -176,7 +152,7 @@ def build_police_ekab_container() -> ui.Container:
 
 def build_zones_container() -> ui.Container:
     container = ui.Container(accent_colour=ACCENT_COLOR)
-    container.add_item(ui.TextDisplay("## Zones"))
+    container.add_item(ui.TextDisplay("## 🗺️ Zones"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "Greenzone", [
@@ -212,8 +188,8 @@ class RulesPanel(commands.Cog):
             container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
         container.add_item(ui.TextDisplay(
-            "## Κανόνες Server\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
-            "αντίστοιχους κανόνες. **Η γνώση τους είναι υποχρεωτική.**"
+            "## 📜 Κανόνες Server\nΠατήστε ένα από τα παρακάτω κουμπιά για να δείτε τους "
+            "αντίστοιχους κανόνες. Το μήνυμα θα είναι ορατό μόνο σε εσάς."
         ))
         container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
@@ -246,9 +222,14 @@ class RulesPanel(commands.Cog):
         custom_id = interaction.data.get("custom_id", "")
 
         if custom_id == "rules_panel_general":
-            view = ui.LayoutView(timeout=None)
-            view.add_item(build_general_rules_container())
-            await interaction.response.send_message(view=view, ephemeral=True)
+            containers = build_general_rules_containers()
+            view1 = ui.LayoutView(timeout=None)
+            view1.add_item(containers[0])
+            await interaction.response.send_message(view=view1, ephemeral=True)
+            for extra in containers[1:]:
+                view = ui.LayoutView(timeout=None)
+                view.add_item(extra)
+                await interaction.followup.send(view=view, ephemeral=True)
         elif custom_id == "rules_panel_police_ekab":
             view = ui.LayoutView(timeout=None)
             view.add_item(build_police_ekab_container())
