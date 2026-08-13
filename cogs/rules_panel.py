@@ -22,14 +22,19 @@ def build_general_rules_container() -> ui.Container:
     container.add_item(ui.TextDisplay("## General Rules"))
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
-    _section(container, "Αφορά τα μαγαζιά", [
-        "Προσέχουμε πάντα για να έχουμε όπως λέει και ο λαός! Δεν χρειάζεται να χρεώνετε ένα "
-        "μαγαζί με τις διάφορες κινήσεις σας. Πολλοί από σας δεν καταλαβαίνετε το ότι ένα μαγαζί "
-        "θα έχει και τις επιπτώσεις του (πρόστιμο, κλείσιμο κτλ) αν η αστυνομία έχει στοιχεία που "
-        "το συνδέουν με κάποιο «gang» π.χ. είστε ενεργοί σε μαγαζί με μάσκα/bandana. Οπότε το "
-        "καλύτερο που έχετε να κάνετε είναι να προστατέψετε τα μαγαζιά σας και ταυτόχρονα να μην "
-        "κάνετε δραστηριότητες που τα συνδέουν με την ομάδα σας.",
-    ])
+    _section(container, "Καλώς ήρθατε στον Melody Roleplay server.", [
+        "Παρακαλώ διαβάστε και τηρήστε τους παρακάτω κανόνες."
+        "Μη τήρηση των κανόνων θεωρείται αδυναμία role play και θα τιμωρείται ανάλογα την παράβαση με warning/kick/ban."
+
+        "O server είναι τύπου Roleplay και ζητάμε από του παίκτες να φτιάξουνε έναν χαρακτήρα με συγκεκριμένο background και ιστορικό ο οποίος θα αλληλεπιδρά με τους άλλους και με τον γύρω κόσμο.",
+        ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+
+    _section(container, "RDM", [
+               "Το RDM είναι όταν ένας παίκτης πάει και σκοτώνει έναν άλλο παίκτη,"
+               "χωρίς να έχει προηγηθεί κάποιο RP ή INTERACT."
+               "Απαγορεύεται αυστηρά να σκοτώσω κάποιον επειδή με τράκαρε η αντίστοιχα επειδή τον τράκαρα εγώ και μη έβρισε θα πρέπει να παίξετε RP και μόνο"",
+        ])
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
     _section(container, "VOL", [
@@ -42,10 +47,39 @@ def build_general_rules_container() -> ui.Container:
         "cops vs criminals, και για criminals vs criminals.",
     ])
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+    
+    _section(container, "VDM", [
+        "Το VDM είναι όταν ένας παίκτης χτυπά κάποιον άλλον παίκτη με το αμάξι του και δεν σταματήσει να δει αν είναι καλά ή αν χρειάζεται ασθενοφόρο.",
+    ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
+    _section(container, "METAGAMING", [
+        "Το METAGAMING είναι όταν κάποιος παίκτης χρησιμοποιεί πληροφορίες που αποκτήθηκαν χωρίς RP."
+        "Το να χρησιμοποιείτε ή να αναμεταδίδετε, σκοπίμως, πληροφορίες που ο χαρακτήρας σας δεν έμαθε In Character (μέσω Discord channels, Twitch chats)."
+        "Προσπαθήστε να αποφύγετε τη δημιουργία πολλών χαρακτήρων που εμπλέκονται στα ίδια σενάρια, λόγω του ότι ασυνείδητα θα μπορούσατε να μεταφέρετε τις"
+        "πληροφορίες από τον έναν χαρακτήρα στον άλλον.",
+    ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+        
     _section(container, "Combat Log", [
         "Το COMBAT LOG αναφέρεται στο όταν κάνεις quit από το παιχνίδι ενώ είσαι πεθαμένος, "
         "λιπόθυμος η σε κάποιο σκηνικό. Είναι ένα γεγονός το οποίο απαγορεύεται ρητά.",
+    ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+
+    _section(container, "New Life Rule (NFL)", [
+        "Όταν πεθαίνει κάποιος παίκτης σε οποιοδήποτε σκηνικό και κάνεις respawn," 
+        "δεν θυμάται τι έχει γίνει στο συγκεκριμένο σκηνικό και επιπλέον δεν μπορεί να γυρίσει σε αυτό εκτός αν περάσει το χρονικό περιθώριο των 30 λεπτών και δεν τον καλέσει (INGAME η ομάδα σου) να πάει πάλι.",
+    ])
+    container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+
+    _section(container, "Αφορά τα μαγαζιά", [
+        "Προσέχουμε πάντα για να έχουμε όπως λέει και ο λαός! Δεν χρειάζεται να χρεώνετε ένα "
+        "μαγαζί με τις διάφορες κινήσεις σας. Πολλοί από σας δεν καταλαβαίνετε το ότι ένα μαγαζί "
+        "θα έχει και τις επιπτώσεις του (πρόστιμο, κλείσιμο κτλ) αν η αστυνομία έχει στοιχεία που "
+        "το συνδέουν με κάποιο «gang» π.χ. είστε ενεργοί σε μαγαζί με μάσκα/bandana. Οπότε το "
+        "καλύτερο που έχετε να κάνετε είναι να προστατέψετε τα μαγαζιά σας και ταυτόχρονα να μην "
+        "κάνετε δραστηριότητες που τα συνδέουν με την ομάδα σας.",
     ])
     container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
 
