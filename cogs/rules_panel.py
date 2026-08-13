@@ -9,7 +9,7 @@ from utils.permissions import slash_is_staff_team
 
 ACCENT_COLOR = discord.Colour.from_str("#593695")
 
-RULES_PANEL_BANNER_URL = ""  
+RULES_PANEL_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"  
 
 
 def _section(container: ui.Container, title: str, lines: list[str]) -> None:
