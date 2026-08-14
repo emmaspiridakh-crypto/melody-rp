@@ -64,7 +64,7 @@ def _ticket_types() -> dict:
             "label": "Partnership",
             "emoji": emoji("tickets", "partner"),
             "category_id": config.CAT_TICKET_PARTNERSHIP_ID,
-            "view_roles": [config.OWNERSHIP_ROLE_ID, SERVER_ORG_ID],
+            "view_roles": [config.OWNERSHIP_ROLE_ID, config.SERVER_ORG_ID],
         },
         "civilian_job": {
             "label": "Civilian Job",
