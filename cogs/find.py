@@ -22,13 +22,13 @@ LOG_CATEGORY_LABELS = {
 
 # value -> (label, emoji, color)
 CATEGORY_META: dict[str, tuple[str, str, int]] = {
-    "all": ("Όλα", config.EMBED_COLOR),
-    "logs": ("Logs", 0x5865F2),
-    "moderation": ("Moderation", 0xED4245),
-    "warnings": ("Warnings", 0xFEE75C),
-    "applications": ("Applications", 0x57F287),
-    "whitelist": ("Whitelist", 0x3BA55D),
-    "tickets": ("Tickets", 0x9B59B6),
+    "all": ("Όλα", "🔎", config.EMBED_COLOR),
+    "logs": ("Logs", "📜", 0x5865F2),
+    "moderation": ("Moderation", "🔨", 0xED4245),
+    "warnings": ("Warnings", "⚠️", 0xFEE75C),
+    "applications": ("Applications", "📝", 0x57F287),
+    "whitelist": ("Whitelist", "✅", 0x3BA55D),
+    "tickets": ("Tickets", "🎫", 0x9B59B6),
 }
 
 CATEGORY_CHOICES = [
