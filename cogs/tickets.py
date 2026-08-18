@@ -42,11 +42,11 @@ def _ticket_types() -> dict:
             "category_id": config.CAT_TICKET_STREAMER_ID,
             "view_roles": [config.OWNERSHIP_ROLE_ID],
         },
-        "anticheat": {
-            "label": "Anticheat",
-            "emoji": emoji("tickets", "anticheat"),
+        "female": {
+            "label": "Female Support",
+            "emoji": emoji("tickets", "femele"),
             "category_id": config.CAT_TICKET_ANTICHEAT_ID,
-            "view_roles": [config.ANTICHEAT_MANAGER_ID, config.OWNERSHIP_ROLE_ID],
+            "view_roles": [config.FEMALE_MANAGER_ID, config.OWNERSHIP_ROLE_ID],
         },
         "reward": {
             "label": "Claim Your Reward",
@@ -88,8 +88,6 @@ def _ticket_types() -> dict:
 
 
 def _add_info_lines(container, lines: list[str]) -> None:
-    """Προσθέτει bullet-style γραμμές (emoji + κείμενο), το ένα κάτω από το άλλο,
-    στο στυλ του νέου Assistant-panel design (βλ. screenshot)."""
     bullet = emoji("tickets", "bullet") or "»"
     add_text(container, "\n\n".join(f"{bullet} {line}" for line in lines))
 
@@ -367,7 +365,7 @@ class Tickets(commands.Cog):
             "banapeal": "Κάνει ανάκληση για κάποιο ban",
             "support": "Γενική υποστήριξη & ερωτήσεις",
             "streamer": "Αν θες να κάνεις stream ή έγινε κάτι σε κάποιο stream",
-            "anticheat": "Αναφορά περιστατικού cheat/exploit",
+            "female": "Support για τις γυναικάρες του server",
             "reward": "Διεκδίκησε το reward σου",
             "report": "Κάνε report κάποιον παίκτη ή staff/manager",
             "partner": "Κάνε partnership με τον server μας",
@@ -379,7 +377,7 @@ class Tickets(commands.Cog):
                 emoji=ttypes[k]["emoji"] or None,
                 description=_descriptions.get(k, ""),
             )
-            for k in ("ownership", "banapeal", "support", "stream", "anticheat", "reward", "report", "partner")
+            for k in ("ownership", "banapeal", "support", "stream", "female", "reward", "report", "partner")
         ]
         select = ui.Select(placeholder="Επίλεξε κατηγορία...", options=options, custom_id="support_ticket_select")
         add_action_row(container, select)
