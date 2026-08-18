@@ -385,7 +385,7 @@ class Tickets(commands.Cog):
     @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID)
     async def panel_jobs(self, interaction: discord.Interaction):
         ttypes = _ticket_types()
-        civ, crim = ttypes["civilian_job"]
+        civ = ttypes["civilian_job"]
 
         container = build_base_container(
             title=f"{emoji('tickets', 'ticket')} Melody Roleplay - Civilian Ticket",
