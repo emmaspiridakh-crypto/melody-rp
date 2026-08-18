@@ -4,7 +4,7 @@ EMOJIS = {
         "banapeal": "<a:banapeal:1532334999410442350>",
         "support": "<a:support:1532130695433027794>",
         "streamer": "<:streamer:1498769681161388203>",
-        "female": "<:female:1500036130677194784>",
+        "female": "<a:female:1500036130677194784>",
         "close": "<:close:1532130509331632359>",
         "ping": "<a:ping:1532130668107005982>",
         "ticket": "<:ticket:1535587061216579724>",
