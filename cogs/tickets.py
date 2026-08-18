@@ -44,7 +44,7 @@ def _ticket_types() -> dict:
         },
         "female": {
             "label": "Female Support",
-            "emoji": emoji("tickets", "femele"),
+            "emoji": emoji("tickets", "female"),
             "category_id": config.CAT_TICKET_ANTICHEAT_ID,
             "view_roles": [config.FEMALE_MANAGER_ID, config.OWNERSHIP_ROLE_ID],
         },
