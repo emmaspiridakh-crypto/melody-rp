@@ -41,6 +41,8 @@ COGS = [
     "cogs.emoji_manager",
     "cogs.whitelist",
     "cogs.rules_panel",
+    "cogs/find.py",
+    "utils/activity_log.py",
 ]
 
 
