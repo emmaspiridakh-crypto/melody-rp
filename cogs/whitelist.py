@@ -205,6 +205,22 @@ class Whitelist(commands.Cog):
             await interaction.response.send_message("Μόνο αυτός που έκανε την αίτηση μπορεί να τη στείλει.", ephemeral=True)
             return
 
+        if info.get("status") != "ready_to_submit":
+            await interaction.response.send_message("Η αίτηση έχει ήδη σταλθεί.", ephemeral=True)
+            return
+
+        info["status"] = "submitted"
+        store[str(channel_id)] = info
+        storage.save(STORE_NAME, store)
+
+        done_container = build_base_container(
+            title="Ολοκλήρωσες τις ερωτήσεις!",
+            description=" Η αίτηση στάλθηκε.",
+        )
+        done_view = ui.LayoutView(timeout=None)
+        done_view.add_item(done_container)
+        await interaction.response.edit_message(view=done_view)
+
         guild = interaction.guild
         applicant = guild.get_member(info["user_id"])
         log_channel = guild.get_channel(getattr(config, "LOG_WHITELIST_CHANNEL_ID", None))
@@ -228,12 +244,11 @@ class Whitelist(commands.Cog):
         view.add_item(container)
         log_message = await log_channel.send(view=view)
 
-        info["status"] = "submitted"
         info["log_message_id"] = log_message.id
         store[str(channel_id)] = info
         storage.save(STORE_NAME, store)
 
-        await interaction.response.send_message(
+        await interaction.followup.send(
             "Η αίτηση στάλθηκε! Θα ενημερωθείς με DM, φρόντισε να μην τα έχεις κλειστά.", ephemeral=False
         )
 
@@ -270,13 +285,12 @@ class Whitelist(commands.Cog):
             except discord.Forbidden:
                 pass
 
-        questions = getattr(config, "WHITELIST_QUESTIONS", [])
         check_emoji = emoji("whitelist", "check")
         deny_emoji = emoji("whitelist", "deny")
         status_text = (
-            f"{check_emoji} **Accepted**\nΑπό: {interaction.user.mention}"
+            f"{check_emoji} **Accepted by** {interaction.user.mention}"
             if accepted
-            else f"{deny_emoji} **Denied**\nΑπό: {interaction.user.mention}\nΛόγος: {reason}"
+            else f"{deny_emoji} **Denied by** {interaction.user.mention}\nΛόγος: {reason}"
         )
 
         container = build_base_container(
@@ -284,10 +298,13 @@ class Whitelist(commands.Cog):
             description=f"User: {applicant.mention if applicant else info['user_id']}",
         )
         add_separator(container)
-        for q, a in zip(questions, info["answers"]):
-            add_text(container, f"**{q}**\n{a}")
-        add_separator(container)
         add_text(container, status_text)
+        add_separator(container)
+        show_btn = ui.Button(
+            label="Show Answers", style=discord.ButtonStyle.secondary,
+            custom_id=f"wl_showanswers:{channel_id}",
+        )
+        add_action_row(container, show_btn)
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
@@ -296,6 +313,25 @@ class Whitelist(commands.Cog):
             await interaction.message.edit(view=view)
         else:
             await interaction.response.edit_message(view=view)
+
+    async def handle_show_answers(self, interaction: discord.Interaction, channel_id: int):
+        store = storage.get_store(STORE_NAME)
+        info = store.get(str(channel_id))
+        if not info:
+            await interaction.response.send_message("Δεν βρέθηκε η αίτηση.", ephemeral=True)
+            return
+
+        questions = getattr(config, "WHITELIST_QUESTIONS", [])
+        lines = [f"**{q}**\n{a}" for q, a in zip(questions, info.get("answers", []))]
+        reason = info.get("decision_reason")
+        if reason:
+            lines.append(f"**Λόγος**\n{reason}")
+
+        text = "\n\n".join(lines) if lines else "Δεν υπάρχουν απαντήσεις."
+        if len(text) > 3900:
+            text = text[:3900] + "\n…"
+
+        await interaction.response.send_message(text, ephemeral=True)
 
     async def handle_close(self, interaction: discord.Interaction, channel_id: int):
         if not _is_ownership(interaction.user):
@@ -339,6 +375,8 @@ class Whitelist(commands.Cog):
             await self.handle_send(interaction, int(custom_id.split(":")[1]))
         elif custom_id.startswith("wl_close:"):
             await self.handle_close(interaction, int(custom_id.split(":")[1]))
+        elif custom_id.startswith("wl_showanswers:"):
+            await self.handle_show_answers(interaction, int(custom_id.split(":")[1]))
         elif custom_id.startswith("wl_accept:"):
             channel_id = int(custom_id.split(":")[1])
             if not _is_ownership(interaction.user):
