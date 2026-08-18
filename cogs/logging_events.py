@@ -6,6 +6,7 @@ import discord
 from discord.ext import commands
 
 import config
+from utils import activity_log
 
 
 def _base_embed(guild: discord.Guild, *, title: str, color: int = config.EMBED_COLOR) -> discord.Embed:
@@ -43,6 +44,7 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Account created", value=discord.utils.format_dt(member.created_at, style="R"), inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(member.guild, config.LOG_JOIN_LEAVE_CHANNEL_ID, embed)
+        activity_log.record(member.guild.id, member.id, "join_leave", f"Join: {member} (`{member.id}`)")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
@@ -52,6 +54,7 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Είχε ρόλους", value=roles, inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(member.guild, config.LOG_JOIN_LEAVE_CHANNEL_ID, embed)
+        activity_log.record(member.guild.id, member.id, "join_leave", f"Leave: {member} (`{member.id}`) — Ρόλοι: {roles}")
 
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
@@ -72,6 +75,13 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Από", value=actor.mention if actor else "Άγνωστο (audit log)", inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(after.guild, config.LOG_ROLES_CHANNEL_ID, embed)
+        summary = f"Role Update: {after} (`{after.id}`)"
+        if added:
+            summary += f" | +{', '.join(r.name for r in added)}"
+        if removed:
+            summary += f" | -{', '.join(r.name for r in removed)}"
+        summary += f" | Από: {actor} ({actor.id})" if actor else " | Από: Άγνωστο"
+        activity_log.record(after.guild.id, after.id, "roles", summary, moderator_id=actor.id if actor else None)
 
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel):
@@ -81,6 +91,8 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Από", value=actor.mention if actor else "Άγνωστο", inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(channel.guild, config.LOG_CHANNELS_CHANNEL_ID, embed)
+        if actor:
+            activity_log.record(channel.guild.id, actor.id, "channels", f"Δημιούργησε το #{channel.name} (`{channel.id}`)")
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel):
@@ -90,6 +102,8 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Από", value=actor.mention if actor else "Άγνωστο", inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(channel.guild, config.LOG_CHANNELS_CHANNEL_ID, embed)
+        if actor:
+            activity_log.record(channel.guild.id, actor.id, "channels", f"Διέγραψε το #{channel.name} (`{channel.id}`)")
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before: discord.abc.GuildChannel, after: discord.abc.GuildChannel):
@@ -102,6 +116,8 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Από", value=actor.mention if actor else "Άγνωστο", inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(after.guild, config.LOG_CHANNELS_CHANNEL_ID, embed)
+        if actor:
+            activity_log.record(after.guild.id, actor.id, "channels", f"Μετονόμασε #{before.name} → #{after.name}")
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: discord.Message):
@@ -113,6 +129,12 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Περιεχόμενο", value=(message.content or "*[χωρίς κείμενο / attachment]*")[:1000], inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(message.guild, config.LOG_MESSAGES_CHANNEL_ID, embed)
+        activity_log.record(
+            message.guild.id, message.author.id, "messages",
+            f"Διαγραφή σε {message.channel.mention if hasattr(message.channel, 'mention') else message.channel}: "
+            f"{(message.content or '[χωρίς κείμενο]')[:200]}",
+            channel_id=message.channel.id,
+        )
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: discord.Message, after: discord.Message):
@@ -125,6 +147,12 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Μετά", value=(after.content or "—")[:500], inline=False)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(before.guild, config.LOG_MESSAGES_CHANNEL_ID, embed)
+        activity_log.record(
+            before.guild.id, before.author.id, "messages",
+            f"Επεξεργασία σε {before.channel.mention if hasattr(before.channel, 'mention') else before.channel}: "
+            f"'{(before.content or '—')[:100]}' → '{(after.content or '—')[:100]}'",
+            channel_id=before.channel.id,
+        )
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState):
@@ -136,6 +164,10 @@ class LoggingEvents(commands.Cog):
         embed.add_field(name="Σε", value=after.channel.mention if after.channel else "—", inline=True)
         embed.add_field(name="Ώρα", value=discord.utils.format_dt(datetime.datetime.now(datetime.timezone.utc), style="F"), inline=False)
         await _send(member.guild, config.LOG_VOICE_CHANNEL_ID, embed)
+        activity_log.record(
+            member.guild.id, member.id, "voice",
+            f"{before.channel.name if before.channel else '—'} → {after.channel.name if after.channel else '—'}",
+        )
 
 
 async def setup(bot: commands.Bot):
