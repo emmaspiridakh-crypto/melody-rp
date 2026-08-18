@@ -11,7 +11,10 @@ from discord.ext import commands
 from utils.permissions import member_has_any_role
 import config
 
-MAX_EMOJI_BYTES = 256 * 1024 
+MAX_EMOJI_BYTES = 256 * 1024
+
+EMOJI_MENTION_RE = re.compile(r"<(a?):([a-zA-Z0-9_]{2,32}):(\d{15,25})>")
+
 
 def _clean_name(name: str) -> str:
     name = name.strip()
@@ -25,6 +28,11 @@ def _split_list(raw: str | None) -> list[str]:
         return []
     parts = re.split(r"[\s,]+", raw.strip())
     return [p for p in parts if p]
+
+
+def _cdn_emoji_url(emoji_id: str, animated: bool) -> str:
+    ext = "gif" if animated else "png"
+    return f"https://cdn.discordapp.com/emojis/{emoji_id}.{ext}"
 
 
 class EmojiManager(commands.Cog):
@@ -43,9 +51,36 @@ class EmojiManager(commands.Cog):
         except Exception:
             return None
 
-    @app_commands.command(name="addemoji", description="Προσθέτει ένα ή πολλά emojis στον server (static ή animated)")
+    def _extract_tokens(self, raw: str | None) -> list[tuple[str, str]]:
+        """Παίρνει το raw κείμενο (urls/emojis) και επιστρέφει λίστα (default_name, url).
+
+        Αναγνωρίζει αυτόματα:
+        - Επικολλημένα emojis άλλου server: <:name:id> / <a:name:id> -> CDN URL, χωρίς download/upload
+        - Απλά image links (png/jpg/gif/webp)
+        """
+        out: list[tuple[str, str]] = []
+        if not raw:
+            return out
+
+        remaining = raw
+
+        for m in EMOJI_MENTION_RE.finditer(raw):
+            animated_flag, name, emoji_id = m.group(1), m.group(2), m.group(3)
+            out.append((name, _cdn_emoji_url(emoji_id, bool(animated_flag))))
+            remaining = remaining.replace(m.group(0), " ")
+
+        for token in _split_list(remaining):
+            if token.startswith("http://") or token.startswith("https://"):
+                guessed = token.rsplit("/", 1)[-1].split("?")[0]
+                guessed = guessed.rsplit(".", 1)[0] if "." in guessed else guessed
+                out.append((guessed or "emoji", token))
+
+        return out
+
+    @app_commands.command(name="addemoji", description="Προσθέτει emojis (static/animated) — links, attachments, ή κόλλα emoji από άλλο server")
     @app_commands.describe(
-        names="Ονόματα για τα emojis, χωρισμένα με κόμμα/κενό",
+        names="Ονόματα για τα emojis, χωρισμένα με κόμμα/κενό (προαιρετικό — αλλιώς κρατάει το αρχικό όνομα)",
+        emojis="Κόλλα εδώ emoji από άλλο server (π.χ. <:name:id> ή <a:name:id>) — δέχεται πολλά μαζί",
         urls="Links εικόνων χωρισμένα με κενό ή νέα γραμμή",
         attachment1="Εικόνα emoji (png/jpg/gif)",
         attachment2="Εικόνα emoji (png/jpg/gif)",
@@ -57,6 +92,7 @@ class EmojiManager(commands.Cog):
         self,
         interaction: discord.Interaction,
         names: str | None = None,
+        emojis: str | None = None,
         urls: str | None = None,
         attachment1: discord.Attachment | None = None,
         attachment2: discord.Attachment | None = None,
@@ -73,25 +109,22 @@ class EmojiManager(commands.Cog):
             return
 
         attachments = [a for a in (attachment1, attachment2, attachment3, attachment4, attachment5) if a is not None]
-        url_list = _split_list(urls)
 
-        if not attachments and not url_list:
+        raw_sources: list[tuple[str, bytes | str]] = []
+        for att in attachments:
+            raw_sources.append((att.filename.rsplit(".", 1)[0], att))
+
+        raw_sources.extend(self._extract_tokens(emojis))
+        raw_sources.extend(self._extract_tokens(urls))
+
+        if not raw_sources:
             await interaction.response.send_message(
-                "Πρέπει να δώσεις τουλάχιστον ένα αρχείο (attachment) ή ένα link.", ephemeral=True
+                "Πρέπει να δώσεις τουλάχιστον ένα attachment, ένα link, ή να κολλήσεις ένα emoji (`<:name:id>`).",
+                ephemeral=True,
             )
             return
 
         await interaction.response.defer(ephemeral=True, thinking=True)
-
-        sources: list[tuple[str, str]] = []
-        raw_sources: list[tuple[str, bytes | str]] = [] 
-        for att in attachments:
-            raw_sources.append((att.filename.rsplit(".", 1)[0], att))
-
-        for url in url_list:
-            guessed = url.rsplit("/", 1)[-1].split("?")[0]
-            guessed = guessed.rsplit(".", 1)[0] if "." in guessed else guessed
-            raw_sources.append((guessed or "emoji", url))
 
         given_names = _split_list(names)
 
@@ -114,7 +147,7 @@ class EmojiManager(commands.Cog):
                 else:
                     image_bytes = await self._fetch_url_bytes(session, source)
                     if image_bytes is None:
-                        failed.append(f"{emoji_name} (αποτυχία λήψης link ή >256KB)")
+                        failed.append(f"{emoji_name} (αποτυχία λήψης ή >256KB)")
                         continue
 
                 try:
