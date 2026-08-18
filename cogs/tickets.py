@@ -72,12 +72,6 @@ def _ticket_types() -> dict:
             "category_id": config.CAT_JOBS_ID,
             "view_roles": [config.CIVILIAN_MANAGER_ROLE_ID],
         },
-        "criminal_job": {
-            "label": "Criminal Job",
-            "emoji": emoji("jobs", "criminal"),
-            "category_id": config.CAT_JOBS_ID,
-            "view_roles": [config.CRIMINAL_MANAGER_ROLE_ID],
-        },
         "donate": {
             "label": "Donate",
             "emoji": emoji("donate", "donate"),
@@ -387,14 +381,14 @@ class Tickets(commands.Cog):
         await interaction.channel.send(view=view)
         await interaction.response.send_message("Στάλθηκε.", ephemeral=True)
 
-    @app_commands.command(name="panel-jobs", description="Στέλνει το Civilian/Criminal Job panel (ένα panel, δύο κουμπιά)")
-    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
+    @app_commands.command(name="panel-jobs", description="Στέλνει το Civilian Job panel (ένα panel, δύο κουμπιά)")
+    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID)
     async def panel_jobs(self, interaction: discord.Interaction):
         ttypes = _ticket_types()
-        civ, crim = ttypes["civilian_job"], ttypes["criminal_job"]
+        civ, crim = ttypes["civilian_job"]
 
         container = build_base_container(
-            title=f"{emoji('tickets', 'ticket')} Melody Roleplay - Job Ticket",
+            title=f"{emoji('tickets', 'ticket')} Melody Roleplay - Civilian Ticket",
             banner_url=config.TICKET_JOBS_BANNER_URL,
             thumbnail_url=config.TICKET_JOBS_THUMBNAIL_URL,
         )
@@ -408,11 +402,7 @@ class Tickets(commands.Cog):
             label=civ["label"], style=discord.ButtonStyle.success,
             emoji=civ["emoji"] or None, custom_id="ticket_open_civilian_job",
         )
-        crim_btn = ui.Button(
-            label=crim["label"], style=discord.ButtonStyle.danger,
-            emoji=crim["emoji"] or None, custom_id="ticket_open_criminal_job",
-        )
-        add_action_row(container, civ_btn, crim_btn)
+        add_action_row(container, civ_btn)
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
