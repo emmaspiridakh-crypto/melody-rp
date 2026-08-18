@@ -32,6 +32,7 @@ APPLICATION_REVIEW_ROLES = {
     "dikastiko": [1539078142008885359],
     "staff": [OWNERSHIP_ROLE_ID],
     "manager": [OWNERSHIP_ROLE_ID],
+    "crimial": [OWNERSHIP_ROLE_ID],
 }
 AUTOROLE_ID = 1530986809914425514 
 SERVER_ORG_ID = 1532006852248993813
@@ -138,7 +139,7 @@ WHITELIST_ACCEPTED_ROLE_ID = 1537196463807922187
 WHITELIST_BANNER_URL = "https://i.imgur.com/3EPzoQG.png"      
 WHITELIST_LINK_URL = "https://www.roblox.com/share/g/120555068"   
 WHITELIST_LINK_LABEL = "Join Now" 
-WHITELIST_LINK_TEXT = "Για να μπείς στο game μας θα πρέπει αναγκαστικά να είσαι μέλος του roblox group. Πάτα το κουμπί **Join Now** για να γίνεις μέλος στο group." 
+WHITELIST_LINK_TEXT = "Για να μπείς στο game μας θα πρέπει αναγκαστικά να είσαι μέλος του roblox group. Πάτα το κουμπί **Join Now** για να γίνεις μέλος." 
 
 WHITELIST_QUESTIONS = [
     "Τι ηλικία έχει το roblox account σου?",
@@ -254,6 +255,18 @@ APPLICATION_TYPES = {
             "Ποιο θα ήταν το πρώτο πράγμα που θα έκανες τις πρώτες 48 ώρες στη θέση;",
             "Δύο staff κατηγορούν ο ένας τον άλλον για κλοπή δεδομένων. Πώς το διερευνάς χωρίς να πάρεις προκατειλημμένη θέση;",
             "Πόσες ώρες θα μπορείς να είσαι on;"
+        ],
+    },
+    "criminal": {
+        "label": "Criminal",
+        "questions": [
+            "Για ποιο Criminal Team ενδιαφέρεστε?",
+            "Τι ηλικίες υπάρχουν στην ομάδα σας? [Boss 16+ αυστηρά]",
+            "Πόσα μέλη είστε και πόσο καιρό παίζετε criminal ? [Minimum 10 για Mafia/Cartel & minimum 8 για Gang]",
+            "Τι σας έκανε να επιλέξετε τον Server μας , ώστε να παίξετε Criminal RP?",
+            "Πόσο ενεργοί θεωρείτε μπορείτε να είστε εφόσον πάρετε την ομάδα?",
+            "Είναι σίγουρο πως θα παίζετε με το Job?",
+            "Θέλετε να συμπληρώσετε κάτι?"
         ],
     },
 }
