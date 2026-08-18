@@ -12,23 +12,29 @@ from utils.permissions import slash_is_ownership_only
 
 RESULTS_PER_PAGE = 6
 
-CATEGORY_CHOICES = [
-    app_commands.Choice(name="Όλα", value="all"),
-    app_commands.Choice(name="Logs (Join/Leave/Ρόλοι/Channels/Μηνύματα/Voice)", value="logs"),
-    app_commands.Choice(name="Moderation (Ban/Kick/Timeout/DM)", value="moderation"),
-    app_commands.Choice(name="Warnings", value="warnings"),
-    app_commands.Choice(name="Applications", value="applications"),
-    app_commands.Choice(name="Tickets", value="tickets"),
-]
-
 LOG_CATEGORY_LABELS = {
     "join_leave": "Join/Leave",
     "roles": "Ρόλοι",
     "channels": "Channels",
     "messages": "Μηνύματα",
     "voice": "Voice",
-    "moderation": "Moderation",
 }
+
+# value -> (label, emoji, color)
+CATEGORY_META: dict[str, tuple[str, str, int]] = {
+    "all": ("Όλα", config.EMBED_COLOR),
+    "logs": ("Logs", 0x5865F2),
+    "moderation": ("Moderation", 0xED4245),
+    "warnings": ("Warnings", 0xFEE75C),
+    "applications": ("Applications", 0x57F287),
+    "whitelist": ("Whitelist", 0x3BA55D),
+    "tickets": ("Tickets", 0x9B59B6),
+}
+
+CATEGORY_CHOICES = [
+    app_commands.Choice(name=f"{meta[1]} {meta[0]}", value=key)
+    for key, meta in CATEGORY_META.items()
+]
 
 
 def _fmt_ts(ts: float) -> str:
@@ -36,96 +42,165 @@ def _fmt_ts(ts: float) -> str:
     return discord.utils.format_dt(dt, style="R")
 
 
-def _build_results(guild: discord.Guild, user: discord.User, category: str) -> list[str]:
-    lines: list[str] = []
+def _gather(guild: discord.Guild, user: discord.User, category: str) -> list[dict]:
+    """Επιστρέφει entries: {cat, label, text, ts} ταξινομημένα με τα πιο πρόσφατα πρώτα."""
+    entries: list[dict] = []
 
     want_logs = category in ("all", "logs")
     want_mod = category in ("all", "moderation")
     want_warn = category in ("all", "warnings")
     want_apps = category in ("all", "applications")
+    want_wl = category in ("all", "whitelist")
     want_tickets = category in ("all", "tickets")
 
     if want_logs or want_mod:
-        entries = activity_log.search(guild.id, user.id)
-        for e in entries:
+        for e in activity_log.search(guild.id, user.id):
             cat = e.get("category")
             if cat == "moderation" and not want_mod:
                 continue
             if cat != "moderation" and not want_logs:
                 continue
-            label = LOG_CATEGORY_LABELS.get(cat, cat)
+            label = LOG_CATEGORY_LABELS.get(cat, "Moderation" if cat == "moderation" else cat)
             mod_id = e.get("moderator_id")
-            who = f" (από <@{mod_id}>)" if mod_id and mod_id != user.id else ""
-            lines.append(f"`[{label}]` {_fmt_ts(e['timestamp'])} — {e['summary']}{who}")
+            who = f" — από <@{mod_id}>" if mod_id and mod_id != user.id else ""
+            entries.append({
+                "cat": "moderation" if cat == "moderation" else "logs",
+                "label": label,
+                "text": f"{e['summary']}{who}",
+                "ts": e.get("timestamp", 0),
+            })
 
     if want_warn:
-        store = storage.get_store("warnings")
-        for w in store.get(str(user.id), []):
+        for w in storage.get_store("warnings").get(str(user.id), []):
             if w.get("guild_id") != guild.id:
                 continue
-            lines.append(
-                f"`[Warning]` {_fmt_ts(w['timestamp'])} — Level {w['level']} από <@{w['moderator_id']}> "
-                f"— {w['reason']} (`{w['id']}`)"
-            )
+            entries.append({
+                "cat": "warnings",
+                "label": f"Level {w['level']}",
+                "text": f"{w['reason']} — από <@{w['moderator_id']}> (`{w['id']}`)",
+                "ts": w.get("timestamp", 0),
+            })
 
     if want_apps:
-        store = storage.get_store("applications")
-        for ch_id, info in store.items():
+        for ch_id, info in storage.get_store("applications").items():
             if info.get("user_id") != user.id:
                 continue
             atype = config.APPLICATION_TYPES.get(info.get("type"), {}).get("label", info.get("type"))
             status = info.get("status", "pending")
-            extra = ""
-            if info.get("decided_by"):
-                extra = f" — αποφασίστηκε από <@{info['decided_by']}>"
-            lines.append(f"`[Application]` {atype} — status: **{status}**{extra} (channel `{ch_id}`)")
+            extra = f" — αποφασίστηκε από <@{info['decided_by']}>" if info.get("decided_by") else ""
+            entries.append({
+                "cat": "applications",
+                "label": atype,
+                "text": f"status: **{status}**{extra} (channel `{ch_id}`)",
+                "ts": 0,
+            })
+
+    if want_wl:
+        for ch_id, info in storage.get_store("whitelist").items():
+            if info.get("user_id") != user.id:
+                continue
+            status = info.get("status", "pending")
+            extra = f" — αποφασίστηκε από <@{info['decided_by']}>" if info.get("decided_by") else ""
+            entries.append({
+                "cat": "whitelist",
+                "label": "Whitelist",
+                "text": f"status: **{status}**{extra} (channel `{ch_id}`)",
+                "ts": 0,
+            })
 
     if want_tickets:
-        store = storage.get_store("tickets")
-        for ch_id, info in store.items():
+        for ch_id, info in storage.get_store("tickets").items():
             if info.get("opener_id") != user.id or info.get("guild_id") != guild.id:
                 continue
-            lines.append(f"`[Ticket]` type: {info.get('type')} (channel `{ch_id}`)")
+            entries.append({
+                "cat": "tickets",
+                "label": info.get("type", "ticket"),
+                "text": f"channel `{ch_id}`",
+                "ts": 0,
+            })
 
-    return lines
+    entries.sort(key=lambda e: e.get("ts", 0), reverse=True)
+    return entries
+
+
+class CategorySelect(discord.ui.Select):
+    def __init__(self, current: str):
+        options = [
+            discord.SelectOption(label=meta[0], value=key, emoji=meta[1], default=(key == current))
+            for key, meta in CATEGORY_META.items()
+        ]
+        super().__init__(placeholder="Άλλαξε κατηγορία...", options=options, row=0)
+
+    async def callback(self, interaction: discord.Interaction):
+        view: ResultsView = self.view
+        view.category = self.values[0]
+        view.entries = _gather(interaction.guild, view.user, view.category)
+        view.page = 0
+        view._sync()
+        await interaction.response.edit_message(embed=view.build_embed(), view=view)
 
 
 class ResultsView(discord.ui.View):
-    def __init__(self, lines: list[str], user: discord.User, category_label: str):
-        super().__init__(timeout=120)
-        self.lines = lines
+    def __init__(self, guild: discord.Guild, user: discord.User, category: str):
+        super().__init__(timeout=180)
+        self.guild = guild
         self.user = user
-        self.category_label = category_label
+        self.category = category
+        self.entries = _gather(guild, user, category)
         self.page = 0
-        self.max_page = max(0, (len(lines) - 1) // RESULTS_PER_PAGE)
-        self._update_buttons()
+        self.select = CategorySelect(category)
+        self.add_item(self.select)
+        self._sync()
 
-    def _update_buttons(self):
+    @property
+    def max_page(self) -> int:
+        return max(0, (len(self.entries) - 1) // RESULTS_PER_PAGE)
+
+    def _sync(self):
+        self.select.options = [
+            discord.SelectOption(label=meta[0], value=key, emoji=meta[1], default=(key == self.category))
+            for key, meta in CATEGORY_META.items()
+        ]
         self.prev_btn.disabled = self.page <= 0
         self.next_btn.disabled = self.page >= self.max_page
 
     def build_embed(self) -> discord.Embed:
+        label, icon, color = CATEGORY_META[self.category]
         start = self.page * RESULTS_PER_PAGE
-        chunk = self.lines[start:start + RESULTS_PER_PAGE]
+        chunk = self.entries[start:start + RESULTS_PER_PAGE]
+
         embed = discord.Embed(
-            title=f"🔎 Αναζήτηση: {self.user}",
-            description="\n\n".join(chunk) if chunk else "Δεν βρέθηκαν αποτελέσματα.",
-            color=config.EMBED_COLOR,
+            title=f"{icon} Αναζήτηση — {self.user}",
+            color=color,
         )
         embed.set_thumbnail(url=self.user.display_avatar.url)
-        embed.set_footer(text=f"{self.category_label} • {len(self.lines)} αποτελέσματα • Σελίδα {self.page + 1}/{self.max_page + 1}")
+        embed.add_field(name="Χρήστης", value=f"{self.user.mention} (`{self.user.id}`)", inline=False)
+
+        if not chunk:
+            embed.description = "Δεν βρέθηκαν αποτελέσματα."
+        else:
+            for e in chunk:
+                cat_icon = CATEGORY_META.get(e["cat"], ("", "•", 0))[1]
+                when = _fmt_ts(e["ts"]) if e.get("ts") else "—"
+                embed.add_field(
+                    name=f"{cat_icon} {e['label']} • {when}",
+                    value=e["text"][:1000] or "—",
+                    inline=False,
+                )
+
+        embed.set_footer(text=f"{label} • {len(self.entries)} αποτελέσματα • Σελίδα {self.page + 1}/{self.max_page + 1}")
         return embed
 
-    @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary)
+    @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary, row=1)
     async def prev_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page = max(0, self.page - 1)
-        self._update_buttons()
+        self._sync()
         await interaction.response.edit_message(embed=self.build_embed(), view=self)
 
-    @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary)
+    @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary, row=1)
     async def next_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page = min(self.max_page, self.page + 1)
-        self._update_buttons()
+        self._sync()
         await interaction.response.edit_message(embed=self.build_embed(), view=self)
 
 
@@ -133,15 +208,15 @@ class Find(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @app_commands.command(name="find", description="[Ownership] Ψάξε έναν χρήστη σε logs / moderation / warnings / applications / tickets")
-    @app_commands.describe(user="Ο χρήστης που θες να ψάξεις", category="Τι είδος δεδομένων θες να βρεις")
+    @app_commands.command(name="find", description="[Ownership] Ψάξε έναν χρήστη σε logs / moderation / warnings / applications / whitelist / tickets")
+    @app_commands.describe(user="Ο χρήστης που θες να ψάξεις", category="Τι είδος δεδομένων θες να βρεις (μπορείς να αλλάξεις μετά από dropdown)")
     @app_commands.choices(category=CATEGORY_CHOICES)
     @slash_is_ownership_only()
-    async def find(self, interaction: discord.Interaction, user: discord.User, category: app_commands.Choice[str]):
+    async def find(self, interaction: discord.Interaction, user: discord.User, category: app_commands.Choice[str] = None):
         await interaction.response.defer(ephemeral=True)
-        lines = _build_results(interaction.guild, user, category.value)
-        view = ResultsView(lines, user, category.name)
-        await interaction.followup.send(embed=view.build_embed(), view=view if lines else None, ephemeral=True)
+        cat_value = category.value if category else "all"
+        view = ResultsView(interaction.guild, user, cat_value)
+        await interaction.followup.send(embed=view.build_embed(), view=view, ephemeral=True)
 
     @find.error
     async def find_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
