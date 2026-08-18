@@ -1,232 +1,184 @@
 from __future__ import annotations
 
-import datetime
+import io
+import re
 
+import aiohttp
 import discord
 from discord import app_commands
 from discord.ext import commands
 
+from utils.permissions import member_has_any_role
 import config
-from utils import storage, activity_log
-from utils.permissions import slash_is_ownership_only
 
-RESULTS_PER_PAGE = 6
+MAX_EMOJI_BYTES = 256 * 1024
 
-LOG_CATEGORY_LABELS = {
-    "join_leave": "Join/Leave",
-    "roles": "Ρόλοι",
-    "channels": "Channels",
-    "messages": "Μηνύματα",
-    "voice": "Voice",
-}
-
-# value -> (label, emoji, color)
-CATEGORY_META: dict[str, tuple[str, str, int]] = {
-    "all": ("Όλα", "🔎", config.EMBED_COLOR),
-    "logs": ("Logs", "📜", 0x5865F2),
-    "moderation": ("Moderation", "🔨", 0xED4245),
-    "warnings": ("Warnings", "⚠️", 0xFEE75C),
-    "applications": ("Applications", "📝", 0x57F287),
-    "whitelist": ("Whitelist", "✅", 0x3BA55D),
-    "tickets": ("Tickets", "🎫", 0x9B59B6),
-}
-
-CATEGORY_CHOICES = [
-    app_commands.Choice(name=f"{meta[1]} {meta[0]}", value=key)
-    for key, meta in CATEGORY_META.items()
-]
+# Ταιριάζει με ένα πλήρες custom emoji όπως το κάνει copy-paste το Discord:
+# <:name:123456789012345678>  ή  <a:name:123456789012345678>
+EMOJI_MENTION_RE = re.compile(r"<(a?):([a-zA-Z0-9_]{2,32}):(\d{15,25})>")
 
 
-def _fmt_ts(ts: float) -> str:
-    dt = datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc)
-    return discord.utils.format_dt(dt, style="R")
+def _clean_name(name: str) -> str:
+    name = name.strip()
+    name = re.sub(r"[^a-zA-Z0-9_]", "_", name)
+    name = re.sub(r"_+", "_", name).strip("_")
+    return name[:32] if name else "emoji"
 
 
-def _gather(guild: discord.Guild, user: discord.User, category: str) -> list[dict]:
-    """Επιστρέφει entries: {cat, label, text, ts} ταξινομημένα με τα πιο πρόσφατα πρώτα."""
-    entries: list[dict] = []
-
-    want_logs = category in ("all", "logs")
-    want_mod = category in ("all", "moderation")
-    want_warn = category in ("all", "warnings")
-    want_apps = category in ("all", "applications")
-    want_wl = category in ("all", "whitelist")
-    want_tickets = category in ("all", "tickets")
-
-    if want_logs or want_mod:
-        for e in activity_log.search(guild.id, user.id):
-            cat = e.get("category")
-            if cat == "moderation" and not want_mod:
-                continue
-            if cat != "moderation" and not want_logs:
-                continue
-            label = LOG_CATEGORY_LABELS.get(cat, "Moderation" if cat == "moderation" else cat)
-            mod_id = e.get("moderator_id")
-            who = f" — από <@{mod_id}>" if mod_id and mod_id != user.id else ""
-            entries.append({
-                "cat": "moderation" if cat == "moderation" else "logs",
-                "label": label,
-                "text": f"{e['summary']}{who}",
-                "ts": e.get("timestamp", 0),
-            })
-
-    if want_warn:
-        for w in storage.get_store("warnings").get(str(user.id), []):
-            if w.get("guild_id") != guild.id:
-                continue
-            entries.append({
-                "cat": "warnings",
-                "label": f"Level {w['level']}",
-                "text": f"{w['reason']} — από <@{w['moderator_id']}> (`{w['id']}`)",
-                "ts": w.get("timestamp", 0),
-            })
-
-    if want_apps:
-        for ch_id, info in storage.get_store("applications").items():
-            if info.get("user_id") != user.id:
-                continue
-            atype = config.APPLICATION_TYPES.get(info.get("type"), {}).get("label", info.get("type"))
-            status = info.get("status", "pending")
-            extra = f" — αποφασίστηκε από <@{info['decided_by']}>" if info.get("decided_by") else ""
-            entries.append({
-                "cat": "applications",
-                "label": atype,
-                "text": f"status: **{status}**{extra} (channel `{ch_id}`)",
-                "ts": 0,
-            })
-
-    if want_wl:
-        for ch_id, info in storage.get_store("whitelist").items():
-            if info.get("user_id") != user.id:
-                continue
-            status = info.get("status", "pending")
-            extra = f" — αποφασίστηκε από <@{info['decided_by']}>" if info.get("decided_by") else ""
-            entries.append({
-                "cat": "whitelist",
-                "label": "Whitelist",
-                "text": f"status: **{status}**{extra} (channel `{ch_id}`)",
-                "ts": 0,
-            })
-
-    if want_tickets:
-        for ch_id, info in storage.get_store("tickets").items():
-            if info.get("opener_id") != user.id or info.get("guild_id") != guild.id:
-                continue
-            entries.append({
-                "cat": "tickets",
-                "label": info.get("type", "ticket"),
-                "text": f"channel `{ch_id}`",
-                "ts": 0,
-            })
-
-    entries.sort(key=lambda e: e.get("ts", 0), reverse=True)
-    return entries
+def _split_list(raw: str | None) -> list[str]:
+    if not raw:
+        return []
+    parts = re.split(r"[\s,]+", raw.strip())
+    return [p for p in parts if p]
 
 
-class CategorySelect(discord.ui.Select):
-    def __init__(self, current: str):
-        options = [
-            discord.SelectOption(label=meta[0], value=key, emoji=meta[1], default=(key == current))
-            for key, meta in CATEGORY_META.items()
-        ]
-        super().__init__(placeholder="Άλλαξε κατηγορία...", options=options, row=0)
-
-    async def callback(self, interaction: discord.Interaction):
-        view: ResultsView = self.view
-        view.category = self.values[0]
-        view.entries = _gather(interaction.guild, view.user, view.category)
-        view.page = 0
-        view._sync()
-        await interaction.response.edit_message(embed=view.build_embed(), view=view)
+def _cdn_emoji_url(emoji_id: str, animated: bool) -> str:
+    ext = "gif" if animated else "png"
+    return f"https://cdn.discordapp.com/emojis/{emoji_id}.{ext}"
 
 
-class ResultsView(discord.ui.View):
-    def __init__(self, guild: discord.Guild, user: discord.User, category: str):
-        super().__init__(timeout=180)
-        self.guild = guild
-        self.user = user
-        self.category = category
-        self.entries = _gather(guild, user, category)
-        self.page = 0
-        self.select = CategorySelect(category)
-        self.add_item(self.select)
-        self._sync()
-
-    @property
-    def max_page(self) -> int:
-        return max(0, (len(self.entries) - 1) // RESULTS_PER_PAGE)
-
-    def _sync(self):
-        self.select.options = [
-            discord.SelectOption(label=meta[0], value=key, emoji=meta[1], default=(key == self.category))
-            for key, meta in CATEGORY_META.items()
-        ]
-        self.prev_btn.disabled = self.page <= 0
-        self.next_btn.disabled = self.page >= self.max_page
-
-    def build_embed(self) -> discord.Embed:
-        label, icon, color = CATEGORY_META[self.category]
-        start = self.page * RESULTS_PER_PAGE
-        chunk = self.entries[start:start + RESULTS_PER_PAGE]
-
-        embed = discord.Embed(
-            title=f"{icon} Αναζήτηση — {self.user}",
-            color=color,
-        )
-        embed.set_thumbnail(url=self.user.display_avatar.url)
-        embed.add_field(name="Χρήστης", value=f"{self.user.mention} (`{self.user.id}`)", inline=False)
-
-        if not chunk:
-            embed.description = "Δεν βρέθηκαν αποτελέσματα."
-        else:
-            for e in chunk:
-                cat_icon = CATEGORY_META.get(e["cat"], ("", "•", 0))[1]
-                when = _fmt_ts(e["ts"]) if e.get("ts") else "—"
-                embed.add_field(
-                    name=f"{cat_icon} {e['label']} • {when}",
-                    value=e["text"][:1000] or "—",
-                    inline=False,
-                )
-
-        embed.set_footer(text=f"{label} • {len(self.entries)} αποτελέσματα • Σελίδα {self.page + 1}/{self.max_page + 1}")
-        return embed
-
-    @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary, row=1)
-    async def prev_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.page = max(0, self.page - 1)
-        self._sync()
-        await interaction.response.edit_message(embed=self.build_embed(), view=self)
-
-    @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary, row=1)
-    async def next_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.page = min(self.max_page, self.page + 1)
-        self._sync()
-        await interaction.response.edit_message(embed=self.build_embed(), view=self)
-
-
-class Find(commands.Cog):
+class EmojiManager(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @app_commands.command(name="find", description="[Ownership] Ψάξε έναν χρήστη σε logs / moderation / warnings / applications / whitelist / tickets")
-    @app_commands.describe(user="Ο χρήστης που θες να ψάξεις", category="Τι είδος δεδομένων θες να βρεις (μπορείς να αλλάξεις μετά από dropdown)")
-    @app_commands.choices(category=CATEGORY_CHOICES)
-    @slash_is_ownership_only()
-    async def find(self, interaction: discord.Interaction, user: discord.User, category: app_commands.Choice[str] = None):
-        await interaction.response.defer(ephemeral=True)
-        cat_value = category.value if category else "all"
-        view = ResultsView(interaction.guild, user, cat_value)
-        await interaction.followup.send(embed=view.build_embed(), view=view, ephemeral=True)
+    async def _fetch_url_bytes(self, session: aiohttp.ClientSession, url: str) -> bytes | None:
+        try:
+            async with session.get(url) as resp:
+                if resp.status != 200:
+                    return None
+                data = await resp.read()
+                if len(data) > MAX_EMOJI_BYTES:
+                    return None
+                return data
+        except Exception:
+            return None
 
-    @find.error
-    async def find_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
-        if isinstance(error, app_commands.CheckFailure):
-            msg = "Μόνο η Ownership μπορεί να χρησιμοποιήσει αυτή την εντολή."
-            if interaction.response.is_done():
-                await interaction.followup.send(msg, ephemeral=True)
-            else:
-                await interaction.response.send_message(msg, ephemeral=True)
+    def _extract_tokens(self, raw: str | None) -> list[tuple[str, str]]:
+        """Παίρνει το raw κείμενο (urls/emojis) και επιστρέφει λίστα (default_name, url).
+
+        Αναγνωρίζει αυτόματα:
+        - Επικολλημένα emojis άλλου server: <:name:id> / <a:name:id> -> CDN URL, χωρίς download/upload
+        - Απλά image links (png/jpg/gif/webp)
+        """
+        out: list[tuple[str, str]] = []
+        if not raw:
+            return out
+
+        remaining = raw
+
+        # Πρώτα τραβάμε όσα emoji mentions υπάρχουν μέσα στο κείμενο (μπορεί να είναι
+        # κολλημένα το ένα δίπλα στο άλλο χωρίς κενό, όπως τα κάνει paste το Discord)
+        for m in EMOJI_MENTION_RE.finditer(raw):
+            animated_flag, name, emoji_id = m.group(1), m.group(2), m.group(3)
+            out.append((name, _cdn_emoji_url(emoji_id, bool(animated_flag))))
+            remaining = remaining.replace(m.group(0), " ")
+
+        # Ό,τι απομείνει (απλά links) το σπάμε κανονικά
+        for token in _split_list(remaining):
+            if token.startswith("http://") or token.startswith("https://"):
+                guessed = token.rsplit("/", 1)[-1].split("?")[0]
+                guessed = guessed.rsplit(".", 1)[0] if "." in guessed else guessed
+                out.append((guessed or "emoji", token))
+
+        return out
+
+    @app_commands.command(name="addemoji", description="Προσθέτει emojis (static/animated) — links, attachments, ή κόλλα emoji από άλλο server")
+    @app_commands.describe(
+        names="Ονόματα για τα emojis, χωρισμένα με κόμμα/κενό (προαιρετικό — αλλιώς κρατάει το αρχικό όνομα)",
+        emojis="Κόλλα εδώ emoji από άλλο server (π.χ. <:name:id> ή <a:name:id>) — δέχεται πολλά μαζί",
+        urls="Links εικόνων χωρισμένα με κενό ή νέα γραμμή",
+        attachment1="Εικόνα emoji (png/jpg/gif)",
+        attachment2="Εικόνα emoji (png/jpg/gif)",
+        attachment3="Εικόνα emoji (png/jpg/gif)",
+        attachment4="Εικόνα emoji (png/jpg/gif)",
+        attachment5="Εικόνα emoji (png/jpg/gif)",
+    )
+    async def addemoji(
+        self,
+        interaction: discord.Interaction,
+        names: str | None = None,
+        emojis: str | None = None,
+        urls: str | None = None,
+        attachment1: discord.Attachment | None = None,
+        attachment2: discord.Attachment | None = None,
+        attachment3: discord.Attachment | None = None,
+        attachment4: discord.Attachment | None = None,
+        attachment5: discord.Attachment | None = None,
+    ):
+        if not member_has_any_role(interaction.user, [config.OWNERSHIP_ROLE_ID]):
+            await interaction.response.send_message(" Μόνο το Ownership μπορεί να προσθέσει emojis.", ephemeral=True)
+            return
+
+        if interaction.guild is None:
+            await interaction.response.send_message("Αυτή η εντολή δουλεύει μόνο μέσα σε server.", ephemeral=True)
+            return
+
+        attachments = [a for a in (attachment1, attachment2, attachment3, attachment4, attachment5) if a is not None]
+
+        raw_sources: list[tuple[str, bytes | str]] = []
+        for att in attachments:
+            raw_sources.append((att.filename.rsplit(".", 1)[0], att))
+
+        # emoji από άλλο server (paste) — CDN link, κατεβαίνει αυτόματα, δουλεύει και static και animated
+        raw_sources.extend(self._extract_tokens(emojis))
+        # απλά image links
+        raw_sources.extend(self._extract_tokens(urls))
+
+        if not raw_sources:
+            await interaction.response.send_message(
+                "Πρέπει να δώσεις τουλάχιστον ένα attachment, ένα link, ή να κολλήσεις ένα emoji (`<:name:id>`).",
+                ephemeral=True,
+            )
+            return
+
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
+        given_names = _split_list(names)
+
+        results: list[str] = []
+        failed: list[str] = []
+
+        async with aiohttp.ClientSession() as session:
+            for i, (default_name, source) in enumerate(raw_sources):
+                emoji_name = _clean_name(given_names[i]) if i < len(given_names) else _clean_name(default_name)
+
+                if isinstance(source, discord.Attachment):
+                    if source.size and source.size > MAX_EMOJI_BYTES:
+                        failed.append(f"{emoji_name} (πολύ μεγάλο αρχείο, max 256KB)")
+                        continue
+                    try:
+                        image_bytes = await source.read()
+                    except Exception:
+                        failed.append(f"{emoji_name} (αποτυχία λήψης attachment)")
+                        continue
+                else:
+                    image_bytes = await self._fetch_url_bytes(session, source)
+                    if image_bytes is None:
+                        failed.append(f"{emoji_name} (αποτυχία λήψης ή >256KB)")
+                        continue
+
+                try:
+                    created = await interaction.guild.create_custom_emoji(
+                        name=emoji_name,
+                        image=image_bytes,
+                        reason=f"Προστέθηκε από {interaction.user} μέσω /addemoji",
+                    )
+                    results.append(str(created))
+                except discord.HTTPException as e:
+                    failed.append(f"{emoji_name} ({e.text if hasattr(e, 'text') else 'σφάλμα Discord API'})")
+                except Exception:
+                    failed.append(f"{emoji_name} (άγνωστο σφάλμα)")
+
+        lines = []
+        if results:
+            lines.append(f"Προστέθηκαν {len(results)} emojis: " + " ".join(results))
+        if failed:
+            lines.append("Απέτυχαν: " + ", ".join(failed))
+        if not lines:
+            lines.append("Δεν προστέθηκε κανένα emoji.")
+
+        await interaction.followup.send("\n".join(lines), ephemeral=True)
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Find(bot))
+    await bot.add_cog(EmojiManager(bot))
