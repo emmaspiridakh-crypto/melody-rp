@@ -29,6 +29,7 @@ COGS = [
     "cogs.staff_activity",
     "cogs.logging_events",
     "cogs.applications",
+    "cogs.find",
     "cogs.server_status",
     "cogs.panel_command",
     "cogs.autorole",
@@ -41,8 +42,6 @@ COGS = [
     "cogs.emoji_manager",
     "cogs.whitelist",
     "cogs.rules_panel",
-    "cogs/find.py",
-    "utils/activity_log.py",
 ]
 
 
