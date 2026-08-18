@@ -70,6 +70,7 @@ class Applications(commands.Cog):
             "dikastiko": {"description": "Δούλεψε στο δικαστικό μέγαρο και κράτα την πόλη ασφαλή.", "emoji_key": "dikastiko"},
             "staff":   {"description": "Γίνε η δύναμη πίσω από την τάξη. Στήριξε την κοινότητα, βοήθησε τους παίκτες και κράτα τον server ασφαλή.", "emoji_key": "staff"},
             "manager": {"description": "Θέση υψηλής ευθύνης — διαχειρίσου server & ομάδα staff.",               "emoji_key": "manager"},
+            "criminal": {"description": "Κάνε αίτηση για να πάρεις κάποιο criminal team.", "emoji_key": "criminal"}
         }
 
         for key, data in config.APPLICATION_TYPES.items():
