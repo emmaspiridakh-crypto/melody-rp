@@ -102,6 +102,7 @@ LOG_APPLICATIONS_CHANNEL_IDS = {
     "dikastiko": 1535950023433392210 ,
     "staff": 1532032702931533864   ,  
     "manager": 1532032702931533864 ,   
+    "criminal": 1539087484141436978,
 }
 
 
