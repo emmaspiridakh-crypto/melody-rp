@@ -15,7 +15,6 @@ EMOJIS = {
     },
     "jobs": {
         "civilian": "<:civilian:1532335931099709581>",
-        "criminal": "<a:criminal:1497912956053094410>",
     },
     "donate": {
         "donate": "<a:donate:1532336271295250542>", 
@@ -52,6 +51,7 @@ EMOJIS = {
         "dikastiko": "<:dikastiko:1499816960328732865>",
         "staff": "<:staff:1532337651020075189>",
         "manager": "<:manager:1493964247993028698>",
+        "criminal": "<:criminal:1494014104371855450>",
         "accept": "<:accept:1532337940821315634>",
         "deny": "<:deny:1532130509331632359>",
         "apply": "<:apply:1532338098304712836>",
