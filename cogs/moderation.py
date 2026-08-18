@@ -7,6 +7,7 @@ import discord
 from discord.ext import commands
 
 import config
+from utils import activity_log
 from utils.permissions import is_manager_team, is_ownership_only, is_founder_only
 
 
@@ -53,6 +54,7 @@ class Moderation(commands.Cog):
         await _send_log(ctx.guild, config.LOG_BAN_CHANNEL_ID,
                          _log_embed(ctx.guild, title="Ban", moderator=ctx.author,
                                     target=f"{member.mention} (`{member.id}`)", reason=reason))
+        activity_log.record(ctx.guild.id, member.id, "moderation", f"Ban — Λόγος: {reason or '—'}", moderator_id=ctx.author.id)
 
     @commands.command(name="unban")
     @is_manager_team()
@@ -63,6 +65,7 @@ class Moderation(commands.Cog):
         await _send_log(ctx.guild, config.LOG_UNBAN_CHANNEL_ID,
                          _log_embed(ctx.guild, title="Unban", moderator=ctx.author,
                                     target=f"{user.mention} (`{user.id}`)", reason=reason))
+        activity_log.record(ctx.guild.id, user.id, "moderation", f"Unban — Λόγος: {reason or '—'}", moderator_id=ctx.author.id)
 
     @commands.command(name="kick")
     @is_manager_team()
@@ -72,6 +75,7 @@ class Moderation(commands.Cog):
         await _send_log(ctx.guild, config.LOG_KICK_CHANNEL_ID,
                          _log_embed(ctx.guild, title="Kick", moderator=ctx.author,
                                     target=f"{member.mention} (`{member.id}`)", reason=reason))
+        activity_log.record(ctx.guild.id, member.id, "moderation", f"Kick — Λόγος: {reason or '—'}", moderator_id=ctx.author.id)
 
     @commands.command(name="timeout")
     @is_manager_team()
@@ -85,6 +89,7 @@ class Moderation(commands.Cog):
         await _send_log(ctx.guild, config.LOG_TIMEOUT_CHANNEL_ID,
                          _log_embed(ctx.guild, title="Timeout", moderator=ctx.author,
                                     target=f"{member.mention} (`{member.id}`) — {duration}", reason=reason))
+        activity_log.record(ctx.guild.id, member.id, "moderation", f"Timeout {duration} — Λόγος: {reason or '—'}", moderator_id=ctx.author.id)
 
     @commands.command(name="clearmessages")
     @is_manager_team()
@@ -94,6 +99,8 @@ class Moderation(commands.Cog):
         await _send_log(ctx.guild, config.LOG_CLEARMESSAGES_CHANNEL_ID,
                          _log_embed(ctx.guild, title="Clear Messages", moderator=ctx.author,
                                     target=f"#{ctx.channel.name}", reason=f"{len(deleted) - 1} μηνύματα"))
+        activity_log.record(ctx.guild.id, ctx.author.id, "moderation",
+                             f"Clear {len(deleted) - 1} μηνύματα σε #{ctx.channel.name}", moderator_id=ctx.author.id)
 
     @commands.command(name="say")
     @is_ownership_only()
@@ -167,14 +174,14 @@ class Moderation(commands.Cog):
         await _send_log(ctx.guild, config.LOG_SAY_DMALL_CHANNEL_ID,
                          _log_embed(ctx.guild, title="DM User", moderator=ctx.author,
                                     target=f"{member.mention} ({status})", reason=text))
+        activity_log.record(ctx.guild.id, member.id, "moderation", f"DM User ({status}): {text[:200]}", moderator_id=ctx.author.id)
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
         if isinstance(error, commands.CheckFailure):
             await ctx.send("Δεν έχεις δικαίωμα να χρησιμοποιήσεις την εντολή.", delete_after=5)
         elif isinstance(error, commands.MemberNotFound):
             await ctx.send("Δεν βρέθηκε ο μπρατ.", delete_after=5)
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f"Λείπει το id ή το username: `{error.param.name}`", delete_after=5)
 
 
 async def setup(bot: commands.Bot):
