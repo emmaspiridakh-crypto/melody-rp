@@ -15,12 +15,10 @@ LOCKS_STORE = "application_locks"
 
 
 def _q_text(q) -> str:
-    """Το κείμενο μιας ερώτησης, είτε είναι απλό string είτε dict (π.χ. yesno)."""
     return q["text"] if isinstance(q, dict) else q
 
 
 def _q_type(q) -> str:
-    """'text' (κανονική, γράφεις απάντηση) ή 'yesno' (panel με Ναι/Όχι)."""
     return q.get("type", "text") if isinstance(q, dict) else "text"
 
 
@@ -259,6 +257,22 @@ class Applications(commands.Cog):
             await interaction.response.send_message("Μόνο αυτός που έκανε την αίτηση μπορεί να τη στείλει.", ephemeral=True)
             return
 
+        if info.get("status") != "ready_to_submit":
+            await interaction.response.send_message("Η αίτηση έχει ήδη σταλθεί.", ephemeral=True)
+            return
+
+        info["status"] = "submitted"
+        store[str(channel_id)] = info
+        storage.save(STORE_NAME, store)
+
+        done_container = build_base_container(
+            title="Ολοκλήρωσες τις ερωτήσεις!",
+            description=" Η αίτηση στάλθηκε.",
+        )
+        done_view = ui.LayoutView(timeout=None)
+        done_view.add_item(done_container)
+        await interaction.response.edit_message(view=done_view)
+
         guild = interaction.guild
         applicant = guild.get_member(info["user_id"])
         log_channel_id = config.LOG_APPLICATIONS_CHANNEL_IDS.get(info["type"], config.LOG_APPLICATIONS_CHANNEL_ID)
@@ -285,12 +299,11 @@ class Applications(commands.Cog):
         view.add_item(container)
         log_message = await log_channel.send(view=view)
 
-        info["status"] = "submitted"
         info["log_message_id"] = log_message.id
         store[str(channel_id)] = info
         storage.save(STORE_NAME, store)
 
-        await interaction.response.send_message(
+        await interaction.followup.send(
             "Η αίτηση στάλθηκε! Θα ενημερωθείς με DΜ, φρόντισε να μην τα έχεις κλειστά.", ephemeral=False
         )
 
@@ -334,11 +347,10 @@ class Applications(commands.Cog):
                 pass
 
         type_label = config.APPLICATION_TYPES[info["type"]]["label"]
-        questions = config.APPLICATION_TYPES[info["type"]]["questions"]
         status_text = (
-            f" **Accepted**\nΑπό: {interaction.user.mention}"
+            f" **Accepted by** {interaction.user.mention}"
             if accepted
-            else f" **Denied**\nΑπό: {interaction.user.mention}\nΛόγος: {reason}"
+            else f" **Denied by** {interaction.user.mention}\nΛόγος: {reason}"
         )
 
         container = build_base_container(
@@ -346,10 +358,13 @@ class Applications(commands.Cog):
             description=f"User: {applicant.mention if applicant else info['user_id']}",
         )
         add_separator(container)
-        for q, a in zip(questions, info["answers"]):
-            add_text(container, f"**{_q_text(q)}**\n{a}")
-        add_separator(container)
         add_text(container, status_text)
+        add_separator(container)
+        show_btn = ui.Button(
+            label="Show Answers", style=discord.ButtonStyle.secondary,
+            custom_id=f"app_showanswers:{channel_id}",
+        )
+        add_action_row(container, show_btn)
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
@@ -358,6 +373,25 @@ class Applications(commands.Cog):
             await interaction.message.edit(view=view)
         else:
             await interaction.response.edit_message(view=view)
+
+    async def handle_show_answers(self, interaction: discord.Interaction, channel_id: int):
+        store = storage.get_store(STORE_NAME)
+        info = store.get(str(channel_id))
+        if not info:
+            await interaction.response.send_message("Δεν βρέθηκε η αίτηση.", ephemeral=True)
+            return
+
+        questions = config.APPLICATION_TYPES[info["type"]]["questions"]
+        lines = [f"**{_q_text(q)}**\n{a}" for q, a in zip(questions, info.get("answers", []))]
+        reason = info.get("decision_reason")
+        if reason:
+            lines.append(f"**Λόγος**\n{reason}")
+
+        text = "\n\n".join(lines) if lines else "Δεν υπάρχουν απαντήσεις."
+        if len(text) > 3900:
+            text = text[:3900] + "\n…"
+
+        await interaction.response.send_message(text, ephemeral=True)
 
     async def handle_close(self, interaction: discord.Interaction, channel_id: int):
         store = storage.get_store(STORE_NAME)
@@ -445,18 +479,28 @@ class Applications(commands.Cog):
             await self.handle_close(interaction, int(custom_id.split(":")[1]))
         elif custom_id.startswith("app_ping_user:"):
             await self.handle_ping_user(interaction, int(custom_id.split(":")[1]))
+        elif custom_id.startswith("app_showanswers:"):
+            await self.handle_show_answers(interaction, int(custom_id.split(":")[1]))
         elif custom_id.startswith("app_accept:"):
             channel_id = int(custom_id.split(":")[1])
-            if not has_roles(interaction.user, config.STAFF_TEAM_ROLE_IDS):
+            if not self._can_review(interaction.user, channel_id):
                 await interaction.response.send_message("Δεν έχεις δικαίωμα.", ephemeral=True)
                 return
             await self.finalize_application(interaction, channel_id, accepted=True)
         elif custom_id.startswith("app_deny:"):
             channel_id = int(custom_id.split(":")[1])
-            if not has_roles(interaction.user, config.STAFF_TEAM_ROLE_IDS):
+            if not self._can_review(interaction.user, channel_id):
                 await interaction.response.send_message(" Δεν έχεις δικαίωμα.", ephemeral=True)
                 return
             await interaction.response.send_modal(DenyReasonModal(channel_id, self))
+
+    def _can_review(self, member: discord.Member, channel_id: int) -> bool:
+        store = storage.get_store(STORE_NAME)
+        info = store.get(str(channel_id))
+        if not info:
+            return False
+        review_roles = config.APPLICATION_REVIEW_ROLES.get(info["type"], [])
+        return has_roles(member, review_roles)
 
 
 async def setup(bot: commands.Bot):
