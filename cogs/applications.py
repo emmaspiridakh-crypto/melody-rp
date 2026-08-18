@@ -224,7 +224,7 @@ class Applications(commands.Cog):
             storage.save(STORE_NAME, store)
 
             container = build_base_container(
-                title="Ολοκλήρωσες τις ερωτήσεις!",
+                title="Ολοκλήρωσες τις ερωτήσεις",
                 description="Πάτησε **Send** για να στείλεις την αίτηση.",
             )
             send_btn = ui.Button(label="Send", style=discord.ButtonStyle.success,
@@ -267,8 +267,8 @@ class Applications(commands.Cog):
         storage.save(STORE_NAME, store)
 
         done_container = build_base_container(
-            title="Ολοκλήρωσες τις ερωτήσεις!",
-            description=" Η αίτηση στάλθηκε.",
+            title="Ολοκλήρωσες τις ερωτήσεις",
+            description=" Η αίτηση σου στάλθηκε. Θα ενημερωθείς με DΜ για τα αποτελέσματα, φρόντισε να μην τα έχεις κλειστά.",
         )
         done_view = ui.LayoutView(timeout=None)
         done_view.add_item(done_container)
@@ -303,10 +303,6 @@ class Applications(commands.Cog):
         info["log_message_id"] = log_message.id
         store[str(channel_id)] = info
         storage.save(STORE_NAME, store)
-
-        await interaction.followup.send(
-            "Η αίτηση στάλθηκε! Θα ενημερωθείς με DΜ, φρόντισε να μην τα έχεις κλειστά.", ephemeral=False
-        )
 
     async def finalize_application(self, interaction: discord.Interaction, channel_id: int, *, accepted: bool, reason: str | None = None):
         store = storage.get_store(STORE_NAME)
