@@ -248,10 +248,6 @@ class Whitelist(commands.Cog):
         store[str(channel_id)] = info
         storage.save(STORE_NAME, store)
 
-        await interaction.followup.send(
-            "Η αίτηση στάλθηκε! Θα ενημερωθείς με DM, φρόντισε να μην τα έχεις κλειστά.", ephemeral=False
-        )
-
     async def finalize_whitelist(self, interaction: discord.Interaction, channel_id: int, *, accepted: bool, reason: str | None = None):
         store = storage.get_store(STORE_NAME)
         info = store.get(str(channel_id))
@@ -305,6 +301,14 @@ class Whitelist(commands.Cog):
             custom_id=f"wl_showanswers:{channel_id}",
         )
         add_action_row(container, show_btn)
+
+        link_url = getattr(config, "WHITELIST_LINK_URL", None)
+        if link_url:
+            add_separator(container)
+            link_text = getattr(config, "WHITELIST_LINK_TEXT", "Για να μπορείς να μπείς στο roblox game μας θα πρέπει να είσαι μέλος στο roblox group.")
+            link_label = getattr(config, "WHITELIST_LINK_LABEL", "Join Now")
+            link_btn = ui.Button(label=link_label, style=discord.ButtonStyle.link, url=link_url)
+            add_section_with_button(container, text=link_text, button=link_btn)
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
