@@ -323,13 +323,13 @@ class Warnings(commands.Cog):
         ))
 
     @app_commands.command(name="warn", description="Ανοίγει το warning panel")
-    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.STAFF_MANAGER_ID)
+    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.STAFF_MANAGER_ID, config.GENERAL_MANAGER_ID)
     async def warn_cmd(self, interaction: discord.Interaction):
         await interaction.response.send_message(view=WarnUserSelectView(self), ephemeral=True)
 
     @app_commands.command(name="remove-warning", description="Αφαιρεί ένα warning από έναν χρήστη")
     @app_commands.describe(user="Ο χρήστης από τον οποίο θα αφαιρεθεί το warning")
-    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.STAFF_MANAGER_ID)
+    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.STAFF_MANAGER_ID, config.GENERAL_MANAGER_ID)
     async def remove_warning_cmd(self, interaction: discord.Interaction, user: discord.Member):
         existing = _get_warnings(user.id, interaction.guild.id)
         if not existing:
@@ -339,7 +339,7 @@ class Warnings(commands.Cog):
 
     async def cog_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
         if isinstance(error, app_commands.MissingAnyRole):
-            msg = " Μόνο οι staff managers και το ownership μπορεί να χρησιμοποιήσει αυτή την εντολή."
+            msg = " Μόνο οι staff managers και το ownership μπορούν να χρησιμοποιήσει αυτή την εντολή."
             if interaction.response.is_done():
                 await interaction.followup.send(msg, ephemeral=True)
             else:
