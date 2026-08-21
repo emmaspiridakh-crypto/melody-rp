@@ -66,6 +66,24 @@ def _ticket_types() -> dict:
             "category_id": config.CAT_TICKET_PARTNERSHIP_ID,
             "view_roles": [config.OWNERSHIP_ROLE_ID, config.SERVER_ORG_ID],
         },
+        "report_staff": {
+            "label": "Report Staff",
+            "emoji": emoji("tickets", "report_staff"),
+            "category_id": config.CAT_TICKET_REPORT_STAFF_ID,
+            "view_roles": [config.STAFF_MANAGER_ID, config.OWNERSHIP_ROLE_ID],
+        },
+        "report_manager": {
+            "label": "Report Manager",
+            "emoji": emoji("tickets", "report_manager"),
+            "category_id": config.CAT_TICKET_REPORT_MANAGER_ID,
+            "view_roles": [config.OWNERSHIP_ROLE_ID],
+        },
+        "report_ownership": {
+            "label": "Report Ownership",
+            "emoji": emoji("tickets", "report_ownership"),
+            "category_id": config.CAT_TICKET_REPORT_OWNERSHIP_ID,
+            "view_roles": [config.FOUNDER_ROLE_ID],
+        },
         "civilian_job": {
             "label": "Civilian Job",
             "emoji": emoji("jobs", "civilian"),
@@ -324,6 +342,12 @@ class Tickets(commands.Cog):
             await self.create_ticket(interaction, value)
         elif custom_id == "ticket_open_civilian_job":
             await self.create_ticket(interaction, "civilian_job")
+        elif custom_id == "ticket_open_report_staff":
+            await self.create_ticket(interaction, "report_staff")
+        elif custom_id == "ticket_open_report_manager":
+            await self.create_ticket(interaction, "report_manager")
+        elif custom_id == "ticket_open_report_ownership":
+            await self.create_ticket(interaction, "report_ownership")
         elif custom_id == "ticket_open_criminal_job":
             await self.create_ticket(interaction, "criminal_job")
         elif custom_id == "ticket_open_donate":
@@ -403,6 +427,45 @@ class Tickets(commands.Cog):
             emoji=civ["emoji"] or None, custom_id="ticket_open_civilian_job",
         )
         add_action_row(container, civ_btn)
+
+        view = ui.LayoutView(timeout=None)
+        view.add_item(container)
+        await interaction.channel.send(view=view)
+        await interaction.response.send_message("Στάλθηκε.", ephemeral=True)
+
+    @app_commands.command(name="panel-report", description="Στέλνει το Report panel")
+    @app_commands.checks.has_any_role(config.OWNERSHIP_ROLE_ID, config.MANAGER_ROLE_ID, config.STAFF_ROLE_ID)
+    async def panel_report(self, interaction: discord.Interaction):
+        ttypes = _ticket_types()
+        staff_t = ttypes["report_staff"]
+        manager_t = ttypes["report_manager"]
+        ownership_t = ttypes["report_ownership"]
+
+        container = build_base_container(
+            title=f"{emoji('tickets', 'report')} Melody Roleplay - Report",
+            banner_url=config.REPORT_PANEL_BANNER_URL,
+        )
+        add_separator(container)
+        _add_info_lines(container, [
+            "Επίλεξε το κατάλληλο κουμπί ανάλογα με το ποιον θέλεις να κάνεις report.",
+            "**Report Staff** — για report εναντίον μέλους του Staff Team. Το βλέποι ο Staff Manager & Ownership.",
+            "**Report Manager** — για report εναντίον Manager. Το βλέποι το Ownership.",
+            "**Report Ownership** — για report εναντίον Ownership. Το βλέπει ο Founder.",
+        ])
+        add_separator(container)
+        staff_btn = ui.Button(
+            label=staff_t["label"], style=discord.ButtonStyle.secondary,
+            emoji=staff_t["emoji"] or None, custom_id="ticket_open_report_staff",
+        )
+        manager_btn = ui.Button(
+            label=manager_t["label"], style=discord.ButtonStyle.secondary,
+            emoji=manager_t["emoji"] or None, custom_id="ticket_open_report_manager",
+        )
+        ownership_btn = ui.Button(
+            label=ownership_t["label"], style=discord.ButtonStyle.secondary,
+            emoji=ownership_t["emoji"] or None, custom_id="ticket_open_report_ownership",
+        )
+        add_action_row(container, staff_btn, manager_btn, ownership_btn)
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
