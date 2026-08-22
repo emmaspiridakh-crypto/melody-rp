@@ -1,15 +1,11 @@
 EMOJIS = {
     "tickets": {
         "ownership": "<:ownership:1531999528633241660>",
-        "banapeal": "<a:banapeal:1532334999410442350>",
-        "support": "<a:support:1532130695433027794>",
-        "streamer": "<:streamer:1498769681161388203>",
         "female": "<a:female:1500036130677194784>",
         "close": "<:close:1532130509331632359>",
         "ping": "<a:ping:1532130668107005982>",
         "ticket": "<:ticket:1535587061216579724>",
         "reward": "<:reward:1492571665333223607>",
-        "report": "<:report:1532338541055709386>",
         "report_staff": "<:report_staff:1532337651020075189>",
         "report_manager": "<:report_manager:1532337775964061827>",
         "report_ownership": "<:report_ownership:1531999528633241660>",
