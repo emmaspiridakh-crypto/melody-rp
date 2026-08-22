@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import re
 
 import aiohttp
@@ -13,8 +12,6 @@ import config
 
 MAX_EMOJI_BYTES = 256 * 1024
 
-# Ταιριάζει με ένα πλήρες custom emoji όπως το κάνει copy-paste το Discord:
-# <:name:123456789012345678>  ή  <a:name:123456789012345678>
 EMOJI_MENTION_RE = re.compile(r"<(a?):([a-zA-Z0-9_]{2,32}):(\d{15,25})>")
 
 
@@ -25,16 +22,18 @@ def _clean_name(name: str) -> str:
     return name[:32] if name else "emoji"
 
 
-def _split_list(raw: str | None) -> list[str]:
-    if not raw:
-        return []
-    parts = re.split(r"[\s,]+", raw.strip())
-    return [p for p in parts if p]
-
-
 def _cdn_emoji_url(emoji_id: str, animated: bool) -> str:
     ext = "gif" if animated else "png"
     return f"https://cdn.discordapp.com/emojis/{emoji_id}.{ext}"
+
+
+def _extract_pasted_emojis(raw: str) -> list[tuple[str, str]]:
+    """Παίρνει το κείμενο που κόλλησε ο χρήστης και επιστρέφει λίστα (όνομα, cdn_url)
+    για κάθε emoji άλλου server που βρέθηκε (<:name:id> ή <a:name:id>)."""
+    return [
+        (name, _cdn_emoji_url(emoji_id, bool(animated_flag)))
+        for animated_flag, name, emoji_id in EMOJI_MENTION_RE.findall(raw)
+    ]
 
 
 class EmojiManager(commands.Cog):
@@ -53,58 +52,14 @@ class EmojiManager(commands.Cog):
         except Exception:
             return None
 
-    def _extract_tokens(self, raw: str | None) -> list[tuple[str, str]]:
-        """Παίρνει το raw κείμενο (urls/emojis) και επιστρέφει λίστα (default_name, url).
-
-        Αναγνωρίζει αυτόματα:
-        - Επικολλημένα emojis άλλου server: <:name:id> / <a:name:id> -> CDN URL, χωρίς download/upload
-        - Απλά image links (png/jpg/gif/webp)
-        """
-        out: list[tuple[str, str]] = []
-        if not raw:
-            return out
-
-        remaining = raw
-
-        # Πρώτα τραβάμε όσα emoji mentions υπάρχουν μέσα στο κείμενο (μπορεί να είναι
-        # κολλημένα το ένα δίπλα στο άλλο χωρίς κενό, όπως τα κάνει paste το Discord)
-        for m in EMOJI_MENTION_RE.finditer(raw):
-            animated_flag, name, emoji_id = m.group(1), m.group(2), m.group(3)
-            out.append((name, _cdn_emoji_url(emoji_id, bool(animated_flag))))
-            remaining = remaining.replace(m.group(0), " ")
-
-        # Ό,τι απομείνει (απλά links) το σπάμε κανονικά
-        for token in _split_list(remaining):
-            if token.startswith("http://") or token.startswith("https://"):
-                guessed = token.rsplit("/", 1)[-1].split("?")[0]
-                guessed = guessed.rsplit(".", 1)[0] if "." in guessed else guessed
-                out.append((guessed or "emoji", token))
-
-        return out
-
-    @app_commands.command(name="addemoji", description="Προσθέτει emojis (static/animated) — links, attachments, ή κόλλα emoji από άλλο server")
-    @app_commands.describe(
-        names="Ονόματα για τα emojis, χωρισμένα με κόμμα/κενό (προαιρετικό — αλλιώς κρατάει το αρχικό όνομα)",
-        emojis="Κόλλα εδώ emoji από άλλο server (π.χ. <:name:id> ή <a:name:id>) — δέχεται πολλά μαζί",
-        urls="Links εικόνων χωρισμένα με κενό ή νέα γραμμή",
-        attachment1="Εικόνα emoji (png/jpg/gif)",
-        attachment2="Εικόνα emoji (png/jpg/gif)",
-        attachment3="Εικόνα emoji (png/jpg/gif)",
-        attachment4="Εικόνα emoji (png/jpg/gif)",
-        attachment5="Εικόνα emoji (png/jpg/gif)",
+    @app_commands.command(
+        name="addemoji",
+        description="Προσθέτει emoji(s) κολλώντας τα από άλλο server (π.χ. <:name:id>)",
     )
-    async def addemoji(
-        self,
-        interaction: discord.Interaction,
-        names: str | None = None,
-        emojis: str | None = None,
-        urls: str | None = None,
-        attachment1: discord.Attachment | None = None,
-        attachment2: discord.Attachment | None = None,
-        attachment3: discord.Attachment | None = None,
-        attachment4: discord.Attachment | None = None,
-        attachment5: discord.Attachment | None = None,
-    ):
+    @app_commands.describe(
+        emojis="Κόλλα εδώ emoji από άλλο server (π.χ. <:name:id> ή <a:name:id>) — δέχεται πολλά μαζί",
+    )
+    async def addemoji(self, interaction: discord.Interaction, emojis: str):
         if not member_has_any_role(interaction.user, [config.OWNERSHIP_ROLE_ID]):
             await interaction.response.send_message(" Μόνο το Ownership μπορεί να προσθέσει emojis.", ephemeral=True)
             return
@@ -113,49 +68,27 @@ class EmojiManager(commands.Cog):
             await interaction.response.send_message("Αυτή η εντολή δουλεύει μόνο μέσα σε server.", ephemeral=True)
             return
 
-        attachments = [a for a in (attachment1, attachment2, attachment3, attachment4, attachment5) if a is not None]
-
-        raw_sources: list[tuple[str, bytes | str]] = []
-        for att in attachments:
-            raw_sources.append((att.filename.rsplit(".", 1)[0], att))
-
-        # emoji από άλλο server (paste) — CDN link, κατεβαίνει αυτόματα, δουλεύει και static και animated
-        raw_sources.extend(self._extract_tokens(emojis))
-        # απλά image links
-        raw_sources.extend(self._extract_tokens(urls))
-
-        if not raw_sources:
+        pasted = _extract_pasted_emojis(emojis)
+        if not pasted:
             await interaction.response.send_message(
-                "Πρέπει να δώσεις τουλάχιστον ένα attachment, ένα link, ή να κολλήσεις ένα emoji (`<:name:id>`).",
+                "Δεν βρήκα κανένα emoji μέσα σε αυτό που έστειλες. Κόλλα emoji από άλλο server (π.χ. `<:name:id>`).",
                 ephemeral=True,
             )
             return
 
         await interaction.response.defer(ephemeral=True, thinking=True)
 
-        given_names = _split_list(names)
-
         results: list[str] = []
         failed: list[str] = []
 
         async with aiohttp.ClientSession() as session:
-            for i, (default_name, source) in enumerate(raw_sources):
-                emoji_name = _clean_name(given_names[i]) if i < len(given_names) else _clean_name(default_name)
+            for default_name, url in pasted:
+                emoji_name = _clean_name(default_name)
 
-                if isinstance(source, discord.Attachment):
-                    if source.size and source.size > MAX_EMOJI_BYTES:
-                        failed.append(f"{emoji_name} (πολύ μεγάλο αρχείο, max 256KB)")
-                        continue
-                    try:
-                        image_bytes = await source.read()
-                    except Exception:
-                        failed.append(f"{emoji_name} (αποτυχία λήψης attachment)")
-                        continue
-                else:
-                    image_bytes = await self._fetch_url_bytes(session, source)
-                    if image_bytes is None:
-                        failed.append(f"{emoji_name} (αποτυχία λήψης ή >256KB)")
-                        continue
+                image_bytes = await self._fetch_url_bytes(session, url)
+                if image_bytes is None:
+                    failed.append(f"{emoji_name} (αποτυχία λήψης ή >256KB)")
+                    continue
 
                 try:
                     created = await interaction.guild.create_custom_emoji(
