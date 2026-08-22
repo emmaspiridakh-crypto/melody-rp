@@ -7,6 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import config
+import emojis
 from utils import storage, activity_log
 from utils.permissions import slash_is_ownership_only
 
@@ -20,15 +21,14 @@ LOG_CATEGORY_LABELS = {
     "voice": "Voice",
 }
 
-# value -> (label, emoji, color)
 CATEGORY_META: dict[str, tuple[str, str, int]] = {
-    "all": ("Όλα", "🔎", config.EMBED_COLOR),
-    "logs": ("Logs", "📜", 0x5865F2),
-    "moderation": ("Moderation", "🔨", 0xED4245),
-    "warnings": ("Warnings", "⚠️", 0xFEE75C),
-    "applications": ("Applications", "📝", 0x57F287),
-    "whitelist": ("Whitelist", "✅", 0x3BA55D),
-    "tickets": ("Tickets", "🎫", 0x9B59B6),
+    "all": ("Όλα", emojis.emoji("panel", "scan") or "🔎", config.EMBED_COLOR),
+    "logs": ("Logs", emojis.emoji("notifier", "clock") or "📜", 0x5865F2),
+    "moderation": ("Moderation", emojis.emoji("moderation", "ban") or "🔨", 0xED4245),
+    "warnings": ("Warnings", emojis.emoji("notifier", "bell") or "⚠️", 0xFEE75C),
+    "applications": ("Applications", emojis.emoji("applications", "apply") or "📝", 0x57F287),
+    "whitelist": ("Whitelist", emojis.emoji("whitelist", "accept") or "✅", 0x3BA55D),
+    "tickets": ("Tickets", emojis.emoji("tickets", "ticket") or "🎫", 0x9B59B6),
 }
 
 CATEGORY_CHOICES = [
@@ -209,7 +209,7 @@ class Find(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="find", description="[Ownership] Ψάξε έναν χρήστη σε logs / moderation / warnings / applications / whitelist / tickets")
-    @app_commands.describe(user="Ο χρήστης που θες να ψάξεις", category="Τι είδος δεδομένων θες να βρεις (μπορείς να αλλάξεις μετά από dropdown)")
+    @app_commands.describe(user="Ο χρήστης που θες να ψάξεις", category="Τι είδος δεδομένων θες να βρεις")
     @app_commands.choices(category=CATEGORY_CHOICES)
     @slash_is_ownership_only()
     async def find(self, interaction: discord.Interaction, user: discord.User, category: app_commands.Choice[str] = None):
