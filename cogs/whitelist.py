@@ -52,7 +52,7 @@ class Whitelist(commands.Cog):
         status_dot = emoji("whitelist", "status_closed") if locked else emoji("whitelist", "status_open")
 
         container = build_base_container(
-            title="Melody Roleplay | Whitelist",
+            title="Melody Roleplay | Whitelist Application",
             description=(
                 "Υπόβαλε αίτηση whitelist για να μπεις στον server.\n"
                 "**Έχεις 15 λεπτά να ολοκληρώσεις την αίτηση σου αλλιώς θα ακυρωθεί.**"
@@ -73,7 +73,7 @@ class Whitelist(commands.Cog):
         link_url = getattr(config, "WHITELIST_LINK_URL", None)
         if link_url:
             add_separator(container)
-            link_text = getattr(config, "WHITELIST_LINK_TEXT", "Για να μπορείς να μπείς στο roblox game μας θα πρέπει να είσαι μέλος στο roblox group.")
+            link_text = getattr(config, "WHITELIST_LINK_TEXT", "Για να μπορείς να μπείς στο roblox game μας θα πρέπει να είσαι μέλος στο roblox group. Πάτα το **Join Now** για να μπείς.")
             link_label = getattr(config, "WHITELIST_LINK_LABEL", "Join Now")
             link_btn = ui.Button(label=link_label, style=discord.ButtonStyle.link, url=link_url)
             add_section_with_button(container, text=link_text, button=link_btn)
@@ -217,6 +217,13 @@ class Whitelist(commands.Cog):
             title="Ολοκλήρωσες τις ερωτήσεις!",
             description=" Η αίτηση στάλθηκε.",
         )
+        link_url = getattr(config, "WHITELIST_LINK_URL", None)
+        if link_url:
+            add_separator(done_container)
+            link_text = getattr(config, "WHITELIST_LINK_TEXT", "Για να μπορείς να μπείς στο roblox game μας θα πρέπει να είσαι μέλος στο roblox group.  Πάτα το **Join Now** για να μπείς.")
+            link_label = getattr(config, "WHITELIST_LINK_LABEL", "Join Now")
+            link_btn = ui.Button(label=link_label, style=discord.ButtonStyle.link, url=link_url)
+            add_section_with_button(done_container, text=link_text, button=link_btn)
         done_view = ui.LayoutView(timeout=None)
         done_view.add_item(done_container)
         await interaction.response.edit_message(view=done_view)
@@ -301,14 +308,6 @@ class Whitelist(commands.Cog):
             custom_id=f"wl_showanswers:{channel_id}",
         )
         add_action_row(container, show_btn)
-
-        link_url = getattr(config, "WHITELIST_LINK_URL", None)
-        if link_url:
-            add_separator(container)
-            link_text = getattr(config, "WHITELIST_LINK_TEXT", "Για να μπορείς να μπείς στο roblox game μας θα πρέπει να είσαι μέλος στο roblox group.")
-            link_label = getattr(config, "WHITELIST_LINK_LABEL", "Join Now")
-            link_btn = ui.Button(label=link_label, style=discord.ButtonStyle.link, url=link_url)
-            add_section_with_button(container, text=link_text, button=link_btn)
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
