@@ -24,23 +24,11 @@ def _ticket_types() -> dict:
             "category_id": config.CAT_TICKET_OWNERSHIP_ID,
             "view_roles": [config.OWNERSHIP_ROLE_ID],
         },
-        "banapeal": {
-            "label": "Ban Appeal",
-            "emoji": emoji("tickets", "banapeal"),
-            "category_id": config.CAT_TICKET_BANAPEAL_ID,
-            "view_roles": [config.OWNERSHIP_ROLE_ID],
-        },
         "support": {
             "label": "Support",
             "emoji": emoji("tickets", "support"),
             "category_id": config.CAT_TICKET_SUPPORT_ID,
             "view_roles": config.STAFF_TEAM_ROLE_IDS,
-        },
-        "stream": {
-            "label": "Streamer",
-            "emoji": emoji("tickets", "streamer"),
-            "category_id": config.CAT_TICKET_STREAMER_ID,
-            "view_roles": [config.OWNERSHIP_ROLE_ID],
         },
         "female": {
             "label": "Female Support",
@@ -53,12 +41,6 @@ def _ticket_types() -> dict:
             "emoji": emoji("tickets", "reward"),
             "category_id": config.CAT_TICKET_REWARD_ID,
             "view_roles": [config.EVENT_MANAGER_ID],
-        },
-        "report": { 
-            "label": "Report",
-            "emoji": emoji("tickets", "report"),
-            "category_id": config.CAT_TICKET_REPORT_ID,
-            "view_roles": [config.OWNERSHIP_ROLE_ID],
         },
          "partner": { 
             "label": "Partnership",
@@ -380,12 +362,9 @@ class Tickets(commands.Cog):
         add_separator(container)
         _descriptions = {
             "ownership": "Επικοινωνία αποκλειστικά με το Ownership",
-            "banapeal": "Κάνει ανάκληση για κάποιο ban",
             "support": "Γενική υποστήριξη & ερωτήσεις",
-            "streamer": "Αν θες να κάνεις stream ή έγινε κάτι σε κάποιο stream",
             "female": "Support για τις γυναικάρες του server",
             "reward": "Διεκδίκησε το reward σου",
-            "report": "Κάνε report κάποιον παίκτη ή staff/manager",
             "partner": "Κάνε partnership με τον server μας",
         }
         options = [
@@ -395,7 +374,7 @@ class Tickets(commands.Cog):
                 emoji=ttypes[k]["emoji"] or None,
                 description=_descriptions.get(k, ""),
             )
-            for k in ("ownership", "banapeal", "support", "stream", "female", "reward", "report", "partner")
+            for k in ("ownership", "support", "female", "reward", "partner")
         ]
         select = ui.Select(placeholder="Επίλεξε κατηγορία...", options=options, custom_id="support_ticket_select")
         add_action_row(container, select)
