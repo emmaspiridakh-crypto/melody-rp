@@ -1,8 +1,9 @@
 EMOJIS = {
     "tickets": {
         "ownership": "<:ownership:1531999528633241660>",
+        "support": "<a:support:1532130695433027794>",
         "female": "<a:female:1500036130677194784>",
-        "close": "<:close:1532130509331632359>",
+        "close": "<:close:1540730204790722570>",
         "ping": "<a:ping:1532130668107005982>",
         "ticket": "<:ticket:1535587061216579724>",
         "reward": "<:reward:1492571665333223607>",
@@ -19,8 +20,8 @@ EMOJIS = {
         "donate": "<a:donate:1532336271295250542>", 
     },
     "suggestions": {
-        "upvote": "<:upvote:1494068515169370253>",
-        "downvote": "<:downvote:1494068533917651125>",
+        "upvote": "<:upvote:1540733805755891823>",
+        "downvote": "<:downvote:1540733773963067543>",
         "suggestion": "<a:suggestion:1498777433753653359>",
         "submitted": "<a:submitted:1492271082336551104>", 
         "bullet": "<:bullet:1535605416757825646>",       
@@ -51,8 +52,8 @@ EMOJIS = {
         "staff": "<:staff:1532337651020075189>",
         "manager": "<:manager:1493964247993028698>",
         "criminal": "<:criminal:1494014104371855450>",
-        "accept": "<:accept:1532337940821315634>",
-        "deny": "<:deny:1532130509331632359>",
+        "accept": "<:accept:1540733558908387418>",
+        "deny": "<:deny:1540733592596914298>",
         "apply": "<:apply:1532338098304712836>",
         "send": "<:send:1532337940821315634>",
         "yes": "<:app_yes:1532337940821315634>",  
@@ -72,6 +73,15 @@ EMOJIS = {
         "list": "<:list:1532338541055709386>",
         "scan": "<:scan:1532341506055709386>", 
     },
+"find": {
+    "all": "<:find_all:1493918780114341888>",
+    "logs": "<:find_logs:1532338541055709386>",
+    "moderation": "<:find_moderation:1540730196825608265>",
+    "warnings": "<:find_warnings:1532130756451631364>",
+    "applications": "<:find_applications:1532338098304712836>",
+    "whitelist": "<:find_whitelist:1540730200650944603>",
+    "tickets": "<:find_tickets:1532335582213308597>",
+},
 "giveaway": {
     "giveaway":      "<:giveaway:1493964674201288965>",
     "join":          "<:gw_join:1532130548351500348>",
