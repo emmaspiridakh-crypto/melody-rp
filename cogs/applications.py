@@ -316,6 +316,9 @@ class Applications(commands.Cog):
             await interaction.response.send_message("Δεν βρέθηκε η αίτηση.", ephemeral=True)
             return
 
+        if not interaction.response.is_done():
+            await interaction.response.defer()
+
         guild = interaction.guild
         applicant = guild.get_member(info["user_id"])
 
@@ -374,11 +377,7 @@ class Applications(commands.Cog):
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
-
-        if interaction.response.is_done():
-            await interaction.message.edit(view=view)
-        else:
-            await interaction.response.edit_message(view=view)
+        await interaction.message.edit(view=view)
 
     async def _send_accept_announcement(self, guild: discord.Guild, type_key: str, applicant, info: dict, dm_text: str, type_label: str):
         announce_channel_id = config.APPLICATION_ANNOUNCE_CHANNEL_IDS.get(type_key)
