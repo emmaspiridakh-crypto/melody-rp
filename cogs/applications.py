@@ -118,6 +118,8 @@ class Applications(commands.Cog):
                     await interaction.response.send_message(f"Έχεις ήδη ανοιχτή αίτηση: {channel.mention}", ephemeral=True)
                     return
 
+        await interaction.response.defer(ephemeral=True)
+
         category = guild.get_channel(config.APPLICATIONS_CATEGORY_ID)
         overwrites = {
             guild.default_role: discord.PermissionOverwrite(view_channel=False),
@@ -152,8 +154,8 @@ class Applications(commands.Cog):
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
-        await channel.send(view=view)
-        await interaction.response.send_message(f"Η αίτηση σου: {channel.mention}", ephemeral=True)
+        await channel.send(content=user.mention, view=view)
+        await interaction.followup.send(f"Η αίτηση σου: {channel.mention}", ephemeral=True)
 
     async def send_question(self, channel: discord.TextChannel, type_key: str, step: int):
         questions = config.APPLICATION_TYPES[type_key]["questions"]
@@ -268,7 +270,7 @@ class Applications(commands.Cog):
 
         done_container = build_base_container(
             title="Ολοκλήρωσες τις ερωτήσεις",
-            description=" Η αίτηση σου στάλθηκε. Θά βγεί announcement με τα αποτελέσματα και θα σου σταλθεί και DM, φρόντισε να μην τα έχεις κλειστά.",
+            description=" Η αίτηση σου στάλθηκε. Θα βγεί announcement για τα αποτελέσματα και θα σου σταλθεί και DM, φρόντισε να μην τα έχεις κλειστά.",
         )
         done_view = ui.LayoutView(timeout=None)
         done_view.add_item(done_container)
@@ -298,7 +300,7 @@ class Applications(commands.Cog):
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
-        log_message = await log_channel.send(view=view)
+        log_message = await log_channel.send(content=applicant.mention if applicant else None, view=view)
 
         info["log_message_id"] = log_message.id
         store[str(channel_id)] = info
@@ -324,7 +326,7 @@ class Applications(commands.Cog):
             if info["type"] in ("staff", "manager"):
                 dm_text = (
                     f"Η αίτηση σου ({config.APPLICATION_TYPES[info['type']]['label']}) έγινε **δεκτή**! "
-                    f"Ενημέρωσε στο interview channel πότε μπορείς για το interview σου."
+                    f"Ενημέρωσε στο αντίστοιχο channel πότε μπορείς για το interview σου."
                 )
             else:
                 dm_text = f"Η αίτηση σου ({config.APPLICATION_TYPES[info['type']]['label']}) έγινε **δεκτή**!"
@@ -379,18 +381,20 @@ class Applications(commands.Cog):
         announce_channel_id = config.APPLICATION_ANNOUNCE_CHANNEL_IDS.get(type_key)
         if not announce_channel_id:
             return
-        announce_channel = guild.get_channel(announce_channel_id)
+        announce_channel = guild.get_channel(int(announce_channel_id))
         if not announce_channel:
             return
 
         mention = applicant.mention if applicant else f"<@{info['user_id']}>"
 
         if type_key == "staff":
-            text = dm_text
-        else:
-            mention_channel = guild.get_channel(config.APPLICATION_ANNOUNCE_MENTION_CHANNEL_ID)
+            mention_channel = guild.get_channel(int(config.APPLICATION_ANNOUNCE_STAFF_MENTION_CHANNEL_ID))
             mention_text = mention_channel.mention if mention_channel else ""
-            text = f"Η αίτηση σου: {mention} έγινε δεκτή για **{type_label}**. Δες το {mention_text} για τον κατάλληλο server, ώστε να κάνεις το interview."
+            text = f"{mention} Η αίτηση σου ({type_label}) έγινε **δεκτή**! Ενημέρωσε στο {mention_text} πότε μπορείς για το interview σου."
+        else:
+            mention_channel = guild.get_channel(int(config.APPLICATION_ANNOUNCE_MENTION_CHANNEL_ID))
+            mention_text = mention_channel.mention if mention_channel else ""
+            text = f"Η αίτηση του {mention} έγινε δεκτή για **{type_label}**. Δες το {mention_text} για τον κατάλληλο server ώστε να κάνεις interview."
 
         try:
             await announce_channel.send(text)
