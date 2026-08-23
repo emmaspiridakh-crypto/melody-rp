@@ -36,6 +36,7 @@ COGS = [
     "cogs.invite_tracking",
     "cogs.giveaways",
     "cogs.warnings",
+    "cogs.blacklist",
     "cogs.bot_status",
     "cogs.game_panel",
     "cogs.join_ping",
