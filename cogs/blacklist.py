@@ -173,9 +173,9 @@ class Blacklist(commands.Cog):
                 await target.add_roles(role, reason=f"Blacklist by {moderator} (#{record['id']})")
                 role_note = f"\nΠροστέθηκε ο ρόλος {role.mention}"
             except discord.Forbidden:
-                role_note = "\nΔεν προστέθηκε το role (λείπουν permissions)."
+                role_note = "\nΔεν προστέθηκε το role."
         else:
-            role_note = "\nΔεν βρέθηκε το blacklist role (έλεγξε το config)."
+            role_note = "\nΔεν βρέθηκε το blacklist role."
 
         await interaction.response.edit_message(view=_simple_view(
             f"## Blacklist Καταγράφτηκε\n"
