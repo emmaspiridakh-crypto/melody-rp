@@ -154,7 +154,8 @@ class Applications(commands.Cog):
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
-        await channel.send(content=user.mention, view=view)
+        await channel.send(user.mention)
+        await channel.send(view=view)
         await interaction.followup.send(f"Η αίτηση σου: {channel.mention}", ephemeral=True)
 
     async def send_question(self, channel: discord.TextChannel, type_key: str, step: int):
@@ -300,7 +301,9 @@ class Applications(commands.Cog):
 
         view = ui.LayoutView(timeout=None)
         view.add_item(container)
-        log_message = await log_channel.send(content=applicant.mention if applicant else None, view=view)
+        if applicant:
+            await log_channel.send(applicant.mention)
+        log_message = await log_channel.send(view=view)
 
         info["log_message_id"] = log_message.id
         store[str(channel_id)] = info
