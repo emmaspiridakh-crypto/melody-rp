@@ -372,6 +372,7 @@ class Tickets(commands.Cog):
             "female": "Support για τις γυναικάρες του server",
             "reward": "Διεκδίκησε το reward σου",
             "partner": "Κάνε partnership με τον server μας",
+            "report": "Κάνε report κάποιον παίκτη ή staff",
         }
         options = [
             discord.SelectOption(
@@ -380,7 +381,7 @@ class Tickets(commands.Cog):
                 emoji=ttypes[k]["emoji"] or None,
                 description=_descriptions.get(k, ""),
             )
-            for k in ("ownership", "support", "female", "reward", "partner")
+            for k in ("ownership", "support", "female", "reward", "partner", "report")
         ]
         select = ui.Select(placeholder="Επίλεξε κατηγορία...", options=options, custom_id="support_ticket_select")
         add_action_row(container, select)
@@ -403,7 +404,7 @@ class Tickets(commands.Cog):
         )
         add_separator(container)
         _add_info_lines(container, [
-            "**Πάτησε το κατάλληλο κουμπί ανάλογα με το job που θες, και επικοινώνησε με τον αρμόδιο Manager για να το αποκτήσεις.**",
+            "**Πάτησε το κουμπί για το job που θες, και επικοινώνησε με τον αρμόδιο Manager για να το αποκτήσεις.**",
             "*Μπορείτε να ανοίξετε έως ένα ticket την φορά.*",
         ])
         add_separator(container)
