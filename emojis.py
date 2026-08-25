@@ -7,6 +7,7 @@ EMOJIS = {
         "ping": "<a:ping:1532130668107005982>",
         "ticket": "<:ticket:1535587061216579724>",
         "reward": "<:reward:1492571665333223607>",
+        "report": "<:report:1532130756451631364>",
         "report_staff": "<:report_staff:1532337651020075189>",
         "report_manager": "<:report_manager:1532337775964061827>",
         "report_ownership": "<:report_ownership:1531999528633241660>",
