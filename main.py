@@ -43,6 +43,7 @@ COGS = [
     "cogs.emoji_manager",
     "cogs.whitelist",
     "cogs.rules_panel",
+    "cogs.reviews",
 ]
 
 
