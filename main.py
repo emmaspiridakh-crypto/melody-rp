@@ -44,6 +44,7 @@ COGS = [
     "cogs.whitelist",
     "cogs.rules_panel",
     "cogs.reviews",
+    "cogs.compliments",
 ]
 
 
