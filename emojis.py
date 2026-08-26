@@ -134,6 +134,11 @@ EMOJIS = {
         "bullet":       "<:bullet:1535605416757825646>",
         "make_review":  "<:rv_make:1542083180872474644>",
     },
+     "compliments": {
+        "compliment":  "<a:compliment:1500036219592114237>",
+        "submitted":   "<:submitted:1540733558908387418>",
+        "bullet":      "<a:bullet:1542081911932063794>",
+    },
 }
 
 
