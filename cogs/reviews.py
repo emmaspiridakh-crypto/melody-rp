@@ -125,7 +125,7 @@ class ReviewPanelView(ui.LayoutView):
     def __init__(self):
         super().__init__(timeout=None)
         container = build_base_container(
-            title=f"{emoji('reviews', 'review')} • Άφησε ένα Review",
+            title=f"{emoji('reviews', 'review')} Άφησε ένα Review",
             description="Πάτα το κουμπί από κάτω για να μοιραστείς την εμπειρία σου μαζί μας!",
             banner_url=config.REVIEWS_BANNER_URL or None,
         )
