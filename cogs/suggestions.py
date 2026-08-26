@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as _dt
+import re
 
 import discord
 from discord import ui
@@ -12,6 +13,8 @@ from utils import storage
 from utils.components import build_base_container, add_separator, add_action_row, add_text
 
 STORE_NAME = "suggestions"  
+
+LINK_RE = re.compile(r"(https?://|www\.|discord\.gg/|discord\.com/invite/)", re.IGNORECASE)
 
 GREEK_DAYS = ["Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή"]
 GREEK_MONTHS = [
@@ -70,6 +73,26 @@ class Suggestions(commands.Cog):
 
         content = message.content.strip()
         author = message.author
+
+        has_mentions = bool(message.mentions) or bool(message.role_mentions) or message.mention_everyone
+        has_link = bool(LINK_RE.search(content))
+
+        if has_mentions or has_link:
+            try:
+                await message.delete()
+            except discord.Forbidden:
+                pass
+
+            reason = "tags" if has_mentions and not has_link else "links" if has_link and not has_mentions else "tags ή links"
+            try:
+                warning = await message.channel.send(
+                    f"{emoji('suggestions', 'suggestion') or '⚠️'} {author.mention} δεν επιτρέπονται **{reason}** μέσα στα suggestions."
+                )
+                await warning.delete(delay=6)
+            except discord.HTTPException:
+                pass
+            return
+
         created_at = discord.utils.utcnow()
 
         try:
