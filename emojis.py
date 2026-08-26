@@ -124,6 +124,16 @@ EMOJIS = {
         "connect": "<:game_connect:1493918780114341888>", 
         "status":  "<a:game_status:1498777433753653359>", 
     },
+    "reviews": {
+        "review":       "<a:review:1542081911932063794>",
+        "star_filled":  "<a:star_filled:1542081543739285599>",
+        "star_empty":   "<:star_empty:1542081680632844298>",
+        "user":         "<:rv_user:1533548060175765644>",
+        "comment":      "<:rv_comment:1542082672304590939>",
+        "date":         "<:rv_date:1542082945186013205>",
+        "bullet":       "<:bullet:1535605416757825646>",
+        "make_review":  "<:rv_make:1542083180872474644>",
+    },
 }
 
 
